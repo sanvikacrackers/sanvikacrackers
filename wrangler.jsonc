@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "sanvika-crackers",
+  "name": "sanvikacrackers-1",
   "compatibility_date": "2026-10-09",
   "observability": {
     "enabled": true
