@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Search, X, Printer, Eye, ClipboardList, ChevronDown } from 'lucide-react';
+import { Search, X, Printer, Eye, ClipboardList, Edit2, Trash2, Plus, Minus, Package, AlertCircle, Save } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { supabase } from '../../lib/supabase';
-import { formatIST, fmtINR, istDayStart, istDayEnd } from '../../utils/billingUtils';
+import { formatIST, fmtINR, istDayStart, istDayEnd, calcBillTotals, calcLineTotal } from '../../utils/billingUtils';
 import '../../Staff.css';
 
 const DATE_PRESETS = [
@@ -205,6 +205,261 @@ function OrderDetailModal({ orderId, onClose }) {
   );
 }
 
+function EditOrderModal({ orderId, onClose }) {
+  const [order, setOrder] = useState(null);
+  const [editItems, setEditItems] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [customerName, setCustomerName] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
+  const [discType, setDiscType] = useState('flat');
+  const [discVal, setDiscVal] = useState('');
+  const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    const load = async () => {
+      const [oRes, iRes, pRes] = await Promise.all([
+        supabase.from('billing_orders').select('*, staff_users(name)').eq('id', orderId).single(),
+        supabase.from('billing_order_items').select('*').eq('order_id', orderId).order('created_at'),
+        supabase.from('products').select('id,product_code,name,category,price,discount_percentage,barcode,image_url,is_active').eq('is_active', true).order('product_code'),
+      ]);
+      if (oRes.data) {
+        setOrder({ ...oRes.data, staff_name: oRes.data.staff_users?.name });
+        setCustomerName(oRes.data.customer_name || '');
+        setCustomerPhone(oRes.data.customer_phone || '');
+      }
+      setEditItems((iRes.data || []).map((i) => ({
+        _key: i.id,
+        product_id: i.product_id,
+        product_name: i.product_name,
+        product_code: i.product_code,
+        unit_price: Number(i.unit_price),
+        quantity: i.quantity,
+        discount_amount: Number(i.discount_amount || 0),
+        line_total: Number(i.line_total),
+      })));
+      setProducts(pRes.data || []);
+      setLoading(false);
+    };
+    load();
+  }, [orderId]);
+
+  const addProduct = useCallback((p) => {
+    setEditItems((prev) => {
+      const ex = prev.find((i) => i.product_id === p.id);
+      if (ex) {
+        const qty = ex.quantity + 1;
+        return prev.map((i) => i.product_id === p.id
+          ? { ...i, quantity: qty, line_total: calcLineTotal(qty, i.unit_price, i.discount_amount) } : i);
+      }
+      const unit_price = Number(p.price) || 0;
+      const discount_amount = p.discount_percentage > 0
+        ? Math.round(unit_price * p.discount_percentage) / 100 : 0;
+      return [...prev, {
+        _key: crypto.randomUUID(), product_id: p.id,
+        product_name: p.name, product_code: p.product_code,
+        unit_price, quantity: 1, discount_amount,
+        line_total: calcLineTotal(1, unit_price, discount_amount),
+      }];
+    });
+    toast.success(`${p.name} added`, { duration: 1000 });
+  }, []);
+
+  const setItemQty = (key, qty) => {
+    const n = parseInt(qty, 10);
+    if (isNaN(n) || n < 0) return;
+    if (n > 999) toast.error('Maximum quantity is 999', { id: 'qty-max', duration: 2000 });
+    const clamped = Math.min(n, 999);
+    setEditItems((prev) => clamped === 0
+      ? prev.filter((i) => i._key !== key)
+      : prev.map((i) => i._key !== key ? i : { ...i, quantity: clamped, line_total: calcLineTotal(clamped, i.unit_price, i.discount_amount) }));
+  };
+
+  const baseTotals = calcBillTotals(editItems);
+  const extraDiscount = (() => {
+    const v = parseFloat(discVal) || 0;
+    if (discType === 'percent') return Math.min(Math.round(baseTotals.grand_total * v) / 100, baseTotals.grand_total);
+    return Math.min(v, baseTotals.grand_total);
+  })();
+  const totals = {
+    subtotal: baseTotals.subtotal,
+    discount_total: Math.round((baseTotals.discount_total + extraDiscount) * 100) / 100,
+    grand_total: Math.max(0, Math.round((baseTotals.grand_total - extraDiscount) * 100) / 100),
+  };
+
+  const handleSave = async () => {
+    if (editItems.length === 0) { toast.error('Bill must have at least one item'); return; }
+    setSaving(true);
+    try {
+      const { error: oErr } = await supabase.from('billing_orders').update({
+        subtotal: totals.subtotal, discount_total: totals.discount_total, grand_total: totals.grand_total,
+        customer_name: customerName.trim() || null, customer_phone: customerPhone.trim() || null,
+      }).eq('id', orderId);
+      if (oErr) throw new Error(oErr.message);
+      const { error: dErr } = await supabase.from('billing_order_items').delete().eq('order_id', orderId);
+      if (dErr) throw new Error(dErr.message);
+      const { error: iErr } = await supabase.from('billing_order_items').insert(
+        editItems.map((i) => ({
+          order_id: orderId, product_id: i.product_id, product_name: i.product_name,
+          product_code: i.product_code, unit_price: i.unit_price, quantity: i.quantity,
+          discount_amount: i.discount_amount, line_total: i.line_total,
+        }))
+      );
+      if (iErr) throw new Error(iErr.message);
+      toast.success('Bill updated');
+      onClose(true);
+    } catch (err) {
+      toast.error('Save failed: ' + err.message);
+    } finally { setSaving(false); }
+  };
+
+  const filteredProducts = products.filter((p) => {
+    const q = search.toLowerCase();
+    return !q || p.name?.toLowerCase().includes(q) || p.product_code?.toLowerCase().includes(q);
+  });
+
+  return (
+    <div className="sf-overlay" style={{ zIndex: 9999 }}>
+      <div className="sf-modal" style={{ maxWidth: 800, maxHeight: '95vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+        <div className="sf-modal-header">
+          <span className="sf-modal-title">Edit Bill — {order?.bill_number || '…'}</span>
+          <button className="sf-close-btn" onClick={() => onClose(false)}><X /></button>
+        </div>
+
+        {loading ? (
+          <div style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>Loading…</div>
+        ) : (
+          <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+            {/* Customer info */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <div>
+                <label className="sf-form-lbl">Customer Name</label>
+                <input className="sf-input" value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="Customer name" />
+              </div>
+              <div>
+                <label className="sf-form-lbl">Phone</label>
+                <input className="sf-input" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} placeholder="Phone number" inputMode="numeric" />
+              </div>
+            </div>
+
+            {/* Current items */}
+            <div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>Bill Items</div>
+              {editItems.length === 0 ? (
+                <div className="sf-empty" style={{ padding: '16px 0' }}><AlertCircle /><div className="sf-empty-desc">No items — add products below</div></div>
+              ) : (
+                <div className="sf-table-wrap">
+                  <table className="sf-table">
+                    <thead><tr><th>Product</th><th>Code</th><th>Price</th><th>Qty</th><th>Total</th><th></th></tr></thead>
+                    <tbody>
+                      {editItems.map((item) => (
+                        <tr key={item._key}>
+                          <td style={{ fontWeight: 600 }}>{item.product_name}</td>
+                          <td style={{ fontSize: 12, color: '#64748b' }}>{item.product_code}</td>
+                          <td>{fmtINR(item.unit_price)}</td>
+                          <td>
+                            <div className="psc-qty-ctrl" style={{ width: 90 }}>
+                              <button className="psc-qty-btn" onClick={() => setItemQty(item._key, item.quantity - 1)}><Minus style={{ width: 10, height: 10 }} /></button>
+                              <input
+                                className="psc-qty-input" type="text" inputMode="numeric"
+                                value={item.quantity}
+                                onChange={(e) => setItemQty(item._key, e.target.value.replace(/\D/g, '') || '0')}
+                              />
+                              <button className="psc-qty-btn" onClick={() => setItemQty(item._key, item.quantity + 1)}><Plus style={{ width: 10, height: 10 }} /></button>
+                            </div>
+                          </td>
+                          <td style={{ fontWeight: 700 }}>{fmtINR(item.line_total)}</td>
+                          <td>
+                            <button className="sf-btn sf-btn-sm" style={{ color: '#dc2626', background: '#fee2e2', border: '1px solid #fca5a5' }}
+                              onClick={() => setEditItems((prev) => prev.filter((i) => i._key !== item._key))}>
+                              <Trash2 style={{ width: 13, height: 13 }} />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+
+            {/* Extra discount */}
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#64748b', whiteSpace: 'nowrap' }}>Extra Discount:</div>
+              <div style={{ display: 'flex', borderRadius: 6, overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                <button className={`sf-btn sf-btn-sm${discType === 'flat' ? ' sf-btn-primary' : ' sf-btn-secondary'}`} style={{ borderRadius: 0 }} onClick={() => setDiscType('flat')}>₹ Flat</button>
+                <button className={`sf-btn sf-btn-sm${discType === 'percent' ? ' sf-btn-primary' : ' sf-btn-secondary'}`} style={{ borderRadius: 0 }} onClick={() => setDiscType('percent')}>% Percent</button>
+              </div>
+              <input className="sf-input" style={{ width: 100 }} type="text" inputMode="numeric"
+                value={discVal} onChange={(e) => setDiscVal(e.target.value.replace(/[^\d.]/g, ''))}
+                placeholder={discType === 'flat' ? '₹ 0' : '0 %'} />
+            </div>
+
+            {/* Totals */}
+            <div style={{ background: '#f8fafc', borderRadius: 10, padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-end' }}>
+              <div style={{ fontSize: 13, color: '#64748b' }}>Subtotal: {fmtINR(totals.subtotal)}</div>
+              {totals.discount_total > 0 && <div style={{ fontSize: 13, color: '#16a34a' }}>Discount: −{fmtINR(totals.discount_total)}</div>}
+              <div style={{ fontSize: 17, fontWeight: 800, color: '#15803d' }}>Grand Total: {fmtINR(totals.grand_total)}</div>
+            </div>
+
+            {/* Product search */}
+            <div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>Add Products</div>
+              <div className="sf-input-wrap" style={{ marginBottom: 10 }}>
+                <Search className="sf-input-icon" />
+                <input className="sf-input with-icon" placeholder="Search by name or code…" value={search} onChange={(e) => setSearch(e.target.value)} />
+              </div>
+              <div className="product-search-grid">
+                {filteredProducts.slice(0, 30).map((p) => {
+                  const billItem = editItems.find((i) => i.product_id === p.id);
+                  const qty = billItem?.quantity || 0;
+                  return (
+                    <div key={p.id} className={`product-search-card${qty > 0 ? ' in-bill' : ''}`}
+                      onClick={qty === 0 ? () => addProduct(p) : undefined}
+                      style={{ cursor: qty === 0 ? 'pointer' : 'default' }}>
+                      {p.image_url
+                        ? <img src={p.image_url} alt={p.name} className="product-search-img" loading="lazy" />
+                        : <div className="product-search-img-placeholder"><Package style={{ width: 24, height: 24 }} /></div>}
+                      <div className="product-search-body">
+                        <div className="product-search-name">{p.name}</div>
+                        <div className="product-search-code">#{p.product_code}</div>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 4 }}>
+                          <div className="product-search-price">{fmtINR(p.price)}</div>
+                          {qty > 0 ? (
+                            <div className="psc-qty-ctrl" onClick={(e) => e.stopPropagation()}>
+                              <button className="psc-qty-btn" onClick={() => setItemQty(billItem._key, qty - 1)}><Minus style={{ width: 10, height: 10 }} /></button>
+                              <input className="psc-qty-input" type="text" inputMode="numeric" value={qty}
+                                onChange={(e) => { setItemQty(billItem._key, e.target.value.replace(/\D/g, '') || '0'); }}
+                                onClick={(e) => e.stopPropagation()} />
+                              <button className="psc-qty-btn" onClick={() => addProduct(p)}><Plus style={{ width: 10, height: 10 }} /></button>
+                            </div>
+                          ) : (
+                            <button className="psc-add-btn" onClick={(e) => { e.stopPropagation(); addProduct(p); }}><Plus style={{ width: 12, height: 12 }} /></button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="sf-modal-footer">
+          <button className="sf-btn sf-btn-secondary" onClick={() => onClose(false)} disabled={saving}>Cancel</button>
+          <button className="sf-btn sf-btn-primary" onClick={handleSave} disabled={saving || loading}>
+            <Save style={{ width: 14, height: 14 }} />
+            {saving ? 'Saving…' : 'Save Changes'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminBillingOrders() {
   const [orders, setOrders] = useState([]);
   const [staffList, setStaffList] = useState([]);
@@ -214,6 +469,15 @@ export default function AdminBillingOrders() {
   const [statusFilter, setStatusFilter] = useState('');
   const [datePreset, setDatePreset] = useState('today');
   const [detailId, setDetailId] = useState(null);
+  const [editId, setEditId] = useState(null);
+
+  const handleDelete = async (order) => {
+    if (!window.confirm(`Delete bill ${order.bill_number}? This cannot be undone.`)) return;
+    const { error } = await supabase.from('billing_orders').delete().eq('id', order.id);
+    if (error) { toast.error(error.message); return; }
+    toast.success(`Bill ${order.bill_number} deleted`);
+    setOrders((prev) => prev.filter((o) => o.id !== order.id));
+  };
 
   const loadStaff = useCallback(async () => {
     const { data } = await supabase.from('staff_users').select('id, name').eq('role', 'staff').order('name');
@@ -354,13 +618,21 @@ export default function AdminBillingOrders() {
                     <td style={{ fontWeight: 700 }}>{fmtINR(o.grand_total)}</td>
                     <td><span className={`sf-badge ${o.status}`}>{o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span></td>
                     <td>
-                      <button
-                        className="sf-btn sf-btn-secondary sf-btn-sm"
-                        onClick={() => setDetailId(o.id)}
-                        title="View details"
-                      >
-                        <Eye style={{ width: 13, height: 13 }} />
-                      </button>
+                      <div style={{ display: 'flex', gap: 6 }}>
+                        <button className="sf-btn sf-btn-secondary sf-btn-sm" onClick={() => setDetailId(o.id)} title="View details">
+                          <Eye style={{ width: 13, height: 13 }} />
+                        </button>
+                        {o.status !== 'cancelled' && (
+                          <button className="sf-btn sf-btn-sm" onClick={() => setEditId(o.id)} title="Edit bill"
+                            style={{ background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe' }}>
+                            <Edit2 style={{ width: 13, height: 13 }} />
+                          </button>
+                        )}
+                        <button className="sf-btn sf-btn-sm" onClick={() => handleDelete(o)} title="Delete bill"
+                          style={{ background: '#fee2e2', color: '#dc2626', border: '1px solid #fca5a5' }}>
+                          <Trash2 style={{ width: 13, height: 13 }} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -375,6 +647,16 @@ export default function AdminBillingOrders() {
           orderId={detailId}
           onClose={(reload) => {
             setDetailId(null);
+            if (reload) loadOrders();
+          }}
+        />
+      )}
+
+      {editId && (
+        <EditOrderModal
+          orderId={editId}
+          onClose={(reload) => {
+            setEditId(null);
             if (reload) loadOrders();
           }}
         />
