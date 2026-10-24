@@ -691,6 +691,7 @@
 .spinning { animation: admSpin 1s linear infinite; }
 
 @keyframes admFadeIn  { from{opacity:0} to{opacity:1} }
+@keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
 @keyframes admSlideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 @keyframes admSpin    { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
 
@@ -745,7 +746,7 @@
   box-shadow: 0 12px 30px rgba(41,37,36,0.15); overflow: hidden;
   animation: admFadeIn 0.15s ease;
 }
-.adm-custom-select-list { max-height: 220px; overflow-y: auto; padding: 6px; }
+.adm-custom-select-list { max-height: 220px; overflow-y: auto; padding: 6px; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; touch-action: pan-y; }
 .adm-custom-select-list::-webkit-scrollbar { width: 5px; }
 .adm-custom-select-list::-webkit-scrollbar-thumb { background: #D6D3D1; border-radius: 4px; }
 .adm-custom-select-list::-webkit-scrollbar-thumb:hover { background: #7F1D1D; }

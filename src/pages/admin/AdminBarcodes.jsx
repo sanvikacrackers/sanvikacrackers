@@ -195,14 +195,14 @@ export default function AdminBarcodes() {
     <div className="staff-root" style={{ background: 'transparent' }}>
       {/* Screen UI (hidden on print) */}
       <div className="no-print">
-        <div style={{ marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+        <div className="barcode-page-header">
           <div>
             <h1 style={{ fontSize: 20, fontWeight: 800, color: '#1e293b', margin: 0 }}>Barcode Printing</h1>
             <p style={{ color: '#64748b', fontSize: 13, margin: '4px 0 0' }}>
               {products.length} products · {missingCount} missing barcodes
             </p>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div className="barcode-page-actions">
             {missingCount > 0 && (
               <button
                 className="sf-btn sf-btn-secondary"
@@ -214,7 +214,7 @@ export default function AdminBarcodes() {
               </button>
             )}
             <button
-              className="sf-btn sf-btn-primary"
+              className="sf-btn sf-btn-primary barcode-header-print"
               onClick={handlePrint}
               disabled={labels.length === 0}
             >
@@ -224,7 +224,7 @@ export default function AdminBarcodes() {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 20, alignItems: 'start' }}>
+        <div className="barcode-layout">
           {/* Left: Product list */}
           <div>
             <div className="sf-card" style={{ marginBottom: 12 }}>
@@ -246,16 +246,18 @@ export default function AdminBarcodes() {
                     <table className="sf-table">
                       <thead>
                         <tr>
-                          <th>Product</th><th>Code</th><th>Barcode</th><th>Preview</th><th>Actions</th>
+                          <th className="barcode-sn-col" style={{ color: '#94a3b8' }}>#</th><th className="barcode-cb-col"></th><th>Product</th><th className="barcode-col-hide">Code</th><th className="barcode-col-hide">Barcode</th><th className="barcode-col-hide">Preview</th><th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
                         {[1,2,3,4,5,6].map(i => (
                           <tr key={i}>
+                            <td><div className="adm-skeleton" style={{ width: 16, height: 13 }} /></td>
+                            <td><div className="adm-skeleton" style={{ width: 16, height: 16, borderRadius: 3 }} /></td>
                             <td><div className="adm-skeleton" style={{ width: 180, height: 15 }} /></td>
                             <td><div className="adm-skeleton" style={{ width: 80, height: 13 }} /></td>
-                            <td><div className="adm-skeleton" style={{ width: 110, height: 13 }} /></td>
-                            <td><div className="adm-skeleton" style={{ width: 120, height: 32 }} /></td>
+                            <td className="barcode-col-hide"><div className="adm-skeleton" style={{ width: 110, height: 13 }} /></td>
+                            <td className="barcode-col-hide"><div className="adm-skeleton" style={{ width: 120, height: 32 }} /></td>
                             <td>
                               <div style={{ display: 'flex', gap: 6 }}>
                                 <div className="adm-skeleton" style={{ width: 50, height: 28, borderRadius: 6 }} />
@@ -272,53 +274,113 @@ export default function AdminBarcodes() {
                     <table className="sf-table">
                       <thead>
                         <tr>
+                          <th className="barcode-sn-col" style={{ color: '#94a3b8' }}>#</th>
+                          <th className="barcode-cb-col">
+                            <input
+                              type="checkbox"
+                              title="Select all"
+                              checked={filtered.filter((p) => p.barcode).length > 0 && filtered.filter((p) => p.barcode).every((p) => selected.find((s) => s.product.id === p.id))}
+                              onChange={(e) => {
+                                const barcoded = filtered.filter((p) => p.barcode);
+                                if (e.target.checked) {
+                                  barcoded.forEach((p) => {
+                                    if (!selected.find((s) => s.product.id === p.id)) addToSelection(p);
+                                  });
+                                } else {
+                                  barcoded.forEach((p) => removeFromSelection(p.id));
+                                }
+                              }}
+                            />
+                          </th>
                           <th>Product</th>
-                          <th>Code</th>
-                          <th>Barcode</th>
-                          <th>Preview</th>
+                          <th className="barcode-col-hide">Code</th>
+                          <th className="barcode-col-hide">Barcode</th>
+                          <th className="barcode-col-hide">Preview</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {filtered.map((p) => (
-                          <tr key={p.id}>
-                            <td style={{ fontWeight: 600 }}>{p.name}</td>
-                            <td style={{ fontSize: 12, color: '#64748b' }}>{p.product_code}</td>
-                            <td style={{ fontSize: 11, fontFamily: 'monospace', color: '#64748b' }}>
-                              {p.barcode || <span style={{ color: '#f59e0b' }}>Not set</span>}
-                            </td>
-                            <td>
-                              {p.barcode && (
-                                <div style={{ width: 120, overflow: 'hidden' }}>
-                                  <BarcodeImage value={p.barcode} height={32} width={1} fontSize={7} />
-                                </div>
-                              )}
-                            </td>
-                            <td>
-                              <div style={{ display: 'flex', gap: 6 }}>
-                                {!p.barcode && (
-                                  <button
-                                    className="sf-btn sf-btn-secondary sf-btn-sm"
-                                    onClick={() => generateOne(p)}
-                                    title="Generate barcode"
-                                  >
-                                    <Barcode style={{ width: 12, height: 12 }} />
-                                    Gen
-                                  </button>
-                                )}
-                                <button
-                                  className="sf-btn sf-btn-primary sf-btn-sm"
-                                  onClick={() => addToSelection(p)}
+                        {filtered.map((p, idx) => {
+                          const selEntry = selected.find((s) => s.product.id === p.id);
+                          return (
+                            <tr key={p.id} style={selEntry ? { background: '#dcfce7' } : undefined}>
+                              <td className="barcode-sn-col" style={{ color: '#94a3b8', fontSize: 12 }}>{idx + 1}</td>
+                              <td className="barcode-cb-col">
+                                <input
+                                  type="checkbox"
+                                  checked={!!selEntry}
                                   disabled={!p.barcode}
-                                  title={!p.barcode ? 'Generate barcode first' : 'Add to print queue'}
-                                >
-                                  <Plus style={{ width: 12, height: 12 }} />
-                                  Add
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
+                                  onChange={(e) => {
+                                    if (e.target.checked) addToSelection(p);
+                                    else removeFromSelection(p.id);
+                                  }}
+                                />
+                              </td>
+                              <td style={{ fontWeight: 600 }}>{p.name}</td>
+                              <td className="barcode-col-hide" style={{ fontSize: 12, color: '#64748b' }}>{p.product_code}</td>
+                              <td className="barcode-col-hide" style={{ fontSize: 11, fontFamily: 'monospace', color: '#64748b' }}>
+                                {p.barcode || <span style={{ color: '#f59e0b' }}>Not set</span>}
+                              </td>
+                              <td className="barcode-col-hide">
+                                {p.barcode && (
+                                  <div style={{ width: 120, overflow: 'hidden' }}>
+                                    <BarcodeImage value={p.barcode} height={32} width={1} fontSize={7} />
+                                  </div>
+                                )}
+                              </td>
+                              <td style={{ textAlign: 'right' }}>
+                                {selEntry ? (
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: 4, justifyContent: 'flex-end' }}>
+                                    <button className="bill-qty-btn" onClick={() => updateQty(p.id, selEntry.qty - 1)}>
+                                      <Minus style={{ width: 10, height: 10 }} />
+                                    </button>
+                                    <input
+                                      type="text"
+                                      inputMode="numeric"
+                                      pattern="[0-9]*"
+                                      value={selEntry.qty}
+                                      onChange={(e) => { const v = e.target.value.replace(/\D/g, ''); updateQty(p.id, v || '1'); }}
+                                      style={{ width: 36, textAlign: 'center', padding: '3px 4px', border: '1px solid #e2e8f0', borderRadius: 6, fontSize: 13 }}
+                                    />
+                                    <button className="bill-qty-btn" onClick={() => updateQty(p.id, selEntry.qty + 1)}>
+                                      <Plus style={{ width: 10, height: 10 }} />
+                                    </button>
+                                    <button
+                                      className="sf-btn sf-btn-ghost sf-btn-sm barcode-remove-btn"
+                                      style={{ padding: '3px 6px' }}
+                                      onClick={() => removeFromSelection(p.id)}
+                                      title="Remove from queue"
+                                    >
+                                      <X style={{ width: 12, height: 12 }} />
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
+                                    {!p.barcode && (
+                                      <button
+                                        className="sf-btn sf-btn-secondary sf-btn-sm"
+                                        onClick={() => generateOne(p)}
+                                        title="Generate barcode"
+                                      >
+                                        <Barcode style={{ width: 12, height: 12 }} />
+                                        Gen
+                                      </button>
+                                    )}
+                                    <button
+                                      className="sf-btn sf-btn-primary sf-btn-sm"
+                                      onClick={() => addToSelection(p)}
+                                      disabled={!p.barcode}
+                                      title={!p.barcode ? 'Generate barcode first' : 'Add to print queue'}
+                                    >
+                                      <Plus style={{ width: 12, height: 12 }} />
+                                      Add
+                                    </button>
+                                  </div>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
@@ -328,7 +390,7 @@ export default function AdminBarcodes() {
           </div>
 
           {/* Right: Print selection */}
-          <div className="sf-card" style={{ position: 'sticky', top: 80 }}>
+          <div className="sf-card barcode-queue-card">
             <div className="sf-card-header">
               <span className="sf-card-title">Print Queue</span>
               <span style={{ fontSize: 12, color: '#64748b' }}>{totalLabels} labels</span>
@@ -357,6 +419,7 @@ export default function AdminBarcodes() {
                         <input
                           type="text"
                           inputMode="numeric"
+                          pattern="[0-9]*"
                           value={qty}
                           onChange={(e) => { const v = e.target.value.replace(/\D/g,''); updateQty(product.id, v || '1'); }}
                           style={{ width: 44, textAlign: 'center', padding: '3px 4px', border: '1px solid #e2e8f0', borderRadius: 6, fontSize: 13 }}

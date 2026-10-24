@@ -147,6 +147,19 @@ export function CustomSelect({ value, options, onChange, placeholder = 'Select o
   const [dropPos, setDropPos] = useState({ top: 0, left: 0, width: 0, openUp: false });
   const ref = useRef(null);
 
+  const calcPos = () => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const openUp = spaceBelow < 230;
+    setDropPos({
+      left: rect.left,
+      width: Math.max(rect.width, 180),
+      top: openUp ? rect.top - 6 : rect.bottom + 6,
+      openUp,
+    });
+  };
+
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (ref.current && !ref.current.contains(e.target)) setOpen(false);
@@ -155,18 +168,19 @@ export function CustomSelect({ value, options, onChange, placeholder = 'Select o
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+    const onScroll = () => calcPos();
+    window.addEventListener('scroll', onScroll, true);
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll, true);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, [open]);
+
   const handleOpen = () => {
-    if (!open && ref.current) {
-      const rect = ref.current.getBoundingClientRect();
-      const spaceBelow = window.innerHeight - rect.bottom;
-      const openUp = spaceBelow < 230;
-      setDropPos({
-        left: rect.left,
-        width: Math.max(rect.width, 180),
-        top: openUp ? rect.top - 6 : rect.bottom + 6,
-        openUp,
-      });
-    }
+    if (!open) calcPos();
     setOpen(o => !o);
   };
 
@@ -195,7 +209,12 @@ export function CustomSelect({ value, options, onChange, placeholder = 'Select o
       </button>
 
       {open && (
-        <div className="adm-custom-select-dropdown" style={dropStyle}>
+        <div
+          className="adm-custom-select-dropdown"
+          style={dropStyle}
+          onTouchMove={(e) => e.stopPropagation()}
+          onWheel={(e) => e.stopPropagation()}
+        >
           <div className="adm-custom-select-list">
             {options.map((opt, idx) => {
               const val = typeof opt === 'object' ? opt.value : opt;
@@ -2975,14 +2994,15 @@ export function AdminOrders() {
   const [orders, setOrders]           = useState([]);
   const [loading, setLoading]         = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterYear, setFilterYear]   = useState('all');
+  const [filterYear, setFilterYear]   = useState(String(new Date().getFullYear()));
   const [filterMonth, setFilterMonth] = useState('all');
 
   const fetchOrders = useCallback(async () => {
     setLoading(true);
     try {
       const res = await api('/orders?order=created_at.desc');
-      setOrders(res || []);
+      const data = res || [];
+      setOrders(data);
     } catch (e) { console.error(e); }
     finally { setLoading(false); }
   }, []);
@@ -3174,11 +3194,14 @@ export function AdminOrders() {
 export function AdminDashboard() {
   const [orders, setOrders]   = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filterYear, setFilterYear] = useState('all');
+  const [filterYear, setFilterYear] = useState(String(new Date().getFullYear()));
 
   useEffect(() => {
     api('/orders?order=created_at.desc')
-      .then(res => setOrders(res || []))
+      .then(res => {
+        const data = res || [];
+        setOrders(data);
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
@@ -3191,14 +3214,17 @@ export function AdminDashboard() {
   };
 
   const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const years  = [...new Set([new Date().getFullYear(), ...orders.map(o => new Date(o.created_at).getFullYear())])].sort((a,b) => b-a);
+  const DASHBOARD_START_YEAR = 2025;
   const curYear = new Date().getFullYear();
+  const allYearsSet = new Set([...Array.from({ length: curYear - DASHBOARD_START_YEAR + 1 }, (_, i) => DASHBOARD_START_YEAR + i), ...orders.map(o => new Date(o.created_at).getFullYear())]);
+  const years = [...allYearsSet].sort((a, b) => b - a);
 
   const totalRevenue    = orders.reduce((s, o) => s + getOrderTotal(o), 0);
-  const thisYearOrders  = orders.filter(o => new Date(o.created_at).getFullYear() === curYear);
-  const thisYearRevenue = thisYearOrders.reduce((s, o) => s + getOrderTotal(o), 0);
+  const selYearInt      = parseInt(filterYear);
+  const selYearOrders   = orders.filter(o => new Date(o.created_at).getFullYear() === selYearInt);
+  const selYearRevenue  = selYearOrders.reduce((s, o) => s + getOrderTotal(o), 0);
   const thisMonth       = new Date().getMonth();
-  const thisMonthOrders = thisYearOrders.filter(o => new Date(o.created_at).getMonth() === thisMonth);
+  const thisMonthOrders = selYearOrders.filter(o => new Date(o.created_at).getMonth() === thisMonth);
   const thisMonthRevenue= thisMonthOrders.reduce((s, o) => s + getOrderTotal(o), 0);
 
   const yearStats = years.map(yr => {
@@ -3206,7 +3232,7 @@ export function AdminDashboard() {
     return { year: yr, count: yo.length, revenue: yo.reduce((s, o) => s + getOrderTotal(o), 0) };
   });
 
-  const baseForMonth = filterYear === 'all' ? orders : orders.filter(o => new Date(o.created_at).getFullYear() === parseInt(filterYear));
+  const baseForMonth = orders.filter(o => new Date(o.created_at).getFullYear() === parseInt(filterYear));
   const monthStats = MONTHS.map((m, idx) => {
     const mo = baseForMonth.filter(o => new Date(o.created_at).getMonth() === idx);
     return { month: m, idx, count: mo.length, revenue: mo.reduce((s, o) => s + getOrderTotal(o), 0) };
@@ -3217,22 +3243,28 @@ export function AdminDashboard() {
 
   return (
     <div className="adm-page-container">
-      <div className="adm-page-header mb-4">
-        <h1 className="adm-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <TrendingUp color="#7F1D1D" /> Dashboard
-        </h1>
-        <p className="adm-sub">Overview of all order enquiries and revenue.</p>
+      <div className="adm-page-header mb-4" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
+        <div>
+          <h1 className="adm-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <TrendingUp color="#7F1D1D" /> Dashboard
+          </h1>
+          <p className="adm-sub">Overview of all order enquiries and revenue.</p>
+        </div>
+        <CustomSelect
+          value={filterYear}
+          onChange={val => setFilterYear(val)}
+          options={years.map(y => ({ value: String(y), label: String(y) }))}
+          minWidth={100}
+        />
       </div>
 
       {/* ── Top stat cards ──────────────────────────────────────────────────── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', gap: 14, marginBottom: 24 }}>
         {[
-          { label: 'Total Orders',      value: orders.length,                                         icon: <ShoppingCart size={22} color="#7F1D1D"/>, bg: '#FEF2F2', border: '#FECACA', val_color: '#7F1D1D' },
-          { label: 'Total Revenue',     value: `₹${totalRevenue.toLocaleString('en-IN')}`,            icon: <TrendingUp   size={22} color="#065F46"/>, bg: '#D1FAE5', border: '#6EE7B7', val_color: '#065F46' },
-          { label: `${curYear} Orders`, value: thisYearOrders.length,                                 icon: <Star         size={22} color="#6B21A8"/>, bg: '#F3E8FF', border: '#C4B5FD', val_color: '#6B21A8' },
-          { label: `${curYear} Revenue`,value: `₹${thisYearRevenue.toLocaleString('en-IN')}`,         icon: <ArrowUpRight size={22} color="#1D4ED8"/>, bg: '#EFF6FF', border: '#BFDBFE', val_color: '#1D4ED8' },
-          { label: 'This Month Orders', value: thisMonthOrders.length,                                icon: <Clock        size={22} color="#92680A"/>, bg: '#FEF9C3', border: '#FDE68A', val_color: '#92680A' },
-          { label: 'This Month Rev.',   value: `₹${thisMonthRevenue.toLocaleString('en-IN')}`,        icon: <CheckCircle  size={22} color="#0F766E"/>, bg: '#F0FDFA', border: '#99F6E4', val_color: '#0F766E' },
+          { label: `${filterYear} Orders`,   value: selYearOrders.length,                                   icon: <Star         size={22} color="#6B21A8"/>, bg: '#F3E8FF', border: '#C4B5FD', val_color: '#6B21A8' },
+          { label: `${filterYear} Revenue`,  value: `₹${selYearRevenue.toLocaleString('en-IN')}`,           icon: <ArrowUpRight size={22} color="#1D4ED8"/>, bg: '#EFF6FF', border: '#BFDBFE', val_color: '#1D4ED8' },
+          { label: 'This Month Orders',      value: thisMonthOrders.length,                                 icon: <Clock        size={22} color="#92680A"/>, bg: '#FEF9C3', border: '#FDE68A', val_color: '#92680A' },
+          { label: 'This Month Rev.',        value: `₹${thisMonthRevenue.toLocaleString('en-IN')}`,         icon: <CheckCircle  size={22} color="#0F766E"/>, bg: '#F0FDFA', border: '#99F6E4', val_color: '#0F766E' },
         ].map(card => (
           <div key={card.label} style={{ background: card.bg, border: `1.5px solid ${card.border}`, borderRadius: 12, padding: '14px 16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
@@ -3244,41 +3276,19 @@ export function AdminDashboard() {
         ))}
       </div>
 
-      {/* ── Year-wise summary ───────────────────────────────────────────────── */}
-      {yearStats.length > 0 && (
-        <div className="adm-card" style={{ marginBottom: 20, padding: '16px 18px' }}>
-          <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#78716C', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: 14 }}>Year-wise Summary</div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
-            {yearStats.map(y => (
-              <div key={y.year} style={{ background: y.year === curYear ? '#FEF2F2' : '#FAFAF9', border: `1.5px solid ${y.year === curYear ? '#FECACA' : '#E7E5E4'}`, borderRadius: 10, padding: '10px 16px', minWidth: 140 }}>
-                <div style={{ fontWeight: 900, color: '#7F1D1D', fontSize: '1.1rem' }}>{y.year}</div>
-                <div style={{ fontSize: '0.82rem', color: '#78716C', marginTop: 3 }}>{y.count} orders</div>
-                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#292524', marginTop: 2 }}>₹{y.revenue.toLocaleString('en-IN')}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* ── Month-wise bar chart ─────────────────────────────────────────────── */}
-      <div className="adm-card" style={{ padding: '16px 18px' }}>
+      <div className="adm-card" style={{ marginBottom: 20, padding: '16px 18px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
           <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#78716C', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
             Month-wise Summary
           </div>
-          <CustomSelect
-            value={filterYear}
-            onChange={val => setFilterYear(val)}
-            options={[{ value: 'all', label: 'All Years' }, ...years.map(y => ({ value: y, label: String(y) }))]}
-            minWidth={130}
-          />
         </div>
 
         {/* Bar chart */}
         <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 140, overflowX: 'auto', paddingBottom: 4 }}>
           {monthStats.map(m => {
             const pct = maxMonthRev > 0 ? (m.revenue / maxMonthRev) * 100 : 0;
-            const isCurrentMonth = m.idx === thisMonth && (filterYear === 'all' || parseInt(filterYear) === curYear);
+            const isCurrentMonth = m.idx === thisMonth && parseInt(filterYear) === curYear;
             return (
               <div key={m.month} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, flex: '1 0 40px', minWidth: 40 }}>
                 {m.count > 0 && (
@@ -3294,16 +3304,36 @@ export function AdminDashboard() {
         </div>
 
         {/* Month detail cards for months with data */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 16 }}>
-          {monthStats.filter(m => m.count > 0).map(m => (
-            <div key={m.month} style={{ background: '#FAFAF9', border: '1px solid #E7E5E4', borderRadius: 8, padding: '7px 12px', minWidth: 110 }}>
-              <div style={{ fontWeight: 700, color: '#7F1D1D', fontSize: '0.85rem' }}>{m.month}</div>
-              <div style={{ fontSize: '0.75rem', color: '#78716C', marginTop: 2 }}>{m.count} orders</div>
-              <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#292524' }}>₹{m.revenue.toLocaleString('en-IN')}</div>
-            </div>
-          ))}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 8, marginTop: 16 }}>
+          {monthStats.filter(m => m.count > 0).length === 0 ? (
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '20px 0', color: '#78716C', fontSize: '0.85rem' }}>No data for {filterYear}</div>
+          ) : (
+            monthStats.filter(m => m.count > 0).map(m => (
+              <div key={m.month} style={{ background: '#FAFAF9', border: '1px solid #E7E5E4', borderRadius: 8, padding: '7px 12px' }}>
+                <div style={{ fontWeight: 700, color: '#7F1D1D', fontSize: '0.85rem' }}>{m.month}</div>
+                <div style={{ fontSize: '0.75rem', color: '#78716C', marginTop: 2 }}>{m.count} orders</div>
+                <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#292524' }}>₹{m.revenue.toLocaleString('en-IN')}</div>
+              </div>
+            ))
+          )}
         </div>
       </div>
+
+      {/* ── Year-wise summary ───────────────────────────────────────────────── */}
+      {yearStats.filter(y => y.count > 0).length > 0 && (
+        <div className="adm-card" style={{ padding: '16px 18px' }}>
+          <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#78716C', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: 14 }}>Year-wise Summary</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 12 }}>
+            {yearStats.filter(y => y.count > 0).map(y => (
+              <div key={y.year} style={{ background: y.year === curYear ? '#FEF2F2' : '#FAFAF9', border: `1.5px solid ${y.year === curYear ? '#FECACA' : '#E7E5E4'}`, borderRadius: 10, padding: '10px 16px' }}>
+                <div style={{ fontWeight: 900, color: '#7F1D1D', fontSize: '1.1rem' }}>{y.year}</div>
+                <div style={{ fontSize: '0.82rem', color: '#78716C', marginTop: 3 }}>{y.count} orders</div>
+                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#292524', marginTop: 2 }}>₹{y.revenue.toLocaleString('en-IN')}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

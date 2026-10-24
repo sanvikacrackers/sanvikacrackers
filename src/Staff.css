@@ -753,6 +753,34 @@
 
 .sf-camera-video { width: 100%; display: block; }
 
+/* ── Barcode Page Layout ─────────────────────────────── */
+.barcode-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 20px;
+  align-items: start;
+}
+
+.barcode-queue-card {
+  position: sticky;
+  top: 80px;
+}
+
+.barcode-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.barcode-page-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 /* ── Barcode Label Print ─────────────────────────────── */
 .barcode-sheet {
   display: grid;
@@ -869,6 +897,20 @@
   .bill-cart { position: static; max-height: none; }
   .barcode-sheet { grid-template-columns: repeat(2, 1fr); }
   .sf-content { padding: 16px; }
+
+  /* Reports page */
+  .reports-grid { grid-template-columns: 1fr !important; }
+
+  /* Barcode page */
+  .barcode-layout { grid-template-columns: 1fr; }
+  .barcode-queue-card { position: static; order: -1; }
+  .barcode-page-actions { width: 100%; }
+  .barcode-page-actions .sf-btn { flex: 1; justify-content: center; }
+  .barcode-header-print { display: none; }
+  .barcode-col-hide { display: none; }
+  .barcode-sn-col { width: 20px !important; padding-left: 4px !important; padding-right: 2px !important; }
+  .barcode-cb-col { width: 24px !important; padding-left: 2px !important; padding-right: 4px !important; }
+  .barcode-remove-btn { display: none !important; }
 }
 
 /* ── Print Media ─────────────────────────────────────── */

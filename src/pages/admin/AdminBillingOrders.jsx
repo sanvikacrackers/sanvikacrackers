@@ -6,6 +6,25 @@ import { formatIST, fmtINR, istDayStart, istDayEnd, calcBillTotals, calcLineTota
 import { CustomSelect } from '../Admin';
 import '../../Staff.css';
 
+const BILLING_START_YEAR = 2025;
+
+function getYearOptions(maxYear) {
+  const top = Math.max(maxYear, new Date().getFullYear());
+  const opts = [];
+  for (let y = top; y >= BILLING_START_YEAR; y--) {
+    opts.push({ value: String(y), label: String(y) });
+  }
+  return opts;
+}
+
+function istYearRange(year) {
+  const IST = 330 * 60 * 1000;
+  const y = Number(year);
+  const start = new Date(Date.UTC(y, 0, 1, 0, 0, 0, 0) - IST).toISOString();
+  const end   = new Date(Date.UTC(y, 11, 31, 23, 59, 59, 999) - IST).toISOString();
+  return { start, end };
+}
+
 const DATE_PRESETS = [
   { label: 'Today', value: 'today' },
   { label: 'Yesterday', value: 'yesterday' },
@@ -469,6 +488,8 @@ export default function AdminBillingOrders() {
   const [staffFilter, setStaffFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [datePreset, setDatePreset] = useState('today');
+  const [selYear, setSelYear] = useState(String(new Date().getFullYear()));
+  const [maxDataYear, setMaxDataYear] = useState(new Date().getFullYear());
   const [detailId, setDetailId] = useState(null);
   const [editId, setEditId] = useState(null);
 
@@ -481,8 +502,15 @@ export default function AdminBillingOrders() {
   };
 
   const loadStaff = useCallback(async () => {
-    const { data } = await supabase.from('staff_users').select('id, name').eq('role', 'staff').order('name');
-    setStaffList(data || []);
+    const [staffRes, maxYearRes] = await Promise.all([
+      supabase.from('staff_users').select('id, name').eq('role', 'staff').order('name'),
+      supabase.from('billing_orders').select('created_at').order('created_at', { ascending: false }).limit(1),
+    ]);
+    setStaffList(staffRes.data || []);
+    if (maxYearRes.data?.[0]) {
+      const y = new Date(maxYearRes.data[0].created_at).getFullYear();
+      setMaxDataYear(y);
+    }
   }, []);
 
   const loadOrders = useCallback(async () => {
@@ -493,7 +521,13 @@ export default function AdminBillingOrders() {
       .order('created_at', { ascending: false });
 
     const range = getDateRange(datePreset);
-    if (range) q = q.gte('created_at', range.start).lte('created_at', range.end);
+    if (range) {
+      q = q.gte('created_at', range.start).lte('created_at', range.end);
+    } else {
+      // 'all time' — apply year filter
+      const { start, end } = istYearRange(selYear);
+      q = q.gte('created_at', start).lte('created_at', end);
+    }
     if (staffFilter) q = q.eq('staff_id', staffFilter);
     if (statusFilter) q = q.eq('status', statusFilter);
 
@@ -506,7 +540,7 @@ export default function AdminBillingOrders() {
     }
     setOrders(rows);
     setLoading(false);
-  }, [datePreset, staffFilter, statusFilter, search]);
+  }, [datePreset, selYear, staffFilter, statusFilter, search]);
 
   useEffect(() => { loadStaff(); }, [loadStaff]);
   useEffect(() => { loadOrders(); }, [loadOrders]);
@@ -555,6 +589,12 @@ export default function AdminBillingOrders() {
               ]}
               minWidth={150}
             />
+            <CustomSelect
+              value={selYear}
+              onChange={(y) => { setSelYear(y); setDatePreset('all'); }}
+              options={getYearOptions(maxDataYear)}
+              minWidth={90}
+            />
           </div>
 
           <div className="sf-filter-chips" style={{ marginBottom: 0 }}>
@@ -567,88 +607,86 @@ export default function AdminBillingOrders() {
         </div>
       </div>
 
-      <div className="sf-card">
-        {loading ? (
-          <div className="sf-table-wrap">
-            <table className="sf-table">
-              <thead>
-                <tr>
-                  <th>Bill Number</th><th>Staff</th><th>Date &amp; Time</th>
-                  <th>Subtotal</th><th>Discount</th><th>Grand Total</th>
-                  <th>Status</th><th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[1,2,3,4,5].map(i => (
-                  <tr key={i}>
-                    <td><div className="adm-skeleton" style={{ width: 100, height: 15 }} /></td>
-                    <td><div className="adm-skeleton" style={{ width: 80, height: 14 }} /></td>
-                    <td><div className="adm-skeleton" style={{ width: 130, height: 13 }} /></td>
-                    <td><div className="adm-skeleton" style={{ width: 65, height: 14 }} /></td>
-                    <td><div className="adm-skeleton" style={{ width: 28, height: 14 }} /></td>
-                    <td><div className="adm-skeleton" style={{ width: 75, height: 15 }} /></td>
-                    <td><div className="adm-skeleton" style={{ width: 72, height: 22, borderRadius: 20 }} /></td>
-                    <td><div className="adm-skeleton" style={{ width: 32, height: 28, borderRadius: 6 }} /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : orders.length === 0 ? (
+      {loading ? (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
+          {[1,2,3,4,5,6].map(i => (
+            <div key={i} className="sf-card" style={{ padding: '16px 18px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                <div className="adm-skeleton" style={{ width: 110, height: 16 }} />
+                <div className="adm-skeleton" style={{ width: 72, height: 22, borderRadius: 20 }} />
+              </div>
+              <div className="adm-skeleton" style={{ width: 90, height: 12, marginBottom: 8 }} />
+              <div className="adm-skeleton" style={{ width: 130, height: 12, marginBottom: 14 }} />
+              <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
+                <div className="adm-skeleton" style={{ flex: 1, height: 48, borderRadius: 8 }} />
+                <div className="adm-skeleton" style={{ flex: 1, height: 48, borderRadius: 8 }} />
+              </div>
+              <div style={{ display: 'flex', gap: 6, borderTop: '1px solid #f1f5f9', paddingTop: 12 }}>
+                <div className="adm-skeleton" style={{ flex: 1, height: 32, borderRadius: 8 }} />
+                <div className="adm-skeleton" style={{ flex: 1, height: 32, borderRadius: 8 }} />
+                <div className="adm-skeleton" style={{ width: 36, height: 32, borderRadius: 8 }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : orders.length === 0 ? (
+        <div className="sf-card">
           <div className="sf-empty">
             <ClipboardList />
             <div className="sf-empty-title">No orders found</div>
             <div className="sf-empty-desc">Try adjusting your filters</div>
           </div>
-        ) : (
-          <div className="sf-table-wrap">
-            <table className="sf-table">
-              <thead>
-                <tr>
-                  <th>Bill Number</th>
-                  <th>Staff</th>
-                  <th>Date &amp; Time</th>
-                  <th>Subtotal</th>
-                  <th>Discount</th>
-                  <th>Grand Total</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders.map((o) => (
-                  <tr key={o.id}>
-                    <td style={{ fontWeight: 700 }}>{o.bill_number}</td>
-                    <td style={{ fontWeight: 600 }}>{o.staff_name}</td>
-                    <td style={{ fontSize: 12, color: '#64748b' }}>{formatIST(o.created_at)}</td>
-                    <td>{fmtINR(o.subtotal)}</td>
-                    <td style={{ color: '#16a34a' }}>{Number(o.discount_total) > 0 ? `−${fmtINR(o.discount_total)}` : '—'}</td>
-                    <td style={{ fontWeight: 700 }}>{fmtINR(o.grand_total)}</td>
-                    <td><span className={`sf-badge ${o.status}`}>{o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span></td>
-                    <td>
-                      <div style={{ display: 'flex', gap: 6 }}>
-                        <button className="sf-btn sf-btn-secondary sf-btn-sm" onClick={() => setDetailId(o.id)} title="View details">
-                          <Eye style={{ width: 13, height: 13 }} />
-                        </button>
-                        {o.status !== 'cancelled' && (
-                          <button className="sf-btn sf-btn-sm" onClick={() => setEditId(o.id)} title="Edit bill"
-                            style={{ background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe' }}>
-                            <Edit2 style={{ width: 13, height: 13 }} />
-                          </button>
-                        )}
-                        <button className="sf-btn sf-btn-sm" onClick={() => handleDelete(o)} title="Delete bill"
-                          style={{ background: '#fee2e2', color: '#dc2626', border: '1px solid #fca5a5' }}>
-                          <Trash2 style={{ width: 13, height: 13 }} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
+          {orders.map((o) => (
+            <div key={o.id} className="sf-card" style={{ padding: '16px 18px' }}>
+              {/* Top: bill number + status */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                <div style={{ fontWeight: 800, fontSize: 15, color: '#1e293b' }}>{o.bill_number}</div>
+                <span className={`sf-badge ${o.status}`}>{o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span>
+              </div>
+
+              {/* Staff + date */}
+              <div style={{ fontSize: 13, fontWeight: 600, color: '#475569', marginBottom: 4 }}>{o.staff_name}</div>
+              <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 14 }}>{formatIST(o.created_at)}</div>
+
+              {/* Amounts */}
+              <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
+                <div style={{ flex: 1, background: '#f8fafc', borderRadius: 8, padding: '8px 10px', textAlign: 'center' }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#1e293b' }}>{fmtINR(o.subtotal)}</div>
+                  <div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.4px', marginTop: 2 }}>Subtotal</div>
+                </div>
+                {Number(o.discount_total) > 0 && (
+                  <div style={{ flex: 1, background: '#f0fdf4', borderRadius: 8, padding: '8px 10px', textAlign: 'center' }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: '#16a34a' }}>−{fmtINR(o.discount_total)}</div>
+                    <div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.4px', marginTop: 2 }}>Discount</div>
+                  </div>
+                )}
+                <div style={{ flex: 1, background: '#f0fdf4', borderRadius: 8, padding: '8px 10px', textAlign: 'center' }}>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: '#15803d' }}>{fmtINR(o.grand_total)}</div>
+                  <div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.4px', marginTop: 2 }}>Total</div>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div style={{ display: 'flex', gap: 6, borderTop: '1px solid #f1f5f9', paddingTop: 12 }}>
+                <button className="sf-btn sf-btn-secondary sf-btn-sm" style={{ flex: 1, justifyContent: 'center' }} onClick={() => setDetailId(o.id)}>
+                  <Eye style={{ width: 13, height: 13 }} /> View
+                </button>
+                {o.status !== 'cancelled' && (
+                  <button className="sf-btn sf-btn-sm" style={{ flex: 1, justifyContent: 'center', background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe' }} onClick={() => setEditId(o.id)}>
+                    <Edit2 style={{ width: 13, height: 13 }} /> Edit
+                  </button>
+                )}
+                <button className="sf-btn sf-btn-sm" style={{ background: '#fee2e2', color: '#dc2626', border: '1px solid #fca5a5' }} onClick={() => handleDelete(o)}>
+                  <Trash2 style={{ width: 13, height: 13 }} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {detailId && (
         <OrderDetailModal
