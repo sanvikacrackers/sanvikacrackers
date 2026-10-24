@@ -390,6 +390,32 @@
 .sf-badge.active { background: #dcfce7; color: #15803d; }
 .sf-badge.inactive { background: #fee2e2; color: #dc2626; }
 
+/* ── Toggle Switch ─────────────────────────────────── */
+.sf-toggle {
+  position: relative; display: inline-block;
+  width: 44px; height: 24px; flex-shrink: 0;
+}
+.sf-toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+.sf-toggle-track {
+  position: absolute; inset: 0;
+  background: #cbd5e1; border-radius: 24px;
+  cursor: pointer;
+  transition: background 0.25s ease;
+  will-change: background;
+}
+.sf-toggle input:checked + .sf-toggle-track { background: #16a34a; }
+.sf-toggle input:disabled + .sf-toggle-track { opacity: 0.55; cursor: not-allowed; }
+.sf-toggle-track::after {
+  content: '';
+  position: absolute; top: 3px; left: 3px;
+  width: 18px; height: 18px;
+  background: #fff; border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  transition: transform 0.25s ease;
+  will-change: transform;
+}
+.sf-toggle input:checked + .sf-toggle-track::after { transform: translateX(20px); }
+
 /* ── Error / Empty States ──────────────────────────── */
 .sf-err-box {
   background: var(--sf-error-bg);

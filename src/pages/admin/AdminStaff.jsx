@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
-  UserPlus, Search, ToggleLeft, ToggleRight,
-  Lock, X, Eye, EyeOff, Users, Mail, RefreshCw,
+  UserPlus, Search,
+  Lock, X, Eye, EyeOff, Users, Mail,
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { supabase } from '../../lib/supabase';
@@ -320,26 +320,15 @@ export default function AdminStaff() {
                       <td style={{ fontSize: 12, color: '#64748b' }}>{formatIST(member.created_at)}</td>
                       <td>
                         <div style={{ display: 'flex', gap: 6 }}>
-                          <button
-                            className="sf-btn sf-btn-sm"
-                            title={member.is_active ? 'Deactivate' : 'Activate'}
-                            onClick={() => toggleActive(member)}
-                            disabled={togglingId === member.id}
-                            style={{
-                              background: member.is_active ? '#dcfce7' : '#fee2e2',
-                              color: member.is_active ? '#16a34a' : '#dc2626',
-                              border: `1px solid ${member.is_active ? '#86efac' : '#fca5a5'}`,
-                              display: 'flex', alignItems: 'center', gap: 4,
-                              opacity: togglingId === member.id ? 0.6 : 1,
-                            }}
-                          >
-                            {togglingId === member.id
-                              ? <RefreshCw style={{ width: 13, height: 13, animation: 'spin 0.8s linear infinite' }} />
-                              : member.is_active
-                                ? <ToggleRight style={{ width: 14, height: 14 }} />
-                                : <ToggleLeft style={{ width: 14, height: 14 }} />}
-                            {togglingId === member.id ? '' : member.is_active ? 'Active' : 'Inactive'}
-                          </button>
+                          <label className="sf-toggle" title={member.is_active ? 'Deactivate' : 'Activate'}>
+                            <input
+                              type="checkbox"
+                              checked={member.is_active}
+                              disabled={togglingId === member.id}
+                              onChange={() => toggleActive(member)}
+                            />
+                            <span className="sf-toggle-track" />
+                          </label>
                           <button
                             className="sf-btn sf-btn-secondary sf-btn-sm"
                             title="Reset password"
