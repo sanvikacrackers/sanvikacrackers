@@ -3,6 +3,7 @@ import { Search, X, Printer, Eye, ClipboardList, Edit2, Trash2, Plus, Minus, Pac
 import { toast } from 'react-hot-toast';
 import { supabase } from '../../lib/supabase';
 import { formatIST, fmtINR, istDayStart, istDayEnd, calcBillTotals, calcLineTotal } from '../../utils/billingUtils';
+import { CustomSelect } from '../Admin';
 import '../../Staff.css';
 
 const DATE_PRESETS = [
@@ -537,16 +538,23 @@ export default function AdminBillingOrders() {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
-            <select className="sf-input" style={{ width: 'auto' }} value={staffFilter} onChange={(e) => setStaffFilter(e.target.value)}>
-              <option value="">All staff</option>
-              {staffList.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-            </select>
-            <select className="sf-input" style={{ width: 'auto' }} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-              <option value="">All statuses</option>
-              <option value="draft">Draft</option>
-              <option value="finalized">Finalized</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
+            <CustomSelect
+              value={staffFilter}
+              onChange={setStaffFilter}
+              options={[{ value: '', label: 'All Staff' }, ...staffList.map((s) => ({ value: s.id, label: s.name }))]}
+              minWidth={150}
+            />
+            <CustomSelect
+              value={statusFilter}
+              onChange={setStatusFilter}
+              options={[
+                { value: '', label: 'All Statuses' },
+                { value: 'draft', label: 'Draft' },
+                { value: 'finalized', label: 'Finalized' },
+                { value: 'cancelled', label: 'Cancelled' },
+              ]}
+              minWidth={150}
+            />
           </div>
 
           <div className="sf-filter-chips" style={{ marginBottom: 0 }}>
