@@ -275,6 +275,7 @@ export default function AdminStaff() {
             <table className="sf-table">
               <thead>
                 <tr>
+                  <th>#</th>
                   <th>Name</th>
                   <th>Email</th>
                   <th>Role</th>
@@ -286,10 +287,11 @@ export default function AdminStaff() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((member) => {
+                {filtered.map((member, idx) => {
                   const st = staffStats[member.id] || {};
                   return (
                     <tr key={member.id}>
+                      <td style={{ color: '#94a3b8', fontSize: 12, fontWeight: 600 }}>{idx + 1}</td>
                       <td style={{ fontWeight: 600 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                           <div style={{
