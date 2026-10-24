@@ -854,3 +854,43 @@
   .adm-modal-hdr { border-radius: 0; }
 }
 @keyframes admSlideInRight { from{transform:translateX(100%)} to{transform:translateX(0)} }
+
+/* ── Additional Mobile Fixes ─────────────────────── */
+@media (max-width: 768px) {
+  .adm-header { padding: 0 16px; }
+  .adm-content { padding: 12px 14px 80px; }
+  .adm-page-header { margin-bottom: 16px !important; }
+  .adm-title { font-size: 1.2rem !important; }
+
+  /* Stats grid 2 cols on tablet */
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+
+  /* Orders / cards full width */
+  .adm-card { border-radius: 10px; }
+
+  /* Filters wrap on mobile */
+  .adm-filters-row { flex-direction: column; }
+  .adm-search-wrap { max-width: 100% !important; width: 100% !important; }
+
+  /* Table horizontal scroll */
+  .sf-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* Hide less important table columns on mobile */
+  .adm-tbl-hide-mobile { display: none !important; }
+
+  /* Sidebar overlay */
+  .adm-sidebar-overlay {
+    display: none;
+    position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+    z-index: 39;
+  }
+  .adm-sidebar-overlay.active { display: block; }
+}
+
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .adm-header { padding: 0 12px; }
+  .adm-content { padding: 10px 10px 80px; }
+  .adm-btn { font-size: 12px; padding: 6px 10px; }
+  .hdr-right { gap: 8px; }
+}

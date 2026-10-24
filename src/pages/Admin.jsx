@@ -367,6 +367,85 @@ export function ProductsSkeleton() {
 }
 
 
+export function DashboardSkeleton() {
+  return (
+    <div className="adm-page-container">
+      <div style={{ marginBottom: 24 }}>
+        <div className="adm-skeleton" style={{ width: 160, height: 26, marginBottom: 8 }} />
+        <div className="adm-skeleton" style={{ width: 280, height: 14 }} />
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', gap: 14, marginBottom: 24 }}>
+        {[1,2,3,4,5,6].map(i => (
+          <div key={i} style={{ background: '#FAFAF9', border: '1.5px solid #E7E5E4', borderRadius: 12, padding: '14px 16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+              <div className="adm-skeleton" style={{ width: 22, height: 22, borderRadius: 6 }} />
+              <div className="adm-skeleton" style={{ width: 90, height: 12 }} />
+            </div>
+            <div className="adm-skeleton" style={{ width: 70, height: 22 }} />
+          </div>
+        ))}
+      </div>
+      <div className="adm-card" style={{ padding: '16px 18px', marginBottom: 20 }}>
+        <div className="adm-skeleton" style={{ width: 140, height: 14, marginBottom: 16 }} />
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          {[1,2,3].map(i => (
+            <div key={i} style={{ background: '#FAFAF9', border: '1.5px solid #E7E5E4', borderRadius: 10, padding: '10px 16px', minWidth: 140 }}>
+              <div className="adm-skeleton" style={{ width: 50, height: 20, marginBottom: 6 }} />
+              <div className="adm-skeleton" style={{ width: 70, height: 12, marginBottom: 4 }} />
+              <div className="adm-skeleton" style={{ width: 90, height: 16 }} />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="adm-card" style={{ padding: '16px 18px' }}>
+        <div className="adm-skeleton" style={{ width: 160, height: 14, marginBottom: 16 }} />
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 140 }}>
+          {[1,2,3,4,5,6,7,8,9,10,11,12].map(i => (
+            <div key={i} style={{ flex: '1 0 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+              <div className="adm-skeleton" style={{ width: '100%', height: `${20 + Math.random() * 80}%`, borderRadius: '4px 4px 0 0' }} />
+              <div className="adm-skeleton" style={{ width: 24, height: 10 }} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function OrdersSkeleton() {
+  return (
+    <div className="adm-page-container">
+      <div style={{ marginBottom: 20 }}>
+        <div className="adm-skeleton" style={{ width: 180, height: 26, marginBottom: 8 }} />
+        <div className="adm-skeleton" style={{ width: 320, height: 14 }} />
+      </div>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
+        <div className="adm-skeleton" style={{ width: 240, height: 40, borderRadius: 8 }} />
+        <div className="adm-skeleton" style={{ width: 130, height: 40, borderRadius: 8 }} />
+        <div className="adm-skeleton" style={{ width: 130, height: 40, borderRadius: 8 }} />
+      </div>
+      <div className="adm-card" style={{ padding: 12 }}>
+        {[1,2,3,4,5].map(i => (
+          <div key={i} style={{ padding: '14px 12px', borderBottom: '1px solid #F5F5F4', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div className="adm-skeleton" style={{ width: 140, height: 16 }} />
+              <div className="adm-skeleton" style={{ width: 90, height: 24, borderRadius: 20 }} />
+            </div>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <div className="adm-skeleton" style={{ width: 100, height: 12 }} />
+              <div className="adm-skeleton" style={{ width: 80, height: 12 }} />
+            </div>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <div className="adm-skeleton" style={{ width: 60, height: 12 }} />
+              <div className="adm-skeleton" style={{ width: 120, height: 12 }} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ══════════════════════════════════════════════════
    LOGIN PAGE  →  /admin/login
 ══════════════════════════════════════════════════ */
@@ -2968,10 +3047,7 @@ export function AdminOrders() {
       <div className="adm-card adm-scroll-card">
         <div className="adm-scroll-list" style={{ padding: '12px' }}>
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '40px 0', color: '#64748b' }}>
-              <RefreshCw size={24} className="spinning" style={{ display: 'block', margin: '0 auto 8px' }} />
-              Loading enquiries...
-            </div>
+            <OrdersSkeleton />
           ) : filteredOrders.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '40px 0', color: '#64748b' }}>
               {searchQuery || filterYear !== 'all' || filterMonth !== 'all' ? 'No matching enquiries found.' : 'No order enquiries found.'}
@@ -3115,11 +3191,7 @@ export function AdminDashboard() {
   });
   const maxMonthRev = Math.max(...monthStats.map(m => m.revenue), 1);
 
-  if (loading) return (
-    <div className="adm-page-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 300 }}>
-      <RefreshCw size={28} className="spinning" color="#7F1D1D" />
-    </div>
-  );
+  if (loading) return <DashboardSkeleton />;
 
   return (
     <div className="adm-page-container">

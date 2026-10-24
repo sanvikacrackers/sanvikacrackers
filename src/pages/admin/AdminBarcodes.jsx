@@ -242,7 +242,16 @@ export default function AdminBarcodes() {
                 </div>
 
                 {loading ? (
-                  <div style={{ padding: 20, textAlign: 'center', color: '#64748b' }}>Loading…</div>
+                  <div style={{ padding: '12px 0' }}>
+                    {[1,2,3,4,5,6].map(i => (
+                      <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '1px solid #F5F5F4' }}>
+                        <div className="adm-skeleton" style={{ width: 140, height: 14 }} />
+                        <div className="adm-skeleton" style={{ width: 80, height: 14 }} />
+                        <div className="adm-skeleton" style={{ width: 120, height: 40 }} />
+                        <div className="adm-skeleton" style={{ width: 60, height: 28, borderRadius: 6 }} />
+                      </div>
+                    ))}
+                  </div>
                 ) : (
                   <div className="sf-table-wrap">
                     <table className="sf-table">

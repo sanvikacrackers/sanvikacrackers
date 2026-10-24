@@ -297,7 +297,21 @@ export default function AdminBillingOrders() {
 
       <div className="sf-card">
         {loading ? (
-          <div style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>Loading…</div>
+          <div style={{ padding: '12px 0' }}>
+            {[1,2,3,4,5].map(i => (
+              <div key={i} style={{ padding: '14px 12px', borderBottom: '1px solid #F5F5F4' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+                  <div className="adm-skeleton" style={{ width: 120, height: 15 }} />
+                  <div className="adm-skeleton" style={{ width: 80, height: 15 }} />
+                </div>
+                <div style={{ display: 'flex', gap: 12 }}>
+                  <div className="adm-skeleton" style={{ width: 100, height: 12 }} />
+                  <div className="adm-skeleton" style={{ width: 80, height: 12 }} />
+                  <div className="adm-skeleton" style={{ width: 70, height: 12 }} />
+                </div>
+              </div>
+            ))}
+          </div>
         ) : orders.length === 0 ? (
           <div className="sf-empty">
             <ClipboardList />

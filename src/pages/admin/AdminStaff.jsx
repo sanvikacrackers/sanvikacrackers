@@ -240,7 +240,19 @@ export default function AdminStaff() {
 
       <div className="sf-card">
         {loading ? (
-          <div style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>Loading…</div>
+          <div style={{ padding: '12px 0' }}>
+            {[1,2,3,4].map(i => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 0', borderBottom: '1px solid #F5F5F4' }}>
+                <div className="adm-skeleton" style={{ width: 36, height: 36, borderRadius: '50%' }} />
+                <div style={{ flex: 1 }}>
+                  <div className="adm-skeleton" style={{ width: 140, height: 15, marginBottom: 6 }} />
+                  <div className="adm-skeleton" style={{ width: 180, height: 12 }} />
+                </div>
+                <div className="adm-skeleton" style={{ width: 70, height: 24, borderRadius: 20 }} />
+                <div className="adm-skeleton" style={{ width: 60, height: 28, borderRadius: 6 }} />
+              </div>
+            ))}
+          </div>
         ) : filtered.length === 0 ? (
           <div className="sf-empty">
             <Users />
