@@ -108,8 +108,8 @@ function ProductCard({ product }) {
 // ─── Home Page ────────────────────────────────────────────────────────────────
 export default function Home() {
   useSEO({
-    title: 'Sri Veera Fireworks | Buy Crackers Online – Sivakasi',
-    description: 'Buy premium quality fireworks and crackers online from Sri Veera Fireworks, Sivakasi. Huge collection of sparklers, rockets, bombs, fancy items. Best prices, safe delivery across Tamil Nadu and all India.',
+    title: 'Sanvika Crackers | Buy Crackers Online – Sivakasi',
+    description: 'Buy premium quality fireworks and crackers online from Sanvika Crackers, Sivakasi. Huge collection of sparklers, rockets, bombs, fancy items. Best prices, safe delivery across Tamil Nadu and all India.',
     url: '/',
   })
 
@@ -236,7 +236,7 @@ export default function Home() {
         >
           <div className="max-w-[1400px] mx-auto px-4">
             <div className="text-center mb-8">
-              <p className="subtitle-two">Sri Veera Fireworks</p>
+              <p className="subtitle-two">Sanvika Crackers</p>
               <h2 className="text-3xl font-extrabold text-gray-900">{cat}</h2>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 items-stretch">

@@ -428,7 +428,7 @@ function FilterSidebar({ categories, selectedCats, onToggleCat, search, onSearch
 // ─── Products Page ─────────────────────────────────────────────────────────────
 export default function Products() {
   useSEO({
-    title: 'Fireworks & Crackers Shop – Sri Veera Fireworks | Sivakasi',
+    title: 'Fireworks & Crackers Shop – Sanvika Crackers | Sivakasi',
     description: 'Browse our wide range of fireworks – sparklers, sky shots, rockets, ground chakkar, fancy items and more. Order online with competitive Sivakasi factory prices.',
     url: '/products',
   })

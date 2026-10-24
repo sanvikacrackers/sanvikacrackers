@@ -138,9 +138,9 @@ export default function ProductDetail() {
   const product = products.find(p => String(p.id) === String(id))
 
   useSEO({
-    title: product ? `${product.name} – Sri Veera Fireworks` : 'Product – Sri Veera Fireworks',
+    title: product ? `${product.name} – Sanvika Crackers` : 'Product – Sanvika Crackers',
     description: product
-      ? `Buy ${product.name} from Sri Veera Fireworks, Sivakasi. ${product.description || 'Premium quality fireworks at best prices.'}`
+      ? `Buy ${product.name} from Sanvika Crackers, Sivakasi. ${product.description || 'Premium quality fireworks at best prices.'}`
       : 'Premium fireworks at best prices.',
     url: product ? `/products/${product.id}` : '/products',
   })

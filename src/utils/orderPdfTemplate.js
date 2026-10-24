@@ -86,7 +86,7 @@ function buildPageContent({ name, phone, state, address, pageItems, startIdx,
 
   return `
   <div class="page">
-    <div class="hdr"><img src="${HDR_IMG}" alt="Sri Veera Fireworks"/></div>
+    <div class="hdr"><img src="${HDR_IMG}" alt="Sanvika Crackers"/></div>
     <div class="cust">
       <div class="cust-top">
         <div class="cust-left">
@@ -124,7 +124,7 @@ function buildPageContent({ name, phone, state, address, pageItems, startIdx,
     ${bottomSection}
     <div class="footer">
       <span>Thank you for business with us!</span>
-      <span>www.sriveerafireworks.com</span>
+      <span>www.sanvikacrackers.com</span>
     </div>
   </div>`;
 }

@@ -12,8 +12,8 @@ import '../App.css'
 
 export default function About() {
   useSEO({
-    title: 'About Us – Sri Veera Fireworks | Sivakasi Crackers Manufacturer',
-    description: 'Learn about Sri Veera Fireworks, a trusted crackers brand from Sivakasi, Tamil Nadu. Quality fireworks, 100% legal & licensed, safe packaging and delivery.',
+    title: 'About Us – Sanvika Crackers | Sivakasi Crackers Manufacturer',
+    description: 'Learn about Sanvika Crackers, a trusted crackers brand from Sivakasi, Tamil Nadu. Quality fireworks, 100% legal & licensed, safe packaging and delivery.',
     url: '/about',
   })
 
@@ -31,7 +31,7 @@ export default function About() {
       <div style={{ width: '100%', lineHeight: 0 }}>
         <img
           src={aboutImg}
-          alt="About Sri Veera Fireworks"
+          alt="About Sanvika Crackers"
           style={{ width: '100%', display: 'block' }}
         />
       </div>
@@ -44,7 +44,7 @@ export default function About() {
               <p className="subtitle-two">Our Story</p>
               <h2 className="text-3xl font-extrabold text-gray-900 mb-5">Fireworks Direct From Factory</h2>
               <p className="text-gray-600 mb-4 leading-relaxed">
-                Sri Veera Fireworks is a trusted factory outlet based in Sivakasi, Tamil Nadu — the fireworks capital of India.
+                Sanvika Crackers is a trusted factory outlet based in Sivakasi, Tamil Nadu — the fireworks capital of India.
                 We manufacture and sell premium quality fireworks directly to customers at factory prices, cutting out middlemen so you always get the best value.
               </p>
               <p className="text-gray-600 mb-4 leading-relaxed">
@@ -83,7 +83,7 @@ export default function About() {
         <div className="max-w-[1100px] mx-auto px-4">
           <div className="text-center mb-10">
             <p className="subtitle-two">Why Choose Us</p>
-            <h2 className="text-3xl font-extrabold text-gray-900">The Sri Veera Difference</h2>
+            <h2 className="text-3xl font-extrabold text-gray-900">The Sanvika Difference</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
@@ -91,7 +91,7 @@ export default function About() {
               { title: 'Genuine & Safe Products', desc: 'All our fireworks are licensed, tested, and comply with government safety standards. 100% genuine products guaranteed.' },
               { title: 'Wide Range',              desc: '127+ products across 21 categories — crackers, sparklers, fountains, sky shots, gift boxes and more.' },
               { title: 'Fast Delivery',           desc: 'We ship within 24 hours during the festive season. Pan-India delivery with careful packaging.' },
-              { title: 'Trusted Since Years',     desc: 'Sri Veera Fireworks has been serving customers across Tamil Nadu and all over India with trust and quality.' },
+              { title: 'Trusted Since Years',     desc: 'Sanvika Crackers has been serving customers across Tamil Nadu and all over India with trust and quality.' },
               { title: 'Easy Online Ordering',    desc: 'Browse, add to cart, and send your enquiry via WhatsApp in minutes. Simple, fast, and hassle-free.' },
             ].map(({ title, desc }) => (
               <div key={title} className="bg-gray-50 rounded-2xl p-6">
@@ -128,7 +128,7 @@ export default function About() {
               <Mail size={22} color="#e87316" className="flex-shrink-0" />
               <div className="text-left">
                 <div className="font-bold text-gray-800 text-sm">Email</div>
-                <div className="text-gray-500 text-sm">veerafireworks2020@gmail.com</div>
+                <div className="text-gray-500 text-sm">sanvikacrackers2020@gmail.com</div>
               </div>
             </div>
           </div>

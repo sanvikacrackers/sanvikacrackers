@@ -30,8 +30,8 @@ const DONTS = [
 
 export default function Safety() {
   useSEO({
-    title: 'Firecracker Safety Tips – Sri Veera Fireworks',
-    description: 'Important safety tips for using fireworks and crackers. Follow these guidelines to enjoy a safe and happy Diwali with Sri Veera Fireworks.',
+    title: 'Firecracker Safety Tips – Sanvika Crackers',
+    description: 'Important safety tips for using fireworks and crackers. Follow these guidelines to enjoy a safe and happy Diwali with Sanvika Crackers.',
     url: '/safety',
   })
 
@@ -59,7 +59,7 @@ export default function Safety() {
 
         {/* Intro */}
         <div className="mb-10">
-          <h1 className="text-3xl font-extrabold text-gray-900 mb-3">SRI VEERA FIREWORKS</h1>
+          <h1 className="text-3xl font-extrabold text-gray-900 mb-3">SANVIKA CRACKERS</h1>
           <p className="text-gray-500 leading-relaxed max-w-3xl">
             There are certain Do's &amp; Don'ts to follow while purchasing, bursting and storing crackers.
             It is very important to follow the precautions while bursting crackers. A little negligence,

@@ -1,5 +1,5 @@
 {
-  "name": "sri-veera-fireworks",
+  "name": "sanvika-crackers",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,7 +12,10 @@
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
+    "@supabase/supabase-js": "^2.118.0",
+    "@zxing/browser": "^0.2.1",
     "html2canvas": "^1.4.1",
+    "jsbarcode": "^3.12.3",
     "jspdf": "^4.2.1",
     "lucide-react": "^1.53.0",
     "react": "^19.2.8",

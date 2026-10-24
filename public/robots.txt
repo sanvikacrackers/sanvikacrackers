@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /admin/
 
-Sitemap: https://sriveerafireworks.com/sitemap.xml
+Sitemap: https://sanvikacrackers.com/sitemap.xml

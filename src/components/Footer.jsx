@@ -19,7 +19,7 @@ export default function Footer() {
 
             {/* Brand */}
             <div>
-              <img src={LOGO} alt="Sri Veera Fireworks" className="h-10 w-auto object-contain mb-4" />
+              <img src={LOGO} alt="Sanvika Crackers" className="h-10 w-auto object-contain mb-4" />
               <ul className="space-y-2 text-[13px] list-none p-0">
                 <li className="flex gap-2">
                   <Phone size={14} className="mt-0.5 flex-shrink-0 text-[#e87316]" />
@@ -31,7 +31,7 @@ export default function Footer() {
                 </li>
                 <li className="flex gap-2">
                   <Mail size={14} className="mt-0.5 flex-shrink-0 text-[#e87316]" />
-                  <span>veerafireworks2020@gmail.com</span>
+                  <span>sanvikacrackers2020@gmail.com</span>
                 </li>
               </ul>
             </div>
@@ -54,7 +54,7 @@ export default function Footer() {
             <div style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 10, padding: '14px 20px' }}>
               <p className="text-[12px] leading-relaxed text-center" style={{ color: '#e2e8f0', margin: 0 }}>
 
-                As per 2018 Supreme Court order, online sale of firecrackers are not permitted! We value our customers and at the same time, respect jurisdiction. We request you to add your products to the cart and submit the required crackers through the enquiry button. We will contact you within 24 hrs and confirm the order through WhatsApp or phone call. Please add and submit your enquiries and enjoy your Diwali with Sri Veera Fireworks. Our License No. ——. Sri Veera Fireworks as a company following 100% legal &amp; statutory compliances and all our shops, go-downs are maintained as per the explosive acts. We send the parcels through registered and legal transport service providers as like every other major companies in Sivakasi is doing so.
+                As per 2018 Supreme Court order, online sale of firecrackers are not permitted! We value our customers and at the same time, respect jurisdiction. We request you to add your products to the cart and submit the required crackers through the enquiry button. We will contact you within 24 hrs and confirm the order through WhatsApp or phone call. Please add and submit your enquiries and enjoy your Diwali with Sanvika Crackers. Our License No. ——. Sanvika Crackers as a company following 100% legal &amp; statutory compliances and all our shops, go-downs are maintained as per the explosive acts. We send the parcels through registered and legal transport service providers as like every other major companies in Sivakasi is doing so.
               </p>
             </div>
           </div>
@@ -63,7 +63,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-gray-800 mt-5 pt-5">
           <div className="max-w-[1400px] mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-[12px] text-gray-500">© 2026, Sri Veera Fireworks. All Rights Reserved.</p>
+            <p className="text-[12px] text-gray-500">© 2026, Sanvika Crackers. All Rights Reserved.</p>
           </div>
         </div>
       </footer>
@@ -89,7 +89,7 @@ export default function Footer() {
 
       {/* WhatsApp Float */}
       <a
-        href={`https://api.whatsapp.com/send?phone=${siteSettings?.whatsapp || '918300057711'}&text=Hello,%20Sri%20Veera%20Fireworks`}
+        href={`https://api.whatsapp.com/send?phone=${siteSettings?.whatsapp || '918300057711'}&text=Hello,%20Sanvika%20Crackers`}
         target="_blank" rel="noreferrer" title="Chat on WhatsApp"
         style={{ position: 'fixed', bottom: 96, right: 16, textDecoration: 'none', zIndex: 999, display: 'flex', alignItems: 'center', gap: 8 }}
       >

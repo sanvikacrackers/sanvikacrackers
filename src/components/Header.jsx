@@ -51,7 +51,7 @@ export default function Header() {
 
             {/* Logo */}
             <Link to="/" className="flex-shrink-0 no-underline">
-              <img src={LOGO} alt="Sri Veera Fireworks" style={{ height: 90, width: 90, borderRadius: '50%', objectFit: 'contain', background: '#fff' }} />
+              <img src={LOGO} alt="Sanvika Crackers" style={{ height: 90, width: 90, borderRadius: '50%', objectFit: 'contain', background: '#fff' }} />
             </Link>
 
             {/* Desktop Nav */}
@@ -90,7 +90,7 @@ export default function Header() {
               {pricelistUrl && (
                 <a
                   href={pricelistUrl}
-                  download="Sri-Veera-Fireworks-Pricelist.pdf"
+                  download="Sanvika-Crackers-Pricelist.pdf"
                   className="flex pricelist-btn"
                   title="Download Price List"
                 >
@@ -176,7 +176,7 @@ export default function Header() {
       }}>
         {/* Sidebar Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', borderBottom: '1px solid #f1f5f9' }}>
-          <img src={LOGO} alt="Sri Veera Fireworks" style={{ height: 36, objectFit: 'contain' }} />
+          <img src={LOGO} alt="Sanvika Crackers" style={{ height: 36, objectFit: 'contain' }} />
           <button
             onClick={() => setOpen(false)}
             style={{ background: '#f1f5f9', border: 'none', borderRadius: '50%', width: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
@@ -230,7 +230,7 @@ export default function Header() {
             <div style={{ padding: '10px 16px 4px' }}>
               <a
                 href={pricelistUrl}
-                download="Sri-Veera-Fireworks-Pricelist.pdf"
+                download="Sanvika-Crackers-Pricelist.pdf"
                 onClick={() => setOpen(false)}
                 className="pricelist-btn"
                 style={{

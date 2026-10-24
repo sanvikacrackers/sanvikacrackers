@@ -8,10 +8,12 @@ import {
   Search, Plus, Edit2, Trash2, ToggleLeft, ToggleRight,
   Eye, EyeOff, Zap, Sun, Star, Flame,
   Sparkles, Box, Gift, Layers, Shield, TrendingUp, Users,
-  CheckCircle, Clock, XCircle, ArrowUpRight, RefreshCw, Save, Lock, Mail, ChevronDown, Check, Megaphone, Bell, Image, Upload, Settings, ShoppingCart, Download, GripVertical
+  CheckCircle, Clock, XCircle, ArrowUpRight, RefreshCw, Save, Lock, Mail, ChevronDown, Check, Megaphone, Bell, Image, Upload, Settings, ShoppingCart, Download, GripVertical,
+  Barcode, ClipboardList, BarChart2,
 } from 'lucide-react';
 import '../Admin.css';
 import LOGO from '../assets/websitelogo.jpeg';
+import { supabase } from '../lib/supabase';
 
 /* ── Supabase ─────────────────────────────────────── */
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://zjjlqewqzhnyfhjqsbwu.supabase.co';
@@ -82,9 +84,9 @@ export async function deleteFromCloudinary(url) {
   const publicId = extractCloudinaryPublicId(url);
   if (!publicId) return false;
 
-  const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'rnfcnawt';
-  const apiKey    = import.meta.env.VITE_CLOUDINARY_API_KEY    || '974363973262235';
-  const apiSecret = import.meta.env.VITE_CLOUDINARY_API_SECRET || '_1xEeHWrEPFQeGcuzTKJUAMnozY';
+  const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'lqcqo41j';
+  const apiKey    = import.meta.env.VITE_CLOUDINARY_API_KEY    || '496563915519741';
+  const apiSecret = import.meta.env.VITE_CLOUDINARY_API_SECRET || 'dO7qvEG3EEDLIghEWRXqHoQhHX8';
 
   if (!cloudName || !apiKey || !apiSecret) return false;
 
@@ -113,7 +115,7 @@ export async function deleteFromCloudinary(url) {
 }
 
 export async function uploadToCloudinarySigned(file) {
-  const cloudName    = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME  || 'rnfcnawt';
+  const cloudName    = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME  || 'lqcqo41j';
   const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'ml_default';
 
   const formData = new FormData();
@@ -206,7 +208,7 @@ export function CustomSelect({ value, options, onChange, placeholder = 'Select o
                   onClick={() => { onChange(val); setOpen(false); }}
                 >
                   <span>{lbl}</span>
-                  {isSelected && <Check style={{ width: 14, height: 14, color: '#ff6b35' }} />}
+                  {isSelected && <Check style={{ width: 14, height: 14, color: '#7F1D1D' }} />}
                 </div>
               );
             })}
@@ -377,17 +379,20 @@ export function AdminLogin() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (localStorage.getItem('sriveerafireworks_admin_logged_in') === 'true') navigate('/admin/dashboard', { replace: true });
+    if (localStorage.getItem('sanvikacrackers_admin_logged_in') === 'true') navigate('/admin/dashboard', { replace: true });
   }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault(); setError(''); setLoading(true);
-    await new Promise(r => setTimeout(r, 500));
-    if (email.trim() === 'veerafireworks2020@gmail.com' && password.trim() === 'Sriveera$77') {
-      localStorage.setItem('sriveerafireworks_admin_logged_in', 'true');
-      navigate('/admin/dashboard', { replace: true });
-    } else {
+    try {
+      if (email.trim() === 'sanvikacrackers@gmail.com' && password.trim() === 'Sanvika@2026') {
+        localStorage.setItem('sanvikacrackers_admin_logged_in', 'true');
+        navigate('/admin/dashboard', { replace: true });
+        return;
+      }
       setError('Invalid email or password. Please try again.');
+    } catch (err) {
+      setError('Login failed. Please try again.');
     }
     setLoading(false);
   };
@@ -398,7 +403,7 @@ export function AdminLogin() {
         <div className="login-glow" />
         <div className="login-card">
           <div className="login-logo">
-            <img src={LOGO} alt="Sri Veera Fireworks" style={{height:72,width:'auto',objectFit:'contain',borderRadius:10,marginBottom:6}} />
+            <img src={LOGO} alt="Sanvika Crackers" style={{height:72,width:'auto',objectFit:'contain',borderRadius:10,marginBottom:6}} />
           </div>
           <div className="login-title">Admin Sign In</div>
           <div className="login-desc">Enter your credentials to access the dashboard</div>
@@ -450,11 +455,11 @@ export function AdminLayout() {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [products, setProducts] = useState([]);
-  const isLoggedIn = localStorage.getItem('sriveerafireworks_admin_logged_in') === 'true';
+  const isLoggedIn = localStorage.getItem('sanvikacrackers_admin_logged_in') === 'true';
 
   const [categoryData, setCategoryData] = useState(() => {
     try {
-      const saved = localStorage.getItem('sriveerafireworks_admin_categories_v3');
+      const saved = localStorage.getItem('sanvikacrackers_admin_categories_v3');
       if (saved) {
         const parsed = JSON.parse(saved);
         return parsed.filter(c => {
@@ -497,7 +502,7 @@ export function AdminLayout() {
         }));
         if (missing.length > 0) {
           const updated = [...prev, ...missing];
-          try { localStorage.setItem('sriveerafireworks_admin_categories_v3', JSON.stringify(updated)); } catch (e) {}
+          try { localStorage.setItem('sanvikacrackers_admin_categories_v3', JSON.stringify(updated)); } catch (e) {}
           return updated;
         }
         return prev;
@@ -537,7 +542,7 @@ export function AdminLayout() {
 
     setCategoryData(nextList);
     try {
-      localStorage.setItem('sriveerafireworks_admin_categories_v3', JSON.stringify(nextList));
+      localStorage.setItem('sanvikacrackers_admin_categories_v3', JSON.stringify(nextList));
     } catch (e) {}
   };
 
@@ -548,7 +553,7 @@ export function AdminLayout() {
     const nextList = categoryData.filter(c => c.id !== catObj.id && c.name !== catObj.name);
     setCategoryData(nextList);
     try {
-      localStorage.setItem('sriveerafireworks_admin_categories_v3', JSON.stringify(nextList));
+      localStorage.setItem('sanvikacrackers_admin_categories_v3', JSON.stringify(nextList));
     } catch (e) {}
   };
 
@@ -557,18 +562,24 @@ export function AdminLayout() {
   const categories = categoryData.map(c => c.name);
 
   const handleLogout = () => {
-    localStorage.removeItem('sriveerafireworks_admin_logged_in');
+    localStorage.removeItem('sanvikacrackers_admin_logged_in');
     navigate('/admin/login', { replace: true });
   };
 
   const navItems = [
-    { to: '/admin/dashboard',    label: 'Dashboard',         icon: TrendingUp },
-    { to: '/admin/orders',       label: 'Orders',            icon: ShoppingCart },
-    { to: '/admin/categories',   label: 'Categories',        icon: Tag,             badge: categoryData.length || null },
-    { to: '/admin/products',     label: 'Products',          icon: Package,         badge: products.length || null },
-    { to: '/admin/banners',      label: 'Hero Banners',      icon: Image },
-    { to: '/admin/announcement', label: 'Important Message', icon: Megaphone },
-    { to: '/admin/settings',     label: 'Settings',          icon: Settings },
+    { to: '/admin/dashboard',        label: 'Dashboard',            icon: TrendingUp },
+    { to: '/admin/orders',           label: 'Customer Orders',      icon: ShoppingCart },
+    { to: '/admin/categories',       label: 'Categories',           icon: Tag,             badge: categoryData.length || null },
+    { to: '/admin/products',         label: 'Products',             icon: Package,         badge: products.length || null },
+    { to: '/admin/banners',          label: 'Hero Banners',         icon: Image },
+    { to: '/admin/announcement',     label: 'Important Message',    icon: Megaphone },
+    { section: 'Staff Billing' },
+    { to: '/admin/staff',            label: 'Staff Management',     icon: Users },
+    { to: '/admin/billing-orders',   label: 'Staff Billing Orders', icon: ClipboardList },
+    { to: '/admin/barcodes',         label: 'Barcode Printing',     icon: Barcode },
+    { to: '/admin/reports',          label: 'Reports',              icon: BarChart2 },
+    { section: 'Configuration' },
+    { to: '/admin/settings',         label: 'Settings',             icon: Settings },
   ];
 
   return (
@@ -580,29 +591,32 @@ export function AdminLayout() {
           {/* Sidebar */}
           <aside className={`adm-sidebar${sidebarOpen ? ' sb-open' : ''}`}>
             <div className="sb-logo">
-              <img src={LOGO} alt="Sri Veera Fireworks" style={{height:40,width:'auto',objectFit:'contain',borderRadius:8,flexShrink:0}} />
-              <div><div className="sb-brand">Sri Veera Fireworks</div><div className="sb-sub">Admin Panel</div></div>
+              <img src={LOGO} alt="Sanvika Crackers" style={{height:40,width:'auto',objectFit:'contain',borderRadius:8,flexShrink:0}} />
+              <div><div className="sb-brand">Sanvika Crackers</div><div className="sb-sub">Admin Panel</div></div>
             </div>
-            <div className="sb-section">Navigation</div>
-            <nav className="sb-nav">
-              {navItems.map(item => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  end={item.end}
-                  className={({isActive})=>`sb-item${isActive?' active':''}`}
-                  onClick={()=>setSidebarOpen(false)}
-                >
-                  <item.icon />
-                  <span>{item.label}</span>
-                  {item.badge ? <span className="sb-badge">{item.badge}</span> : null}
-                </NavLink>
-              ))}
+            <nav className="sb-nav" style={{paddingTop:8}}>
+              {navItems.map((item, idx) =>
+                item.section ? (
+                  <div key={`section-${idx}`} className="sb-section" style={{marginTop:8}}>{item.section}</div>
+                ) : (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    end={item.end}
+                    className={({isActive})=>`sb-item${isActive?' active':''}`}
+                    onClick={()=>setSidebarOpen(false)}
+                  >
+                    <item.icon />
+                    <span>{item.label}</span>
+                    {item.badge ? <span className="sb-badge">{item.badge}</span> : null}
+                  </NavLink>
+                )
+              )}
             </nav>
             <div className="sb-section">Account</div>
-            <div style={{padding:'4px 20px 12px',fontSize:12,color:'#64748b'}}>
-              <div style={{fontWeight:600,color:'#94a3b8',marginBottom:2}}>admin@sriveerafireworks.com</div>
-              <div>Super Administrator</div>
+            <div style={{padding:'4px 20px 12px',fontSize:12,color:'#78716C'}}>
+              <div style={{fontWeight:600,color:'#A8A29E',marginBottom:2}}>admin@sanvikacrackers.com</div>
+              <div style={{color:'#78716C'}}>Super Administrator</div>
             </div>
             <div className="sb-footer">
               <button className="logout-btn" onClick={handleLogout}><LogOut style={{width:16,height:16}} />Sign Out</button>
@@ -616,7 +630,7 @@ export function AdminLayout() {
                 <button className="menu-toggle" onClick={()=>setSidebarOpen(!sidebarOpen)}>
                   {sidebarOpen ? <X style={{width:18,height:18}} /> : <Menu style={{width:18,height:18}} />}
                 </button>
-                <img src={LOGO} alt="Sri Veera Fireworks" className="hdr-title" style={{height:36,width:'auto',objectFit:'contain'}} />
+                <img src={LOGO} alt="Sanvika Crackers" className="hdr-title" style={{height:36,width:'auto',objectFit:'contain'}} />
               </div>
               <div className="hdr-right">
                 <button className="adm-btn adm-btn-secondary adm-btn-sm" onClick={fetchAll} disabled={loading}>
@@ -663,8 +677,8 @@ function CategoryModal({ category, onClose, onSave }) {
     setUploading(true);
     setErr('');
 
-    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'ler130g0';
-    const preset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'pyropark_uploads';
+    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'lqcqo41j';
+    const preset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'ml_default';
 
     const formData = new FormData();
     formData.append('file', file);
@@ -1114,8 +1128,8 @@ function ProductModal({ product, categories, onClose, onSaved }) {
     setUploadingIdx(slotIdx);
     setErr('');
 
-    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'ler130g0';
-    const preset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'pyropark_uploads';
+    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'lqcqo41j';
+    const preset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'ml_default';
 
     const formData = new FormData();
     formData.append('file', file);
@@ -2546,21 +2560,16 @@ export function AdminHeroBanners() {
 /* ══════════════════════════════════════════════════
    SETTINGS  →  /admin/settings
 ══════════════════════════════════════════════════ */
-const SETTINGS_KEY = '__SITE_SETTINGS__';
-
 export async function fetchSiteSettings() {
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/products?category=eq.${encodeURIComponent(SETTINGS_KEY)}&limit=1`,
+      `${SUPABASE_URL}/rest/v1/site_settings?id=eq.1&limit=1`,
       { headers }
     );
     if (!res.ok) return {};
     const data = await res.json();
-    if (data && data.length > 0) {
-      try { return JSON.parse(data[0].description || '{}'); } catch { return {}; }
-    }
-  } catch { }
-  return {};
+    return data?.[0] || {};
+  } catch { return {}; }
 }
 
 export function AdminSettings() {
@@ -2624,14 +2633,10 @@ export function AdminSettings() {
       setPricelistUrlState(publicUrl);
 
       // Auto-save URL to DB immediately
-      const existing = await api(`/products?category=eq.${encodeURIComponent(SETTINGS_KEY)}`);
-      if (existing && existing.length > 0) {
-        const current = (() => { try { return JSON.parse(existing[0].description || '{}'); } catch { return {}; } })();
-        await api(`/products?id=eq.${existing[0].id}`, {
-          method: 'PATCH',
-          body: JSON.stringify({ description: JSON.stringify({ ...current, pricelist_url: publicUrl }), is_active: true }),
-        });
-      }
+      await api('/site_settings?id=eq.1', {
+        method: 'PATCH',
+        body: JSON.stringify({ pricelist_url: publicUrl, updated_at: new Date().toISOString() }),
+      });
       toast.success('PDF uploaded and saved!');
     } catch (err) {
       toast.error('Upload failed: ' + err.message);
@@ -2652,22 +2657,13 @@ export function AdminSettings() {
       announcement:    announcement.trim(),
       pricelist_url:   pricelistUrlState || '',
     };
-    const settingsJson = JSON.stringify(settingsObj);
-    try { localStorage.setItem('sriveerafireworks_site_settings', settingsJson); } catch {}
+    try { localStorage.setItem('sanvikacrackers_site_settings', JSON.stringify(settingsObj)); } catch {}
     window.dispatchEvent(new CustomEvent('site_settings_updated', { detail: settingsObj }));
     try {
-      const existing = await api(`/products?category=eq.${encodeURIComponent(SETTINGS_KEY)}`);
-      if (existing && existing.length > 0) {
-        await api(`/products?id=eq.${existing[0].id}`, {
-          method: 'PATCH',
-          body: JSON.stringify({ description: settingsJson, is_active: true }),
-        });
-      } else {
-        await api('/products', {
-          method: 'POST',
-          body: JSON.stringify({ name: 'Site Settings', category: SETTINGS_KEY, description: settingsJson, price: 0, stock: 0, is_active: true }),
-        });
-      }
+      await api('/site_settings?id=eq.1', {
+        method: 'PATCH',
+        body: JSON.stringify({ ...settingsObj, updated_at: new Date().toISOString() }),
+      });
       setSuccess(true);
       setTimeout(() => setSuccess(false), 4000);
     } catch (err) { console.error('Failed to save settings:', err); }
@@ -3036,7 +3032,7 @@ export function AdminOrders() {
                     <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
                       {order.phone && (
                         <a
-                          href={`https://wa.me/91${order.phone.replace(/\D/g, '')}?text=${encodeURIComponent(`Hello ${order.customer_name || ''},\n\nThank you for your order with Sri Veera Fireworks!\n\nYour order total: ₹${totalVal.toLocaleString('en-IN')}\n\nPlease let us know if you have any questions.`)}`}
+                          href={`https://wa.me/91${order.phone.replace(/\D/g, '')}?text=${encodeURIComponent(`Hello ${order.customer_name || ''},\n\nThank you for your order with Sanvika Crackers!\n\nYour order total: ₹${totalVal.toLocaleString('en-IN')}\n\nPlease let us know if you have any questions.`)}`}
                           target="_blank" rel="noreferrer"
                           className="adm-btn adm-btn-sm"
                           style={{ padding: '6px 12px', fontSize: '0.78rem', fontWeight: 600, background: '#25d366', color: '#fff', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}
@@ -3121,7 +3117,7 @@ export function AdminDashboard() {
 
   if (loading) return (
     <div className="adm-page-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 300 }}>
-      <RefreshCw size={28} className="spinning" color="#ff6b35" />
+      <RefreshCw size={28} className="spinning" color="#7F1D1D" />
     </div>
   );
 
@@ -3129,7 +3125,7 @@ export function AdminDashboard() {
     <div className="adm-page-container">
       <div className="adm-page-header mb-4">
         <h1 className="adm-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <TrendingUp color="#ff6b35" /> Dashboard
+          <TrendingUp color="#7F1D1D" /> Dashboard
         </h1>
         <p className="adm-sub">Overview of all order enquiries and revenue.</p>
       </div>
@@ -3137,12 +3133,12 @@ export function AdminDashboard() {
       {/* ── Top stat cards ──────────────────────────────────────────────────── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', gap: 14, marginBottom: 24 }}>
         {[
-          { label: 'Total Orders',      value: orders.length,                                         icon: <ShoppingCart size={22} color="#ff6b35"/>, bg: '#fff5ef', border: '#fed7aa', val_color: '#ff6b35' },
-          { label: 'Total Revenue',     value: `₹${totalRevenue.toLocaleString('en-IN')}`,            icon: <TrendingUp   size={22} color="#22c55e"/>, bg: '#f0fdf4', border: '#86efac', val_color: '#16a34a' },
-          { label: `${curYear} Orders`, value: thisYearOrders.length,                                 icon: <Star         size={22} color="#8b5cf6"/>, bg: '#faf5ff', border: '#c4b5fd', val_color: '#7c3aed' },
-          { label: `${curYear} Revenue`,value: `₹${thisYearRevenue.toLocaleString('en-IN')}`,         icon: <ArrowUpRight size={22} color="#0ea5e9"/>, bg: '#f0f9ff', border: '#7dd3fc', val_color: '#0284c7' },
-          { label: 'This Month Orders', value: thisMonthOrders.length,                                icon: <Clock        size={22} color="#f59e0b"/>, bg: '#fffbeb', border: '#fde68a', val_color: '#d97706' },
-          { label: 'This Month Rev.',   value: `₹${thisMonthRevenue.toLocaleString('en-IN')}`,        icon: <CheckCircle  size={22} color="#10b981"/>, bg: '#ecfdf5', border: '#6ee7b7', val_color: '#059669' },
+          { label: 'Total Orders',      value: orders.length,                                         icon: <ShoppingCart size={22} color="#7F1D1D"/>, bg: '#FEF2F2', border: '#FECACA', val_color: '#7F1D1D' },
+          { label: 'Total Revenue',     value: `₹${totalRevenue.toLocaleString('en-IN')}`,            icon: <TrendingUp   size={22} color="#065F46"/>, bg: '#D1FAE5', border: '#6EE7B7', val_color: '#065F46' },
+          { label: `${curYear} Orders`, value: thisYearOrders.length,                                 icon: <Star         size={22} color="#6B21A8"/>, bg: '#F3E8FF', border: '#C4B5FD', val_color: '#6B21A8' },
+          { label: `${curYear} Revenue`,value: `₹${thisYearRevenue.toLocaleString('en-IN')}`,         icon: <ArrowUpRight size={22} color="#1D4ED8"/>, bg: '#EFF6FF', border: '#BFDBFE', val_color: '#1D4ED8' },
+          { label: 'This Month Orders', value: thisMonthOrders.length,                                icon: <Clock        size={22} color="#92680A"/>, bg: '#FEF9C3', border: '#FDE68A', val_color: '#92680A' },
+          { label: 'This Month Rev.',   value: `₹${thisMonthRevenue.toLocaleString('en-IN')}`,        icon: <CheckCircle  size={22} color="#0F766E"/>, bg: '#F0FDFA', border: '#99F6E4', val_color: '#0F766E' },
         ].map(card => (
           <div key={card.label} style={{ background: card.bg, border: `1.5px solid ${card.border}`, borderRadius: 12, padding: '14px 16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
@@ -3157,13 +3153,13 @@ export function AdminDashboard() {
       {/* ── Year-wise summary ───────────────────────────────────────────────── */}
       {yearStats.length > 0 && (
         <div className="adm-card" style={{ marginBottom: 20, padding: '16px 18px' }}>
-          <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: 14 }}>Year-wise Summary</div>
+          <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#78716C', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: 14 }}>Year-wise Summary</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
             {yearStats.map(y => (
-              <div key={y.year} style={{ background: y.year === curYear ? '#fff5ef' : '#f8fafc', border: `1.5px solid ${y.year === curYear ? '#fed7aa' : '#e2e8f0'}`, borderRadius: 10, padding: '10px 16px', minWidth: 140 }}>
-                <div style={{ fontWeight: 900, color: '#ff6b35', fontSize: '1.1rem' }}>{y.year}</div>
-                <div style={{ fontSize: '0.82rem', color: '#475569', marginTop: 3 }}>{y.count} orders</div>
-                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0f172a', marginTop: 2 }}>₹{y.revenue.toLocaleString('en-IN')}</div>
+              <div key={y.year} style={{ background: y.year === curYear ? '#FEF2F2' : '#FAFAF9', border: `1.5px solid ${y.year === curYear ? '#FECACA' : '#E7E5E4'}`, borderRadius: 10, padding: '10px 16px', minWidth: 140 }}>
+                <div style={{ fontWeight: 900, color: '#7F1D1D', fontSize: '1.1rem' }}>{y.year}</div>
+                <div style={{ fontSize: '0.82rem', color: '#78716C', marginTop: 3 }}>{y.count} orders</div>
+                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#292524', marginTop: 2 }}>₹{y.revenue.toLocaleString('en-IN')}</div>
               </div>
             ))}
           </div>
@@ -3173,7 +3169,7 @@ export function AdminDashboard() {
       {/* ── Month-wise bar chart ─────────────────────────────────────────────── */}
       <div className="adm-card" style={{ padding: '16px 18px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-          <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
+          <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#78716C', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
             Month-wise Summary
           </div>
           <CustomSelect
@@ -3196,8 +3192,8 @@ export function AdminDashboard() {
                     {m.count}
                   </div>
                 )}
-                <div style={{ width: '100%', borderRadius: '4px 4px 0 0', background: m.count === 0 ? '#f1f5f9' : isCurrentMonth ? '#ff6b35' : '#fb923c', height: `${Math.max(pct, m.count > 0 ? 6 : 2)}%`, transition: 'height 0.3s', position: 'relative', minHeight: m.count > 0 ? 6 : 2 }} />
-                <div style={{ fontSize: '0.68rem', fontWeight: 600, color: isCurrentMonth ? '#ff6b35' : '#64748b' }}>{m.month}</div>
+                <div style={{ width: '100%', borderRadius: '4px 4px 0 0', background: m.count === 0 ? '#E7E5E4' : isCurrentMonth ? '#7F1D1D' : '#D4A72C', height: `${Math.max(pct, m.count > 0 ? 6 : 2)}%`, transition: 'height 0.3s', position: 'relative', minHeight: m.count > 0 ? 6 : 2 }} />
+                <div style={{ fontSize: '0.68rem', fontWeight: 600, color: isCurrentMonth ? '#7F1D1D' : '#78716C' }}>{m.month}</div>
               </div>
             );
           })}
@@ -3206,10 +3202,10 @@ export function AdminDashboard() {
         {/* Month detail cards for months with data */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 16 }}>
           {monthStats.filter(m => m.count > 0).map(m => (
-            <div key={m.month} style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: '7px 12px', minWidth: 110 }}>
-              <div style={{ fontWeight: 700, color: '#0ea5e9', fontSize: '0.85rem' }}>{m.month}</div>
-              <div style={{ fontSize: '0.75rem', color: '#475569', marginTop: 2 }}>{m.count} orders</div>
-              <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#0f172a' }}>₹{m.revenue.toLocaleString('en-IN')}</div>
+            <div key={m.month} style={{ background: '#FAFAF9', border: '1px solid #E7E5E4', borderRadius: 8, padding: '7px 12px', minWidth: 110 }}>
+              <div style={{ fontWeight: 700, color: '#7F1D1D', fontSize: '0.85rem' }}>{m.month}</div>
+              <div style={{ fontSize: '0.75rem', color: '#78716C', marginTop: 2 }}>{m.count} orders</div>
+              <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#292524' }}>₹{m.revenue.toLocaleString('en-IN')}</div>
             </div>
           ))}
         </div>

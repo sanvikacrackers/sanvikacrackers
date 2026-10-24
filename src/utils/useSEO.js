@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-const BASE_URL = 'https://sriveerafireworks.com'
+const BASE_URL = 'https://sanvikacrackers.com'
 
 function getOrCreate(selector, tag, attrs = {}) {
   let el = document.querySelector(selector)

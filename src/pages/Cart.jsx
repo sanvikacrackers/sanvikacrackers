@@ -25,8 +25,8 @@ function fmtPrice(v) {
 
 export default function Cart() {
   useSEO({
-    title: 'Your Cart – Sri Veera Fireworks',
-    description: 'Review your fireworks order and send a WhatsApp enquiry to Sri Veera Fireworks.',
+    title: 'Your Cart – Sanvika Crackers',
+    description: 'Review your fireworks order and send a WhatsApp enquiry to Sanvika Crackers.',
     url: '/cart',
     noIndex: true,
   })
@@ -63,7 +63,7 @@ export default function Cart() {
       `• ${i.product.name} × ${i.qty} = INR ${(i.product.price * i.qty).toLocaleString('en-IN')}`
     ).join('\n')
     const msg = [
-      '*ORDER ENQUIRY — Sri Veera Fireworks*',
+      '*ORDER ENQUIRY — Sanvika Crackers*',
       '',
       `*Name:* ${form.name}`,
       `*Phone:* ${form.phone}`,
@@ -75,7 +75,7 @@ export default function Cart() {
       '',
       `*Total: INR ${cartTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}*`,
       '',
-      '_Sent from sriveerafireworks.com_',
+      '_Sent from sanvikacrackers.com_',
     ].join('\n')
 
     const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL

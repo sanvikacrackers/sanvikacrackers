@@ -26,7 +26,7 @@ export default function Wishlist() {
         <div className="max-w-[1400px] mx-auto px-4">
           <div className="flex items-center justify-between h-16 gap-4">
             <Link to="/" className="flex-shrink-0">
-              <img src={LOGO} alt="Sri Veera Fireworks" className="h-10 w-auto object-contain" />
+              <img src={LOGO} alt="Sanvika Crackers" className="h-10 w-auto object-contain" />
             </Link>
             <nav className="hidden lg:flex items-center gap-1">
               <Link to="/"          className="nav-link">Home</Link>

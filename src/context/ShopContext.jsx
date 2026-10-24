@@ -2,8 +2,8 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
-const CART_KEY     = 'sriveerafireworks_cart_qtys'
-const WISHLIST_KEY = 'sriveerafireworks_wishlist'
+const CART_KEY     = 'sanvikacrackers_cart_qtys'
+const WISHLIST_KEY = 'sanvikacrackers_wishlist'
 
 const ShopContext = createContext(null)
 
@@ -48,23 +48,28 @@ export function ShopProvider({ children }) {
   const fetchProducts = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/products?order=product_code.asc`,
-        { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
-      )
-      if (res.ok) {
-        const data = await res.json()
-        // Site settings row
-        const settingsRow = data.find(p => p.category === '__SITE_SETTINGS__')
-        if (settingsRow?.description) {
-          try { setSiteSettings(s => ({ ...s, ...JSON.parse(settingsRow.description) })) }
-          catch { /* ignore */ }
-        }
-        // All public products (active + inactive), inactive shown as out of stock
+      const [productsRes, settingsRes] = await Promise.all([
+        fetch(
+          `${SUPABASE_URL}/rest/v1/products?order=product_code.asc`,
+          { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+        ),
+        fetch(
+          `${SUPABASE_URL}/rest/v1/site_settings?id=eq.1&limit=1`,
+          { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+        ),
+      ])
+      if (productsRes.ok) {
+        const data = await productsRes.json()
         const clean = data
-          .filter(p => p.category && !p.category.startsWith('__'))
+          .filter(p => p.category && p.is_active !== undefined)
           .sort((a, b) => (parseInt(a.product_code) || 0) - (parseInt(b.product_code) || 0))
         setProducts(clean)
+      }
+      if (settingsRes.ok) {
+        const settingsData = await settingsRes.json()
+        if (settingsData?.[0]) {
+          setSiteSettings(s => ({ ...s, ...settingsData[0] }))
+        }
       }
     } catch (e) {
       console.error('ShopContext fetch error:', e)

@@ -13,8 +13,8 @@ import '../App.css'
 
 export default function Contact() {
   useSEO({
-    title: 'Contact Sri Veera Fireworks | Sivakasi – 83000 57711',
-    description: 'Contact Sri Veera Fireworks at 83000 57711. Shop at 1/204-6, NH-07, Chatram Road, Vachakkarapatti, Virudhunagar District. WhatsApp order enquiries welcome.',
+    title: 'Contact Sanvika Crackers | Sivakasi – 83000 57711',
+    description: 'Contact Sanvika Crackers at 83000 57711. Shop at 1/204-6, NH-07, Chatram Road, Vachakkarapatti, Virudhunagar District. WhatsApp order enquiries welcome.',
     url: '/contact',
   })
   const { siteSettings } = useShop()
@@ -23,7 +23,7 @@ export default function Contact() {
 
   function handleSubmit(e) {
     e.preventDefault()
-    const text = `Hello Sri Veera Fireworks!%0A%0AName: ${form.name}%0APhone: ${form.phone}%0AEmail: ${form.email}%0A%0AMessage: ${form.message}`
+    const text = `Hello Sanvika Crackers!%0A%0AName: ${form.name}%0APhone: ${form.phone}%0AEmail: ${form.email}%0A%0AMessage: ${form.message}`
     const wa   = siteSettings?.whatsapp || '918300057711'
     window.open(`https://api.whatsapp.com/send?phone=${wa}&text=${text}`, '_blank')
     setSent(true)
@@ -38,7 +38,7 @@ export default function Contact() {
       title: 'Address',
       content: (
         <p style={{ margin: 0, fontSize: '0.95rem', color: '#475569', lineHeight: 1.7 }}>
-          SRI VEERA FIREWORKS<br />1/204-6, NH-07, Chatram Road,<br />Vachakkarapatti, RR Nagar,<br />Virudhunagar District - 626204
+          SANVIKA CRACKERS<br />1/204-6, NH-07, Chatram Road,<br />Vachakkarapatti, RR Nagar,<br />Virudhunagar District - 626204
         </p>
       ),
     },
@@ -61,12 +61,12 @@ export default function Contact() {
       icon: <Mail size={26} color="#ff7011" />,
       title: 'Email',
       content: (
-        <a href="mailto:veerafireworks2020@gmail.com"
+        <a href="mailto:sanvikacrackers2020@gmail.com"
           style={{ fontSize: '0.95rem', color: '#475569', textDecoration: 'none', wordBreak: 'break-all' }}
           onMouseEnter={e => e.currentTarget.style.color = '#ff7011'}
           onMouseLeave={e => e.currentTarget.style.color = '#475569'}
         >
-          veerafireworks2020@gmail.com
+          sanvikacrackers2020@gmail.com
         </a>
       ),
     },
@@ -83,7 +83,7 @@ export default function Contact() {
       <div style={{ width: '100%', lineHeight: 0 }}>
         <img
           src={contactImg}
-          alt="Contact Sri Veera Fireworks"
+          alt="Contact Sanvika Crackers"
           style={{ width: '100%', maxHeight: 420, objectFit: 'cover', display: 'block' }}
         />
       </div>
@@ -125,7 +125,7 @@ export default function Contact() {
             <h2 style={{ margin: '0 0 14px', fontSize: '1.2rem', fontWeight: 800, color: '#0f172a' }}>Our Location</h2>
             <div style={{ borderRadius: 16, overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.08)', border: '1px solid #e2e8f0', marginBottom: 14 }}>
               <iframe
-                title="Sri Veera Fireworks Location"
+                title="Sanvika Crackers Location"
                 src="https://maps.google.com/maps?q=9.4672358,77.9356098&z=16&output=embed"
                 width="100%"
                 height="300"
@@ -142,7 +142,7 @@ export default function Contact() {
             }}>
               <MapPin size={18} color="#ff7011" style={{ flexShrink: 0, marginTop: 2 }} />
               <div style={{ flex: 1 }}>
-                <p style={{ margin: '0 0 2px', fontWeight: 700, color: '#0f172a', fontSize: '0.9rem' }}>Sri Veera Fireworks</p>
+                <p style={{ margin: '0 0 2px', fontWeight: 700, color: '#0f172a', fontSize: '0.9rem' }}>Sanvika Crackers</p>
                 <p style={{ margin: '0 0 10px', color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5 }}>
                   1/204-6, NH-07, Chatram Road,<br />Vachakkarapatti, RR Nagar,<br />Virudhunagar District - 626204
                 </p>

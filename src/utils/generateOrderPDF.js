@@ -75,7 +75,7 @@ export async function generateOrderPDF({ form, cartItems, cartTotal, estimateNo 
 
   const cleanName  = (form.name  || 'Customer').replace(/\s+/g, '_');
   const cleanPhone = (form.phone || 'NoPhone').replace(/\s+/g, '_');
-  await buildPDF(data, `SriVeera_Order_${cleanName}_${cleanPhone}.pdf`);
+  await buildPDF(data, `Sanvika_Order_${cleanName}_${cleanPhone}.pdf`);
 }
 
 /** Called from Admin.jsx */
@@ -109,5 +109,5 @@ export async function downloadAdminOrderPDF(order, serialNo) {
 
   const cleanName  = (order.customer_name || 'Customer').replace(/\s+/g, '_');
   const cleanPhone = (order.phone || 'NoPhone').replace(/\s+/g, '_');
-  await buildPDF(data, `SriVeera_Order_${cleanName}_${cleanPhone}.pdf`);
+  await buildPDF(data, `Sanvika_Order_${cleanName}_${cleanPhone}.pdf`);
 }

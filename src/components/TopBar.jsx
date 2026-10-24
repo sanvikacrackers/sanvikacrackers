@@ -7,7 +7,7 @@ export default function TopBar() {
 
   const marqueeContent = (
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 12, whiteSpace: 'nowrap' }}>
-      <img src={LOGO} alt="Sri Veera Fireworks" style={{ height: 34, width: 'auto', objectFit: 'contain', verticalAlign: 'middle', borderRadius: 3 }} />
+      <img src={LOGO} alt="Sanvika Crackers" style={{ height: 34, width: 'auto', objectFit: 'contain', verticalAlign: 'middle', borderRadius: 3 }} />
       {announcement && (
         <span style={{ color: '#facc15', fontWeight: 700 }}>{announcement}</span>
       )}
