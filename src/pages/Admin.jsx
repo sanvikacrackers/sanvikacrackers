@@ -1353,6 +1353,7 @@ function ProductModal({ product, categories, onClose, onSaved }) {
         assignedCode = String(maxCodeNum + 1);
       }
 
+      const barcodeValue = `SC${String(assignedCode).padStart(5, '0')}`;
       const body = {
         product_code: assignedCode,
         name: form.name,
@@ -1363,6 +1364,7 @@ function ProductModal({ product, categories, onClose, onSaved }) {
         order_unit: computedUnit || null,
         image_url: finalImageUrl,
         is_active: form.is_active,
+        ...(!isEdit && { barcode: barcodeValue }),
       };
       if (isEdit) await api(`/products?id=eq.${product.id}`,{method:'PATCH',body:JSON.stringify(body)});
       else await api('/products',{method:'POST',body:JSON.stringify(body)});
