@@ -2158,7 +2158,7 @@ export function AdminAnnouncement() {
               </div>
             </div>
 
-            <div className="d-flex align-items-center justify-content-between pt-3 border-top" style={{ gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, paddingTop: 20, marginTop: 8, borderTop: '1px solid #E7E5E4', flexWrap: 'wrap' }}>
               <button
                 type="button"
                 onClick={handleReset}
