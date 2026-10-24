@@ -242,15 +242,30 @@ export default function AdminBarcodes() {
                 </div>
 
                 {loading ? (
-                  <div style={{ padding: '12px 0' }}>
-                    {[1,2,3,4,5,6].map(i => (
-                      <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '1px solid #F5F5F4' }}>
-                        <div className="adm-skeleton" style={{ width: 140, height: 14 }} />
-                        <div className="adm-skeleton" style={{ width: 80, height: 14 }} />
-                        <div className="adm-skeleton" style={{ width: 120, height: 40 }} />
-                        <div className="adm-skeleton" style={{ width: 60, height: 28, borderRadius: 6 }} />
-                      </div>
-                    ))}
+                  <div className="sf-table-wrap">
+                    <table className="sf-table">
+                      <thead>
+                        <tr>
+                          <th>Product</th><th>Code</th><th>Barcode</th><th>Preview</th><th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {[1,2,3,4,5,6].map(i => (
+                          <tr key={i}>
+                            <td><div className="adm-skeleton" style={{ width: 180, height: 15 }} /></td>
+                            <td><div className="adm-skeleton" style={{ width: 80, height: 13 }} /></td>
+                            <td><div className="adm-skeleton" style={{ width: 110, height: 13 }} /></td>
+                            <td><div className="adm-skeleton" style={{ width: 120, height: 32 }} /></td>
+                            <td>
+                              <div style={{ display: 'flex', gap: 6 }}>
+                                <div className="adm-skeleton" style={{ width: 50, height: 28, borderRadius: 6 }} />
+                                <div className="adm-skeleton" style={{ width: 50, height: 28, borderRadius: 6 }} />
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 ) : (
                   <div className="sf-table-wrap">

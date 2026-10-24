@@ -297,20 +297,30 @@ export default function AdminBillingOrders() {
 
       <div className="sf-card">
         {loading ? (
-          <div style={{ padding: '12px 0' }}>
-            {[1,2,3,4,5].map(i => (
-              <div key={i} style={{ padding: '14px 12px', borderBottom: '1px solid #F5F5F4' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                  <div className="adm-skeleton" style={{ width: 120, height: 15 }} />
-                  <div className="adm-skeleton" style={{ width: 80, height: 15 }} />
-                </div>
-                <div style={{ display: 'flex', gap: 12 }}>
-                  <div className="adm-skeleton" style={{ width: 100, height: 12 }} />
-                  <div className="adm-skeleton" style={{ width: 80, height: 12 }} />
-                  <div className="adm-skeleton" style={{ width: 70, height: 12 }} />
-                </div>
-              </div>
-            ))}
+          <div className="sf-table-wrap">
+            <table className="sf-table">
+              <thead>
+                <tr>
+                  <th>Bill Number</th><th>Staff</th><th>Date &amp; Time</th>
+                  <th>Subtotal</th><th>Discount</th><th>Grand Total</th>
+                  <th>Status</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[1,2,3,4,5].map(i => (
+                  <tr key={i}>
+                    <td><div className="adm-skeleton" style={{ width: 100, height: 15 }} /></td>
+                    <td><div className="adm-skeleton" style={{ width: 80, height: 14 }} /></td>
+                    <td><div className="adm-skeleton" style={{ width: 130, height: 13 }} /></td>
+                    <td><div className="adm-skeleton" style={{ width: 65, height: 14 }} /></td>
+                    <td><div className="adm-skeleton" style={{ width: 28, height: 14 }} /></td>
+                    <td><div className="adm-skeleton" style={{ width: 75, height: 15 }} /></td>
+                    <td><div className="adm-skeleton" style={{ width: 72, height: 22, borderRadius: 20 }} /></td>
+                    <td><div className="adm-skeleton" style={{ width: 32, height: 28, borderRadius: 6 }} /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : orders.length === 0 ? (
           <div className="sf-empty">

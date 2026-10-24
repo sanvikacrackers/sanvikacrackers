@@ -251,18 +251,41 @@ export default function AdminStaff() {
 
       <div className="sf-card">
         {loading ? (
-          <div style={{ padding: '12px 0' }}>
-            {[1,2,3,4].map(i => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 0', borderBottom: '1px solid #F5F5F4' }}>
-                <div className="adm-skeleton" style={{ width: 36, height: 36, borderRadius: '50%' }} />
-                <div style={{ flex: 1 }}>
-                  <div className="adm-skeleton" style={{ width: 140, height: 15, marginBottom: 6 }} />
-                  <div className="adm-skeleton" style={{ width: 180, height: 12 }} />
-                </div>
-                <div className="adm-skeleton" style={{ width: 70, height: 24, borderRadius: 20 }} />
-                <div className="adm-skeleton" style={{ width: 60, height: 28, borderRadius: 6 }} />
-              </div>
-            ))}
+          <div className="sf-table-wrap">
+            <table className="sf-table">
+              <thead>
+                <tr>
+                  <th>#</th><th>Name</th><th>Email</th><th>Role</th>
+                  <th>Today's Bills</th><th>Today's Sales</th>
+                  <th>Status</th><th>Joined</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[1,2,3,4].map(i => (
+                  <tr key={i}>
+                    <td><div className="adm-skeleton" style={{ width: 16, height: 13 }} /></td>
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <div className="adm-skeleton" style={{ width: 30, height: 30, borderRadius: '50%', flexShrink: 0 }} />
+                        <div className="adm-skeleton" style={{ width: 100, height: 14 }} />
+                      </div>
+                    </td>
+                    <td><div className="adm-skeleton" style={{ width: 160, height: 13 }} /></td>
+                    <td><div className="adm-skeleton" style={{ width: 52, height: 22, borderRadius: 20 }} /></td>
+                    <td><div className="adm-skeleton" style={{ width: 24, height: 14 }} /></td>
+                    <td><div className="adm-skeleton" style={{ width: 60, height: 14 }} /></td>
+                    <td><div className="adm-skeleton" style={{ width: 44, height: 24, borderRadius: 24 }} /></td>
+                    <td><div className="adm-skeleton" style={{ width: 110, height: 13 }} /></td>
+                    <td>
+                      <div style={{ display: 'flex', gap: 6 }}>
+                        <div className="adm-skeleton" style={{ width: 44, height: 24, borderRadius: 24 }} />
+                        <div className="adm-skeleton" style={{ width: 32, height: 28, borderRadius: 6 }} />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : filtered.length === 0 ? (
           <div className="sf-empty">

@@ -370,39 +370,46 @@ export function ProductsSkeleton() {
 export function DashboardSkeleton() {
   return (
     <div className="adm-page-container">
-      <div style={{ marginBottom: 24 }}>
-        <div className="adm-skeleton" style={{ width: 160, height: 26, marginBottom: 8 }} />
-        <div className="adm-skeleton" style={{ width: 280, height: 14 }} />
+      {/* Page header */}
+      <div className="adm-page-header" style={{ marginBottom: 24 }}>
+        <div className="adm-skeleton" style={{ width: 180, height: 28, marginBottom: 8 }} />
+        <div className="adm-skeleton" style={{ width: 300, height: 14 }} />
       </div>
+      {/* 6 stat cards — same grid as real UI */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', gap: 14, marginBottom: 24 }}>
         {[1,2,3,4,5,6].map(i => (
           <div key={i} style={{ background: '#FAFAF9', border: '1.5px solid #E7E5E4', borderRadius: 12, padding: '14px 16px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-              <div className="adm-skeleton" style={{ width: 22, height: 22, borderRadius: 6 }} />
-              <div className="adm-skeleton" style={{ width: 90, height: 12 }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+              <div className="adm-skeleton" style={{ width: 22, height: 22, borderRadius: 5 }} />
+              <div className="adm-skeleton" style={{ width: 90, height: 11 }} />
             </div>
-            <div className="adm-skeleton" style={{ width: 70, height: 22 }} />
+            <div className="adm-skeleton" style={{ width: 80, height: 22 }} />
           </div>
         ))}
       </div>
-      <div className="adm-card" style={{ padding: '16px 18px', marginBottom: 20 }}>
-        <div className="adm-skeleton" style={{ width: 140, height: 14, marginBottom: 16 }} />
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+      {/* Year-wise summary card */}
+      <div className="adm-card" style={{ marginBottom: 20, padding: '16px 18px' }}>
+        <div className="adm-skeleton" style={{ width: 140, height: 11, marginBottom: 14 }} />
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
           {[1,2,3].map(i => (
             <div key={i} style={{ background: '#FAFAF9', border: '1.5px solid #E7E5E4', borderRadius: 10, padding: '10px 16px', minWidth: 140 }}>
-              <div className="adm-skeleton" style={{ width: 50, height: 20, marginBottom: 6 }} />
-              <div className="adm-skeleton" style={{ width: 70, height: 12, marginBottom: 4 }} />
-              <div className="adm-skeleton" style={{ width: 90, height: 16 }} />
+              <div className="adm-skeleton" style={{ width: 44, height: 20, marginBottom: 6 }} />
+              <div className="adm-skeleton" style={{ width: 65, height: 12, marginBottom: 4 }} />
+              <div className="adm-skeleton" style={{ width: 90, height: 15 }} />
             </div>
           ))}
         </div>
       </div>
+      {/* Month bar chart card */}
       <div className="adm-card" style={{ padding: '16px 18px' }}>
-        <div className="adm-skeleton" style={{ width: 160, height: 14, marginBottom: 16 }} />
-        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 140 }}>
-          {[1,2,3,4,5,6,7,8,9,10,11,12].map(i => (
-            <div key={i} style={{ flex: '1 0 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-              <div className="adm-skeleton" style={{ width: '100%', height: `${20 + Math.random() * 80}%`, borderRadius: '4px 4px 0 0' }} />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+          <div className="adm-skeleton" style={{ width: 160, height: 11 }} />
+          <div className="adm-skeleton" style={{ width: 130, height: 36, borderRadius: 8 }} />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 140, paddingBottom: 4 }}>
+          {[60,30,75,45,90,55,40,80,35,65,50,70].map((h, i) => (
+            <div key={i} style={{ flex: '1 0 40px', minWidth: 40, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+              <div className="adm-skeleton" style={{ width: '100%', height: `${h}%`, borderRadius: '4px 4px 0 0' }} />
               <div className="adm-skeleton" style={{ width: 24, height: 10 }} />
             </div>
           ))}
@@ -413,36 +420,49 @@ export function DashboardSkeleton() {
 }
 
 export function OrdersSkeleton() {
+  // Matches the .order-card structure exactly
   return (
-    <div className="adm-page-container">
-      <div style={{ marginBottom: 20 }}>
-        <div className="adm-skeleton" style={{ width: 180, height: 26, marginBottom: 8 }} />
-        <div className="adm-skeleton" style={{ width: 320, height: 14 }} />
-      </div>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
-        <div className="adm-skeleton" style={{ width: 240, height: 40, borderRadius: 8 }} />
-        <div className="adm-skeleton" style={{ width: 130, height: 40, borderRadius: 8 }} />
-        <div className="adm-skeleton" style={{ width: 130, height: 40, borderRadius: 8 }} />
-      </div>
-      <div className="adm-card" style={{ padding: 12 }}>
-        {[1,2,3,4,5].map(i => (
-          <div key={i} style={{ padding: '14px 12px', borderBottom: '1px solid #F5F5F4', display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div className="adm-skeleton" style={{ width: 140, height: 16 }} />
-              <div className="adm-skeleton" style={{ width: 90, height: 24, borderRadius: 20 }} />
+    <>
+      {[1,2,3,4,5].map(i => (
+        <div key={i} className="adm-sk-order-card">
+          {/* Top: circle serial + id/date | status pill */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div className="adm-skeleton" style={{ width: 28, height: 28, borderRadius: '50%', flexShrink: 0 }} />
+              <div>
+                <div className="adm-skeleton" style={{ width: 72, height: 11, marginBottom: 5 }} />
+                <div className="adm-skeleton" style={{ width: 130, height: 14 }} />
+              </div>
             </div>
-            <div style={{ display: 'flex', gap: 12 }}>
-              <div className="adm-skeleton" style={{ width: 100, height: 12 }} />
-              <div className="adm-skeleton" style={{ width: 80, height: 12 }} />
+            <div className="adm-skeleton" style={{ width: 120, height: 26, borderRadius: 20 }} />
+          </div>
+          {/* Middle: customer name + phone | region + address */}
+          <div style={{ display: 'flex', gap: 12, marginBottom: 10, flexWrap: 'wrap' }}>
+            <div style={{ flex: 1, minWidth: 140 }}>
+              <div className="adm-skeleton" style={{ width: 140, height: 17, marginBottom: 6 }} />
+              <div className="adm-skeleton" style={{ width: 100, height: 13 }} />
             </div>
-            <div style={{ display: 'flex', gap: 12 }}>
-              <div className="adm-skeleton" style={{ width: 60, height: 12 }} />
-              <div className="adm-skeleton" style={{ width: 120, height: 12 }} />
+            <div style={{ flex: 1, minWidth: 140 }}>
+              <div className="adm-skeleton" style={{ width: 56, height: 20, borderRadius: 4, marginBottom: 6 }} />
+              <div className="adm-skeleton" style={{ width: 160, height: 13 }} />
             </div>
           </div>
-        ))}
-      </div>
-    </div>
+          {/* Bottom: price + items | action buttons */}
+          <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
+            <div>
+              <div className="adm-skeleton" style={{ width: 80, height: 18, marginBottom: 5 }} />
+              <div className="adm-skeleton" style={{ width: 50, height: 11 }} />
+            </div>
+            <div style={{ display: 'flex', gap: 6 }}>
+              <div className="adm-skeleton" style={{ width: 72, height: 30, borderRadius: 6 }} />
+              <div className="adm-skeleton" style={{ width: 56, height: 30, borderRadius: 6 }} />
+              <div className="adm-skeleton" style={{ width: 140, height: 30, borderRadius: 6 }} />
+              <div className="adm-skeleton" style={{ width: 32, height: 30, borderRadius: 6 }} />
+            </div>
+          </div>
+        </div>
+      ))}
+    </>
   );
 }
 
