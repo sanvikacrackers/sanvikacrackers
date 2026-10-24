@@ -173,7 +173,7 @@
   background: rgba(255,255,255,0.96);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid #E7E5E4;
-  padding: 0 32px; height: 64px;
+  padding: 12px 32px; min-height: 64px;
   display: flex; align-items: center; justify-content: space-between;
   box-shadow: 0 1px 8px rgba(127,29,29,0.08);
 }
