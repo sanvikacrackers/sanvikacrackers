@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
   UserPlus, Search, ToggleLeft, ToggleRight,
-  Lock, X, Eye, EyeOff, Users, Mail,
+  Lock, X, Eye, EyeOff, Users, Mail, RefreshCw,
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { supabase } from '../../lib/supabase';
@@ -165,6 +165,7 @@ export default function AdminStaff() {
   const [showCreate, setShowCreate] = useState(false);
   const [resetTarget, setResetTarget] = useState(null);
   const [staffStats, setStaffStats] = useState({});
+  const [togglingId, setTogglingId] = useState(null);
 
   const loadStaff = useCallback(async () => {
     setLoading(true);
@@ -196,13 +197,23 @@ export default function AdminStaff() {
   useEffect(() => { loadStaff(); }, [loadStaff]);
 
   const toggleActive = async (member) => {
+    if (togglingId) return;
+    setTogglingId(member.id);
+    const newVal = !member.is_active;
+    // optimistic update
+    setStaff(prev => prev.map(s => s.id === member.id ? { ...s, is_active: newVal } : s));
     const { error } = await supabase
       .from('staff_users')
-      .update({ is_active: !member.is_active })
+      .update({ is_active: newVal })
       .eq('id', member.id);
-    if (error) { toast.error(error.message); return; }
-    toast.success(`${member.name} ${member.is_active ? 'deactivated' : 'activated'}`);
-    loadStaff();
+    if (error) {
+      // revert on failure
+      setStaff(prev => prev.map(s => s.id === member.id ? { ...s, is_active: member.is_active } : s));
+      toast.error(error.message);
+    } else {
+      toast.success(`${member.name} ${newVal ? 'activated' : 'deactivated'}`);
+    }
+    setTogglingId(null);
   };
 
   const filtered = staff.filter((s) => {
@@ -310,13 +321,24 @@ export default function AdminStaff() {
                       <td>
                         <div style={{ display: 'flex', gap: 6 }}>
                           <button
-                            className="sf-btn sf-btn-secondary sf-btn-sm"
+                            className="sf-btn sf-btn-sm"
                             title={member.is_active ? 'Deactivate' : 'Activate'}
                             onClick={() => toggleActive(member)}
+                            disabled={togglingId === member.id}
+                            style={{
+                              background: member.is_active ? '#dcfce7' : '#fee2e2',
+                              color: member.is_active ? '#16a34a' : '#dc2626',
+                              border: `1px solid ${member.is_active ? '#86efac' : '#fca5a5'}`,
+                              display: 'flex', alignItems: 'center', gap: 4,
+                              opacity: togglingId === member.id ? 0.6 : 1,
+                            }}
                           >
-                            {member.is_active
-                              ? <ToggleRight style={{ width: 14, height: 14, color: '#16a34a' }} />
-                              : <ToggleLeft style={{ width: 14, height: 14 }} />}
+                            {togglingId === member.id
+                              ? <RefreshCw style={{ width: 13, height: 13, animation: 'spin 0.8s linear infinite' }} />
+                              : member.is_active
+                                ? <ToggleRight style={{ width: 14, height: 14 }} />
+                                : <ToggleLeft style={{ width: 14, height: 14 }} />}
+                            {togglingId === member.id ? '' : member.is_active ? 'Active' : 'Inactive'}
                           </button>
                           <button
                             className="sf-btn sf-btn-secondary sf-btn-sm"
