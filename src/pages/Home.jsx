@@ -168,7 +168,7 @@ export default function Home() {
 
       {/* ── Banner Skeleton ────────────────────────────────────────── */}
       {bannerLoading && (
-        <div className="skeleton-banner-wrap">
+        <div className="skeleton-banner-wrap" style={{ marginTop: '-104px' }}>
           <div className="skeleton skeleton-banner" />
           <div className="skeleton-banner-dots">
             {[0, 1, 2].map(i => (
@@ -180,7 +180,7 @@ export default function Home() {
 
       {/* ── Hero Banner Carousel ───────────────────────────────────── */}
       {!bannerLoading && banners.length > 0 && (
-        <section style={{ position: 'relative', overflow: 'hidden', background: '#111', width: '100%' }}>
+        <section style={{ position: 'relative', overflow: 'hidden', background: '#111', width: '100%', marginTop: '-104px' }}>
           <div style={{ display: 'flex', transition: 'transform 0.5s ease', transform: `translateX(-${activeSlide * 100}%)` }}>
             {banners.map((b, i) => (
               <img

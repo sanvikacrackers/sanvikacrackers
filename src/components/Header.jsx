@@ -23,11 +23,21 @@ export default function Header() {
   const [open, setOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchVal, setSearchVal] = useState('')
+  const [scrolled, setScrolled] = useState(false)
   const searchRef = useRef(null)
 
   useEffect(() => {
     if (searchOpen) searchRef.current?.focus()
   }, [searchOpen])
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 60)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  const isHome = pathname === '/'
 
   function handleSearch(e) {
     e.preventDefault()
@@ -45,7 +55,12 @@ export default function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50" style={{ background: '#1E1B4B', boxShadow: '0 2px 16px rgba(0,0,0,0.35)', paddingTop: 8, paddingBottom: 8 }}>
+      <header className="sticky top-0 z-50" style={{
+        background: (isHome && !scrolled) ? 'transparent' : '#1E1B4B',
+        boxShadow: (isHome && !scrolled) ? 'none' : '0 2px 16px rgba(0,0,0,0.35)',
+        transition: 'background 0.4s ease, box-shadow 0.4s ease',
+        paddingTop: 8, paddingBottom: 8
+      }}>
         <div className="max-w-[1400px] mx-auto px-4">
           <div className="flex items-center justify-between h-20 gap-4">
 
