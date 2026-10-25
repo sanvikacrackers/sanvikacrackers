@@ -220,66 +220,50 @@ export default function Home() {
             <div style={{ width: 40, height: 3, background: '#4C1D95', margin: '8px auto 0', borderRadius: 2 }} />
           </div>
 
-          {/* 3×2 grid */}
+          {/* 3×2 grid — fixed 6 template category images */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 20 }}>
-            {showcaseCategories.map(cat => {
-              const catImg = parseImages(categoryMap[cat][0]?.image_url)[0]
-              return (
-                <Link
-                  key={cat}
-                  to="/products"
-                  style={{ textDecoration: 'none', display: 'block' }}
-                >
-                  <div style={{
-                    position: 'relative',
-                    aspectRatio: '1 / 1',
-                    borderRadius: 12,
-                    overflow: 'hidden',
-                    background: '#111',
-                    cursor: 'pointer',
+            {[
+              { label: 'Wala Crackers', img: '/category-images/wala-crackers.jpg' },
+              { label: 'Sparklers',     img: '/category-images/sparklers.jpg' },
+              { label: 'Atom Bomb',     img: '/category-images/atom-bomb.jpg' },
+              { label: 'Rocket',        img: '/category-images/rocket.jpg' },
+              { label: 'Gift Boxes',    img: '/category-images/gift-boxes.jpg' },
+              { label: 'Flower Pots',   img: '/category-images/flower-pots.jpg' },
+            ].map(({ label, img }) => (
+              <Link
+                key={label}
+                to="/products"
+                style={{ textDecoration: 'none', display: 'block' }}
+              >
+                <div
+                  style={{ position: 'relative', aspectRatio: '1 / 1', borderRadius: 12, overflow: 'hidden', background: '#111', cursor: 'pointer' }}
+                  onMouseEnter={e => {
+                    const overlay = e.currentTarget.querySelector('.cat-overlay')
+                    if (overlay) overlay.style.opacity = '1'
+                    const underline = e.currentTarget.querySelector('.cat-underline')
+                    if (underline) underline.style.width = '60px'
+                    const imgEl = e.currentTarget.querySelector('img')
+                    if (imgEl) imgEl.style.transform = 'scale(1.06)'
                   }}
-                    onMouseEnter={e => {
-                      const overlay = e.currentTarget.querySelector('.cat-overlay')
-                      if (overlay) overlay.style.opacity = '1'
-                      const underline = e.currentTarget.querySelector('.cat-underline')
-                      if (underline) underline.style.width = '60px'
-                    }}
-                    onMouseLeave={e => {
-                      const overlay = e.currentTarget.querySelector('.cat-overlay')
-                      if (overlay) overlay.style.opacity = '0'
-                      const underline = e.currentTarget.querySelector('.cat-underline')
-                      if (underline) underline.style.width = '24px'
-                    }}
-                  >
-                    {catImg
-                      ? <img src={catImg} alt={cat} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.4s ease' }} />
-                      : <div style={{ width: '100%', height: '100%', background: '#222' }} />
-                    }
-                    {/* Gradient overlay */}
-                    <div style={{
-                      position: 'absolute', inset: 0,
-                      background: 'linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.18) 50%, transparent 100%)',
-                    }} />
-                    {/* Hover tint overlay */}
-                    <div className="cat-overlay" style={{
-                      position: 'absolute', inset: 0,
-                      background: 'rgba(76,29,149,0.18)',
-                      opacity: 0,
-                      transition: 'opacity 0.3s',
-                    }} />
-                    {/* Category name */}
-                    <div style={{ position: 'absolute', bottom: 18, left: 18, right: 18 }}>
-                      <p style={{ color: '#ffffff', fontWeight: 800, fontSize: '1.05rem', margin: '0 0 6px', lineHeight: 1.3 }}>{cat}</p>
-                      <span className="cat-underline" style={{
-                        display: 'block', height: 3, width: 24,
-                        background: '#F59E0B', borderRadius: 2,
-                        transition: 'width 0.3s ease',
-                      }} />
-                    </div>
+                  onMouseLeave={e => {
+                    const overlay = e.currentTarget.querySelector('.cat-overlay')
+                    if (overlay) overlay.style.opacity = '0'
+                    const underline = e.currentTarget.querySelector('.cat-underline')
+                    if (underline) underline.style.width = '24px'
+                    const imgEl = e.currentTarget.querySelector('img')
+                    if (imgEl) imgEl.style.transform = 'scale(1)'
+                  }}
+                >
+                  <img src={img} alt={label} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.4s ease' }} />
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.18) 50%, transparent 100%)' }} />
+                  <div className="cat-overlay" style={{ position: 'absolute', inset: 0, background: 'rgba(77,0,4,0.25)', opacity: 0, transition: 'opacity 0.3s' }} />
+                  <div style={{ position: 'absolute', bottom: 18, left: 18, right: 18 }}>
+                    <p style={{ color: '#ffffff', fontWeight: 800, fontSize: '1.05rem', margin: '0 0 6px', lineHeight: 1.3 }}>{label}</p>
+                    <span className="cat-underline" style={{ display: 'block', height: 3, width: 24, background: '#F59E0B', borderRadius: 2, transition: 'width 0.3s ease' }} />
                   </div>
-                </Link>
-              )
-            })}
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
