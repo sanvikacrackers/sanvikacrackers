@@ -64,6 +64,20 @@ export default function Header() {
               >
                 Tracking
               </a>
+              <Link
+                to="/wishlist"
+                className="nav-link"
+                style={isActive('/wishlist') ? { color: '#F59E0B', fontWeight: 700 } : { color: '#e2e8f0' }}
+              >
+                Wishlist {wishlistCount > 0 && <span style={{ background: '#BE185D', color: '#fff', borderRadius: '50%', width: 16, height: 16, fontSize: 9, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, verticalAlign: 'middle' }}>{wishlistCount}</span>}
+              </Link>
+              <Link
+                to="/cart"
+                className="nav-link"
+                style={isActive('/cart') ? { color: '#F59E0B', fontWeight: 700 } : { color: '#e2e8f0' }}
+              >
+                Cart {cartCount > 0 && <span style={{ background: '#BE185D', color: '#fff', borderRadius: '50%', width: 16, height: 16, fontSize: 9, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, verticalAlign: 'middle' }}>{cartCount}</span>}
+              </Link>
             </nav>
 
             {/* Right side — price list + hamburger only */}
@@ -151,17 +165,19 @@ export default function Header() {
             onClick={() => setOpen(false)}
             style={{
               display: 'block', padding: '13px 20px',
-              fontSize: 15, fontWeight: 500,
-              color: '#222',
+              fontSize: 15, fontWeight: 500, color: '#222',
               textDecoration: 'none',
-              borderLeft: '3px solid transparent',
-              background: 'transparent',
-              transition: 'background 0.15s',
+              borderLeft: '3px solid transparent', background: 'transparent',
             }}
           >
             Tracking
           </a>
-
+          <Link to="/wishlist" onClick={() => setOpen(false)} style={{ display: 'block', padding: '13px 20px', fontSize: 15, fontWeight: isActive('/wishlist') ? 700 : 500, color: isActive('/wishlist') ? '#4C1D95' : '#222', textDecoration: 'none', borderLeft: isActive('/wishlist') ? '3px solid #4C1D95' : '3px solid transparent', background: isActive('/wishlist') ? '#F3E8FF' : 'transparent' }}>
+            Wishlist {wishlistCount > 0 && <span style={{ background: '#BE185D', color: '#fff', borderRadius: '50%', width: 16, height: 16, fontSize: 9, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, verticalAlign: 'middle' }}>{wishlistCount}</span>}
+          </Link>
+          <Link to="/cart" onClick={() => setOpen(false)} style={{ display: 'block', padding: '13px 20px', fontSize: 15, fontWeight: isActive('/cart') ? 700 : 500, color: isActive('/cart') ? '#4C1D95' : '#222', textDecoration: 'none', borderLeft: isActive('/cart') ? '3px solid #4C1D95' : '3px solid transparent', background: isActive('/cart') ? '#F3E8FF' : 'transparent' }}>
+            Cart {cartCount > 0 && <span style={{ background: '#BE185D', color: '#fff', borderRadius: '50%', width: 16, height: 16, fontSize: 9, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, verticalAlign: 'middle' }}>{cartCount}</span>}
+          </Link>
 
           {/* Download Price List — below Contact */}
           {pricelistUrl && (
