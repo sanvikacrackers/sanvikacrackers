@@ -78,7 +78,6 @@ export default function Footer() {
           fontSize: 11, fontWeight: 700, color: '#fff',
           background: '#4C1D95',
           borderRadius: 6, padding: '4px 10px', whiteSpace: 'nowrap',
-          animation: 'float-label 2.5s ease-in-out infinite',
         }}>Call Us</span>
         <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 52 52" style={{ display: 'block', flexShrink: 0 }}>
           <circle cx="26" cy="26" r="26" fill="#00b900"/>
@@ -96,7 +95,6 @@ export default function Footer() {
           fontSize: 11, fontWeight: 700, color: '#fff',
           background: '#25d366',
           borderRadius: 6, padding: '4px 10px', whiteSpace: 'nowrap',
-          animation: 'float-label 2.5s ease-in-out infinite 0.4s',
         }}>WhatsApp</span>
         <img src={whatsappImg} alt="WhatsApp" style={{ width: 56, height: 56, display: 'block', borderRadius: '50%', flexShrink: 0 }} />
       </a>
@@ -111,7 +109,6 @@ export default function Footer() {
           fontSize: 11, fontWeight: 700, color: '#fff',
           background: '#1877f2',
           borderRadius: 6, padding: '4px 10px', whiteSpace: 'nowrap',
-          animation: 'float-label 2.5s ease-in-out infinite 0.8s',
         }}>Facebook</span>
         <img src={facebookImg} alt="Facebook" style={{ width: 48, height: 48, display: 'block', borderRadius: '50%', flexShrink: 0 }} />
       </a>
