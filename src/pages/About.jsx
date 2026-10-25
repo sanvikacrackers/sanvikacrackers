@@ -20,24 +20,24 @@ export default function About() {
   const { } = useShop()
 
   return (
-    <div className="theme-color4 light ltr" style={{ minHeight: '100vh', background: '#FFFBF5' }}>
+    <div className="theme-color4 light ltr" style={{ minHeight: '100vh', background: '#ffffff' }}>
 
       <TopBar />
 
       <Header />
 
       {/* ── Hero Section ── */}
-      <section style={{ background: '#4d0004', padding: '72px 16px' }}>
+      <section style={{ background: '#603034', padding: '72px 16px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 48 }}>
           {/* Left text */}
           <div style={{ flex: '1 1 340px', minWidth: 0 }}>
-            <p style={{ color: '#FDE68A', fontWeight: 700, fontSize: '0.88rem', letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 14px' }}>
+            <p style={{ color: '#B4965A', fontWeight: 700, fontSize: '0.88rem', letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 14px' }}>
               Who We Are
             </p>
             <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 900, color: '#ffffff', lineHeight: 1.2, margin: '0 0 18px' }}>
               About Sanvika Crackers
             </h1>
-            <p style={{ color: '#a0aec0', fontSize: '1.1rem', fontWeight: 500, margin: 0, lineHeight: 1.7 }}>
+            <p style={{ color: '#ffffff', fontSize: '1.1rem', fontWeight: 500, margin: 0, lineHeight: 1.7 }}>
               Premium Quality Fireworks Direct from Sivakasi
             </p>
           </div>
@@ -53,27 +53,28 @@ export default function About() {
       </section>
 
       {/* ── Story + Stats Section ── */}
-      <section style={{ background: '#FFFBF5', padding: '72px 16px' }}>
+      <section style={{ background: '#ffffff', padding: '72px 16px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: 32, alignItems: 'stretch' }}>
           {/* Left: story card */}
           <div style={{
             flex: '1 1 320px', minWidth: 0,
-            background: '#4d0004',
+            background: '#FFFFFF',
             borderRadius: 16,
             padding: '36px 32px',
+            border: '1px solid #E6DED3',
           }}>
-            <h2 style={{ color: '#ffffff', fontWeight: 900, fontSize: '1.5rem', margin: '0 0 6px' }}>Our Story</h2>
-            <div style={{ width: 40, height: 3, background: '#F59E0B', borderRadius: 2, marginBottom: 20 }} />
-            <p style={{ color: '#a0aec0', lineHeight: 1.8, margin: '0 0 16px', fontSize: '0.97rem' }}>
+            <h2 style={{ color: '#392B29', fontWeight: 900, fontSize: '1.5rem', margin: '0 0 6px' }}>Our Story</h2>
+            <div style={{ width: 40, height: 3, background: '#B4965A', borderRadius: 2, marginBottom: 20 }} />
+            <p style={{ color: '#756B62', lineHeight: 1.8, margin: '0 0 16px', fontSize: '0.97rem' }}>
               Sanvika Crackers is a trusted factory outlet based in Sivakasi, Tamil Nadu — the fireworks capital of India.
               We manufacture and sell premium quality fireworks directly to customers at factory prices,
               cutting out middlemen so you always get the best value.
             </p>
-            <p style={{ color: '#a0aec0', lineHeight: 1.8, margin: '0 0 16px', fontSize: '0.97rem' }}>
+            <p style={{ color: '#756B62', lineHeight: 1.8, margin: '0 0 16px', fontSize: '0.97rem' }}>
               With over 127 products across 21 categories — from sparklers and sound crackers to aerial sky shots and gift boxes —
               we have everything you need for Diwali, New Year, weddings, and all your celebrations.
             </p>
-            <p style={{ color: '#a0aec0', lineHeight: 1.8, margin: 0, fontSize: '0.97rem' }}>
+            <p style={{ color: '#756B62', lineHeight: 1.8, margin: 0, fontSize: '0.97rem' }}>
               We are committed to delivering genuine, safe, and high-quality fireworks with fast shipping during
               the festive season. Order online and get delivery right to your doorstep.
             </p>
@@ -88,14 +89,14 @@ export default function About() {
               { num: '4',    label: 'Contact Numbers' },
             ].map(({ num, label }) => (
               <div key={label} style={{
-                background: '#f9fafb',
+                background: '#FFFFFF',
                 borderRadius: 14,
                 padding: '28px 20px',
                 textAlign: 'center',
-                border: '1px solid #f0f0f0',
+                border: '1px solid #E6DED3',
               }}>
-                <div style={{ fontSize: '2rem', fontWeight: 900, color: '#F59E0B', marginBottom: 6 }}>{num}</div>
-                <div style={{ fontSize: '0.88rem', color: '#718096', fontWeight: 600 }}>{label}</div>
+                <div style={{ fontSize: '2rem', fontWeight: 900, color: '#843F43', marginBottom: 6 }}>{num}</div>
+                <div style={{ fontSize: '0.88rem', color: '#756B62', fontWeight: 600 }}>{label}</div>
               </div>
             ))}
           </div>
@@ -103,14 +104,14 @@ export default function About() {
       </section>
 
       {/* ── Why Choose Us ── */}
-      <section style={{ background: '#FFFBF5', padding: '0 16px 72px' }}>
+      <section style={{ background: '#ffffff', padding: '0 16px 72px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           {/* Heading */}
           <div style={{ textAlign: 'center', marginBottom: 40 }}>
-            <h2 style={{ fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)', fontWeight: 900, color: '#4d0004', margin: '0 0 8px' }}>
+            <h2 style={{ fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)', fontWeight: 900, color: '#392B29', margin: '0 0 8px' }}>
               Why Choose Us
             </h2>
-            <div style={{ width: 40, height: 3, background: '#4C1D95', margin: '8px auto 0', borderRadius: 2 }} />
+            <div style={{ width: 40, height: 3, background: '#843F43', margin: '8px auto 0', borderRadius: 2 }} />
           </div>
 
           {/* 3×2 grid of text cards */}
@@ -124,13 +125,14 @@ export default function About() {
               { title: 'Easy Online Ordering',    desc: 'Browse, add to cart, and send your enquiry via WhatsApp in minutes. Simple, fast, and hassle-free.' },
             ].map(({ title, desc }) => (
               <div key={title} style={{
-                background: '#4d0004',
+                background: '#FFFFFF',
                 borderRadius: 12,
                 padding: '28px 24px',
-                borderTop: '3px solid #4C1D95',
+                border: '1px solid #E6DED3',
+                borderTop: '3px solid #843F43',
               }}>
-                <h3 style={{ color: '#ffffff', fontWeight: 800, fontSize: '1rem', margin: '0 0 12px' }}>{title}</h3>
-                <p style={{ color: '#a0aec0', fontSize: '0.9rem', lineHeight: 1.7, margin: 0 }}>{desc}</p>
+                <h3 style={{ color: '#392B29', fontWeight: 800, fontSize: '1rem', margin: '0 0 12px' }}>{title}</h3>
+                <p style={{ color: '#756B62', fontSize: '0.9rem', lineHeight: 1.7, margin: 0 }}>{desc}</p>
               </div>
             ))}
           </div>
@@ -138,20 +140,20 @@ export default function About() {
       </section>
 
       {/* ── Contact Strip ── */}
-      <section style={{ background: '#4C1D95', padding: '52px 16px' }}>
+      <section style={{ background: '#603034', padding: '52px 16px' }}>
         <div style={{ maxWidth: 700, margin: '0 auto', textAlign: 'center' }}>
           <h2 style={{ color: '#ffffff', fontWeight: 900, fontSize: 'clamp(1.4rem, 3vw, 2rem)', margin: '0 0 16px' }}>
             Ready to Order?
           </h2>
-          <p style={{ color: 'rgba(255,255,255,0.88)', fontSize: '1rem', margin: '0 0 28px', lineHeight: 1.7 }}>
+          <p style={{ color: '#ffffff', fontSize: '1rem', margin: '0 0 28px', lineHeight: 1.7 }}>
             Get in touch with us for bulk orders, custom enquiries, or any questions about our products.
           </p>
           <Link
             to="/contact"
             style={{
               display: 'inline-block',
-              background: '#F59E0B',
-              color: '#24163D',
+              background: '#ffffff',
+              color: '#843F43',
               padding: '14px 40px',
               borderRadius: 8,
               fontWeight: 800,
@@ -159,9 +161,10 @@ export default function About() {
               textDecoration: 'none',
               letterSpacing: '0.04em',
               transition: 'background 0.2s',
+              border: '2px solid #ffffff',
             }}
-            onMouseEnter={e => e.currentTarget.style.background = '#D97706'}
-            onMouseLeave={e => e.currentTarget.style.background = '#F59E0B'}
+            onMouseEnter={e => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.borderColor = '#ffffff' }}
+            onMouseLeave={e => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.borderColor = '#ffffff' }}
           >
             Contact Us
           </Link>

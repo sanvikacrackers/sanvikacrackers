@@ -8,8 +8,6 @@ import OrderToast from '../components/OrderToast'
 import { generateOrderPDF } from '../utils/generateOrderPDF'
 import useSEO from '../utils/useSEO'
 import '../App.css'
-import paymentImg from '../assets/payment.jpeg'
-import gpayImg from '../assets/gpay.jpeg'
 
 
 
@@ -127,7 +125,7 @@ export default function Cart() {
   }
 
   return (
-    <div className="theme-color4 light ltr" style={{ minHeight: '100vh', background: '#FFFBF5' }}>
+    <div className="theme-color4 light ltr" style={{ minHeight: '100vh', background: '#ffffff' }}>
 
       <Header />
 
@@ -139,7 +137,7 @@ export default function Cart() {
             <div className="flex justify-center mb-4"><CheckCircle2 size={64} color="#22c55e" /></div>
             <h2 className="text-2xl font-extrabold text-gray-900 mb-3">Enquiry Sent!</h2>
             <p className="text-gray-500 mb-6">Your enquiry has been sent via WhatsApp. Our team will contact you shortly.</p>
-            <Link to="/" className="inline-block bg-[#4C1D95] text-white rounded-lg px-8 py-3 font-semibold hover:bg-[#3B1577] transition-colors no-underline">
+            <Link to="/" className="inline-block bg-[#843F43] text-white rounded-lg px-8 py-3 font-semibold hover:bg-[#70363A] transition-colors no-underline">
               Continue Shopping
             </Link>
           </div>
@@ -148,7 +146,7 @@ export default function Cart() {
             <div className="flex justify-center mb-4"><ShoppingBag size={64} color="#d1d5db" /></div>
             <h2 className="text-2xl font-extrabold text-gray-900 mb-3">Your cart is empty</h2>
             <p className="text-gray-500 mb-6">Add some crackers to get started!</p>
-            <Link to="/" className="inline-block bg-[#4C1D95] text-white rounded-lg px-8 py-3 font-semibold hover:bg-[#3B1577] transition-colors no-underline">
+            <Link to="/" className="inline-block bg-[#843F43] text-white rounded-lg px-8 py-3 font-semibold hover:bg-[#70363A] transition-colors no-underline">
               Shop Products
             </Link>
           </div>
@@ -157,7 +155,7 @@ export default function Cart() {
 
             {/* Cart Items */}
             <div className="lg:col-span-2 flex flex-col gap-4">
-              <h1 className="text-2xl font-extrabold text-gray-900">Your Cart <span className="text-[#4C1D95]">({cartCount} items)</span></h1>
+              <h1 className="text-2xl font-extrabold text-gray-900">Your Cart <span className="text-[#843F43]">({cartCount} items)</span></h1>
               {cartItems.map(({ product: p, qty }) => {
                 const imgs = parseImages(p.image_url)
                 return (
@@ -175,7 +173,7 @@ export default function Cart() {
                         <div className="font-bold text-gray-800 text-sm leading-tight">{p.name}</div>
                         {p.description && <div className="text-xs text-gray-400 mt-0.5">{p.description}</div>}
                         {p.order_unit && <div className="text-xs text-gray-400">{p.order_unit}</div>}
-                        <div className="text-[#4C1D95] font-bold mt-1 text-sm">{fmtPrice(p.price)}</div>
+                        <div className="text-[#843F43] font-bold mt-1 text-sm">{fmtPrice(p.price)}</div>
                       </div>
                       {/* Remove */}
                       <button className="text-gray-400 hover:text-red-500 flex-shrink-0" onClick={() => removeFromCart(p.id)}>
@@ -187,12 +185,12 @@ export default function Cart() {
                       <div style={{ display: 'flex', alignItems: 'center', background: '#f5f5f5', borderRadius: 8, padding: 4, gap: 0 }}>
                         <button
                           onClick={() => setQty(p.id, qty - 1)}
-                          style={{ background: '#4C1D95', color: '#fff', border: 'none', borderRadius: 6, width: 34, height: 34, fontSize: 20, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
+                          style={{ background: '#843F43', color: '#fff', border: 'none', borderRadius: 6, width: 34, height: 34, fontSize: 20, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
                         >−</button>
                         <span style={{ minWidth: 40, textAlign: 'center', fontWeight: 700, fontSize: 15 }}>{qty}</span>
                         <button
                           onClick={() => setQty(p.id, qty + 1)}
-                          style={{ background: '#4C1D95', color: '#fff', border: 'none', borderRadius: 6, width: 34, height: 34, fontSize: 20, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
+                          style={{ background: '#843F43', color: '#fff', border: 'none', borderRadius: 6, width: 34, height: 34, fontSize: 20, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
                         >+</button>
                       </div>
                       <div className="text-base font-extrabold text-gray-800">{fmtPrice(p.price * qty)}</div>
@@ -216,9 +214,9 @@ export default function Cart() {
                 </div>
                 <div className="border-t border-gray-100 pt-4 flex justify-between font-extrabold text-gray-900 text-base">
                   <span>Total</span>
-                  <span className="text-[#4C1D95]">{fmtPrice(cartTotal)}</span>
+                  <span className="text-[#843F43]">{fmtPrice(cartTotal)}</span>
                 </div>
-                <div className="mt-3 text-xs text-gray-400 rounded-lg px-3 py-2" style={{ background: "#FFF7E6" }}>
+                <div className="mt-3 text-xs text-gray-400 rounded-lg px-3 py-2" style={{ background: "#ffffff" }}>
                   Min. order: ₹{minOrder.toLocaleString('en-IN')} ({form.isTN ? labelTN : labelOther})
                 </div>
               </div>
@@ -242,14 +240,6 @@ export default function Cart() {
                 </form>
               </div>
 
-              {/* Payment options */}
-              <div className="bg-white rounded-2xl shadow-sm p-4 text-center">
-                <p className="text-xs text-gray-400 font-semibold mb-2 uppercase tracking-wide">Accepted Payments</p>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, flexWrap: 'wrap' }}>
-                  <img src={paymentImg} alt="Payment Options" style={{ maxWidth: 200, width: '100%', objectFit: 'contain' }} />
-                  <img src={gpayImg} alt="GPay" style={{ maxWidth: 300, width: '100%', objectFit: 'contain', borderRadius: 8 }} />
-                </div>
-              </div>
             </div>
           </div>
         )}

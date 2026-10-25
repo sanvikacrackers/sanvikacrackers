@@ -19,7 +19,7 @@ export default function Wishlist() {
   const { wishlistItems, toggleWishlist, addToCart, setQty, cartQtys, cartCount, wishlistCount } = useShop()
 
   return (
-    <div className="theme-color4 light ltr" style={{ minHeight: '100vh', background: '#FFFBF5' }}>
+    <div className="theme-color4 light ltr" style={{ minHeight: '100vh', background: '#ffffff' }}>
 
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -36,14 +36,14 @@ export default function Wishlist() {
               <Link to="/#contact"  className="nav-link">Contact</Link>
             </nav>
             <div className="flex items-center gap-2">
-              <Link to="/wishlist" className="relative flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold no-underline" style={{ background: "#FCE7F3", border: "1px solid #FBCFE8", color: "#BE185D" }}>
-                <Heart size={18} fill="#BE185D" />
+              <Link to="/wishlist" className="relative flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold no-underline" style={{ background: "#ffffff", border: "1px solid #E6DED3", color: "#843F43" }}>
+                <Heart size={18} fill="#843F43" />
                 <span className="hidden sm:inline">Wishlist</span>
                 {wishlistCount > 0 && <span className="bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center font-bold">{wishlistCount}</span>}
               </Link>
-              <Link to="/cart" className="flex items-center gap-1.5 bg-[#4C1D95] text-white border-none rounded-md px-3 py-2 text-sm font-semibold hover:bg-[#3B1577] transition-colors no-underline">
+              <Link to="/cart" className="flex items-center gap-1.5 bg-[#843F43] text-white border-none rounded-md px-3 py-2 text-sm font-semibold hover:bg-[#70363A] transition-colors no-underline">
                 <ShoppingCart size={18} />
-                Cart {cartCount > 0 && <span className="bg-white text-[#BE185D] rounded-full w-5 h-5 text-xs flex items-center justify-center font-bold">{cartCount}</span>}
+                Cart {cartCount > 0 && <span className="bg-white text-[#843F43] rounded-full w-5 h-5 text-xs flex items-center justify-center font-bold">{cartCount}</span>}
               </Link>
             </div>
           </div>
@@ -53,7 +53,7 @@ export default function Wishlist() {
 
       <div className="max-w-[1100px] mx-auto px-4 py-10">
         <h1 className="text-2xl font-extrabold text-gray-900 mb-6">
-          My Wishlist {wishlistItems.length > 0 && <span className="text-[#BE185D]">({wishlistItems.length} items)</span>}
+          My Wishlist {wishlistItems.length > 0 && <span className="text-[#843F43]">({wishlistItems.length} items)</span>}
         </h1>
 
         {wishlistItems.length === 0 ? (
@@ -61,7 +61,7 @@ export default function Wishlist() {
             <div className="flex justify-center mb-4"><Heart size={64} color="#d1d5db" /></div>
             <h2 className="text-2xl font-extrabold text-gray-900 mb-3">Your wishlist is empty</h2>
             <p className="text-gray-500 mb-6">Tap the heart icon on any product to save it here.</p>
-            <Link to="/" className="inline-block bg-[#4C1D95] text-white rounded-lg px-8 py-3 font-semibold hover:bg-[#3B1577] transition-colors no-underline">
+            <Link to="/" className="inline-block bg-[#843F43] text-white rounded-lg px-8 py-3 font-semibold hover:bg-[#70363A] transition-colors no-underline">
               Browse Products
             </Link>
           </div>
@@ -84,13 +84,13 @@ export default function Wishlist() {
                       onClick={() => toggleWishlist(p.id)}
                       title="Remove from wishlist"
                     >
-                      <X size={14} color="#BE185D" />
+                      <X size={14} color="#843F43" />
                     </button>
                   </div>
                   <div className="p-4 flex flex-col flex-1">
                     <div className="font-bold text-gray-800 text-sm leading-tight mb-0.5">{p.name}</div>
                     {p.description && <div className="text-xs text-gray-400 mb-2">{p.description}</div>}
-                    <div className="text-[#4C1D95] font-bold mb-1">{fmtPrice(p.price)}</div>
+                    <div className="text-[#843F43] font-bold mb-1">{fmtPrice(p.price)}</div>
                     {p.order_unit && <div className="text-xs text-gray-400 mb-3">{p.order_unit}</div>}
                     <div className="mt-auto">
                       {qty === 0 ? (
@@ -110,7 +110,7 @@ export default function Wishlist() {
                             />
                             <button onClick={() => setQty(p.id, qty + 1)}>+</button>
                           </div>
-                          <Link to="/cart" className="text-xs text-[#4C1D95] font-semibold no-underline flex items-center gap-0.5">View Cart <ShoppingCart size={12} /></Link>
+                          <Link to="/cart" className="text-xs text-[#843F43] font-semibold no-underline flex items-center gap-0.5">View Cart <ShoppingCart size={12} /></Link>
                         </div>
                       )}
                     </div>

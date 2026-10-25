@@ -50,7 +50,7 @@ export default function Contact() {
           {['83000 57711'].map(n => (
             <a key={n} href={`tel:+91${n.replace(/\s/g,'')}`}
               style={{ fontSize: '0.93rem', color: '#475569', textDecoration: 'none', whiteSpace: 'nowrap' }}
-              onMouseEnter={e => e.currentTarget.style.color = '#4C1D95'}
+              onMouseEnter={e => e.currentTarget.style.color = '#843F43'}
               onMouseLeave={e => e.currentTarget.style.color = '#475569'}
             >+91 {n}</a>
           ))}
@@ -63,7 +63,7 @@ export default function Contact() {
       content: (
         <a href="mailto:sanvikacrackers2020@gmail.com"
           style={{ fontSize: '0.93rem', color: '#475569', textDecoration: 'none', wordBreak: 'break-all' }}
-          onMouseEnter={e => e.currentTarget.style.color = '#4C1D95'}
+          onMouseEnter={e => e.currentTarget.style.color = '#843F43'}
           onMouseLeave={e => e.currentTarget.style.color = '#475569'}
         >
           sanvikacrackers2020@gmail.com
@@ -73,22 +73,22 @@ export default function Contact() {
   ]
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FFFBF5' }}>
+    <div style={{ minHeight: '100vh', background: '#ffffff' }}>
 
       <TopBar />
 
       <Header />
 
       {/* ── Hero Section ── */}
-      <section style={{ background: '#4d0004', padding: '72px 16px', textAlign: 'center' }}>
+      <section style={{ background: '#603034', padding: '72px 16px', textAlign: 'center' }}>
         <div style={{ maxWidth: 700, margin: '0 auto' }}>
-          <p style={{ color: '#FDE68A', fontWeight: 700, fontSize: '0.88rem', letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 14px' }}>
+          <p style={{ color: '#B4965A', fontWeight: 700, fontSize: '0.88rem', letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 14px' }}>
             Get In Touch
           </p>
           <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 900, color: '#ffffff', lineHeight: 1.2, margin: '0 0 16px' }}>
             Contact Us
           </h1>
-          <p style={{ color: '#a0aec0', fontSize: '1.05rem', margin: 0, lineHeight: 1.7 }}>
+          <p style={{ color: '#ffffff', fontSize: '1.05rem', margin: 0, lineHeight: 1.7 }}>
             We'd love to hear from you. Reach out for orders, bulk enquiries, or any questions about our products.
           </p>
         </div>
@@ -111,7 +111,7 @@ export default function Contact() {
                 {/* Icon in orange circle */}
                 <div style={{
                   width: 52, height: 52, borderRadius: '50%',
-                  background: '#4C1D95',
+                  background: '#843F43',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   flexShrink: 0,
                 }}>
@@ -153,7 +153,7 @@ export default function Contact() {
               boxShadow: '0 1px 6px rgba(0,0,0,0.06)', border: '1px solid #f1f5f9',
               display: 'flex', gap: 12, alignItems: 'flex-start',
             }}>
-              <MapPin size={18} color="#4C1D95" style={{ flexShrink: 0, marginTop: 2 }} />
+              <MapPin size={18} color="#843F43" style={{ flexShrink: 0, marginTop: 2 }} />
               <div style={{ flex: 1 }}>
                 <p style={{ margin: '0 0 2px', fontWeight: 700, color: '#0f172a', fontSize: '0.9rem' }}>Sanvika Crackers</p>
                 <p style={{ margin: '0 0 10px', color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5 }}>
@@ -165,7 +165,7 @@ export default function Contact() {
                   rel="noreferrer"
                   style={{
                     display: 'inline-flex', alignItems: 'center', gap: 6,
-                    background: '#4C1D95', color: '#fff', textDecoration: 'none',
+                    background: '#843F43', color: '#fff', textDecoration: 'none',
                     borderRadius: 8, padding: '8px 16px', fontSize: '0.82rem', fontWeight: 700,
                   }}
                 >
@@ -204,7 +204,7 @@ export default function Contact() {
                         border: '1px solid #e2e8f0', borderRadius: 10,
                         fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit',
                       }}
-                      onFocus={e => e.target.style.borderColor = '#4C1D95'}
+                      onFocus={e => e.target.style.borderColor = '#843F43'}
                       onBlur={e => e.target.style.borderColor = '#e2e8f0'}
                     />
                   </div>
@@ -221,7 +221,7 @@ export default function Contact() {
                         border: '1px solid #e2e8f0', borderRadius: 10,
                         fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit',
                       }}
-                      onFocus={e => e.target.style.borderColor = '#4C1D95'}
+                      onFocus={e => e.target.style.borderColor = '#843F43'}
                       onBlur={e => e.target.style.borderColor = '#e2e8f0'}
                     />
                   </div>
@@ -237,7 +237,7 @@ export default function Contact() {
                         border: '1px solid #e2e8f0', borderRadius: 10,
                         fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit',
                       }}
-                      onFocus={e => e.target.style.borderColor = '#4C1D95'}
+                      onFocus={e => e.target.style.borderColor = '#843F43'}
                       onBlur={e => e.target.style.borderColor = '#e2e8f0'}
                     />
                   </div>
@@ -255,7 +255,7 @@ export default function Contact() {
                         fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit',
                         resize: 'vertical',
                       }}
-                      onFocus={e => e.target.style.borderColor = '#4C1D95'}
+                      onFocus={e => e.target.style.borderColor = '#843F43'}
                       onBlur={e => e.target.style.borderColor = '#e2e8f0'}
                     />
                   </div>

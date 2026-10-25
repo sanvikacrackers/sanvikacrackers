@@ -67,7 +67,7 @@ function SimilarCard({ product }) {
         {offerPct > 0 && (
           <div style={{
             position: 'absolute', top: 7, left: 7, zIndex: 3,
-            background: '#4d0004', color: '#FDE68A',
+            background: '#843F43', color: '#ffffff',
             borderRadius: 20, padding: '3px 8px',
             fontSize: 9, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.3px',
           }}>
@@ -110,10 +110,10 @@ function SimilarCard({ product }) {
             <span style={{ fontSize: 11, fontWeight: 600, color: '#888' }}>Quantity</span>
             <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid #d1d5db', borderRadius: 20, overflow: 'hidden' }}>
               <button type="button" onClick={() => setQty(product.id, qty - 1)}
-                style={{ width: 26, height: 26, border: 'none', background: 'transparent', fontSize: '0.9rem', fontWeight: 700, cursor: 'pointer', color: '#4d0004', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
+                style={{ width: 26, height: 26, border: 'none', background: 'transparent', fontSize: '0.9rem', fontWeight: 700, cursor: 'pointer', color: '#843F43', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
               <span style={{ minWidth: 20, textAlign: 'center', fontSize: 12, fontWeight: 800, color: '#1a1a1a' }}>{qty}</span>
               <button type="button" onClick={() => setQty(product.id, qty + 1)}
-                style={{ width: 26, height: 26, border: 'none', background: 'transparent', fontSize: '0.9rem', fontWeight: 700, cursor: 'pointer', color: '#4d0004', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+                style={{ width: 26, height: 26, border: 'none', background: 'transparent', fontSize: '0.9rem', fontWeight: 700, cursor: 'pointer', color: '#843F43', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
             </div>
           </div>
         )}
@@ -125,7 +125,7 @@ function SimilarCard({ product }) {
         onClick={e => e.stopPropagation()}
       >
         <div>
-          <span style={{ fontSize: '1rem', fontWeight: 800, color: '#4d0004', display: 'block', lineHeight: 1 }}>{fmtPrice(product.price)}</span>
+          <span style={{ fontSize: '1rem', fontWeight: 800, color: '#843F43', display: 'block', lineHeight: 1 }}>{fmtPrice(product.price)}</span>
           {hasMrp && (
             <span style={{ fontSize: '0.68rem', color: '#bbb', textDecoration: 'line-through', display: 'block', marginTop: 2 }}>{fmtPrice(product.mrp)}</span>
           )}
@@ -161,7 +161,7 @@ export default function ProductDetail() {
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
         <div style={{ fontSize: '3rem' }}>🎆</div>
         <p style={{ color: '#64748b', fontSize: '1.1rem' }}>Product not found</p>
-        <button onClick={() => navigate('/products')} style={{ background: '#4C1D95', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', cursor: 'pointer', fontWeight: 600 }}>
+        <button onClick={() => navigate('/products')} style={{ background: '#843F43', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', cursor: 'pointer', fontWeight: 600 }}>
           Back to Products
         </button>
       </div>
@@ -176,7 +176,7 @@ export default function ProductDetail() {
     : 0
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FFFBF5' }}>
+    <div style={{ minHeight: '100vh', background: '#ffffff' }}>
 
       <TopBar />
 
@@ -197,14 +197,14 @@ export default function ProductDetail() {
                 onClick={() => navigate(-1)}
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 6,
-                  background: '#fff', border: '1px solid #4C1D95', color: '#4C1D95',
+                  background: '#fff', border: '1px solid #843F43', color: '#843F43',
                   borderRadius: 999, padding: '6px 16px', fontSize: '0.85rem',
                   fontWeight: 700, cursor: 'pointer', transition: '0.2s',
                 }}
-                onMouseEnter={e => { e.currentTarget.style.background = '#F3E8FF' }}
+                onMouseEnter={e => { e.currentTarget.style.background = '#ffffff' }}
                 onMouseLeave={e => { e.currentTarget.style.background = '#fff' }}
               >
-                <ArrowLeft size={14} color="#4C1D95" /> Back
+                <ArrowLeft size={14} color="#843F43" /> Back
               </button>
             </div>
 
@@ -234,7 +234,7 @@ export default function ProductDetail() {
               {product.discount_percentage > 0 && (
                 <span style={{
                   position: 'absolute', top: 16, left: 16,
-                  background: '#ef4444', color: '#fff',
+                  background: '#843F43', color: '#fff',
                   fontSize: '0.78rem', fontWeight: 700,
                   borderRadius: 8, padding: '4px 10px', zIndex: 2,
                 }}>
@@ -262,9 +262,9 @@ export default function ProductDetail() {
                     style={{
                       width: 80, height: 80, flexShrink: 0,
                       borderRadius: 12, overflow: 'hidden', padding: 0,
-                      border: i === activeImg ? '3px solid #4C1D95' : '1px solid #e2e8f0',
+                      border: i === activeImg ? '3px solid #843F43' : '1px solid #e2e8f0',
                       cursor: 'pointer', opacity: i === activeImg ? 1 : 0.65,
-                      boxShadow: i === activeImg ? '0 4px 12px rgba(76,29,149,0.25)' : 'none',
+                      boxShadow: i === activeImg ? '0 4px 12px rgba(132,63,67,0.25)' : 'none',
                       transition: '0.2s', background: 'none',
                     }}
                   >
@@ -282,7 +282,7 @@ export default function ProductDetail() {
             <div style={{ marginBottom: 12 }}>
               <span style={{
                 display: 'inline-flex', alignItems: 'center', gap: 5,
-                background: '#F3E8FF', color: '#4C1D95',
+                background: '#ffffff', color: '#843F43',
                 border: '1px solid rgba(76,29,149,0.2)',
                 borderRadius: 6, padding: '5px 12px', fontSize: '0.8rem', fontWeight: 600,
               }}>
@@ -323,7 +323,7 @@ export default function ProductDetail() {
                 )}
                 {product.discount_percentage > 0 && (
                   <span style={{
-                    background: '#ef4444', color: '#fff',
+                    background: '#843F43', color: '#fff',
                     borderRadius: 6, padding: '4px 10px', fontSize: '0.88rem', fontWeight: 700,
                   }}>
                     SAVE {product.discount_percentage}% OFF
@@ -355,7 +355,7 @@ export default function ProductDetail() {
                   borderRadius: 10, padding: '12px 16px',
                   display: 'inline-flex', alignItems: 'center', gap: 8, width: '100%', boxSizing: 'border-box',
                 }}>
-                  <Package size={16} color="#4C1D95" />
+                  <Package size={16} color="#843F43" />
                   <span style={{ fontWeight: 700, color: '#1e293b', fontSize: '1rem' }}>{product.order_unit}</span>
                 </div>
               </div>
@@ -367,21 +367,21 @@ export default function ProductDetail() {
                 <button
                   onClick={() => addToCart(product.id)}
                   style={{
-                    width: '100%', background: '#4C1D95', color: '#fff',
+                    width: '100%', background: '#843F43', color: '#fff',
                     border: 'none', borderRadius: 999,
                     padding: '14px 0', fontSize: '1rem', fontWeight: 700,
                     cursor: 'pointer', transition: 'background 0.2s',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                   }}
-                  onMouseEnter={e => e.currentTarget.style.background = '#3B1577'}
-                  onMouseLeave={e => e.currentTarget.style.background = '#4C1D95'}
+                  onMouseEnter={e => e.currentTarget.style.background = '#70363A'}
+                  onMouseLeave={e => e.currentTarget.style.background = '#843F43'}
                 >
                   <ShoppingCart size={18} /> Add to Cart
                 </button>
               ) : (
                 <div style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  border: '2px solid #4C1D95', borderRadius: 999,
+                  border: '2px solid #843F43', borderRadius: 999,
                   minHeight: 52, padding: '0 8px', background: '#fff', width: '100%',
                   boxSizing: 'border-box',
                 }}>
@@ -390,7 +390,7 @@ export default function ProductDetail() {
                     onClick={() => qty <= 1 ? setQty(product.id, 0) : setQty(product.id, qty - 1)}
                     style={{
                       width: 38, height: 38, border: 'none', background: 'transparent',
-                      fontSize: '1.4rem', fontWeight: 700, cursor: 'pointer', color: '#4C1D95',
+                      fontSize: '1.4rem', fontWeight: 700, cursor: 'pointer', color: '#843F43',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1, flexShrink: 0,
                     }}
                   >−</button>
@@ -405,19 +405,19 @@ export default function ProductDetail() {
                       }}
                       style={{
                         width: 50, textAlign: 'center', fontWeight: 800,
-                        fontSize: '1.25rem', color: '#4C1D95',
+                        fontSize: '1.25rem', color: '#843F43',
                         border: 'none', background: 'transparent', outline: 'none', padding: 0, margin: 0,
                         MozAppearance: 'textfield', WebkitAppearance: 'none',
                       }}
                     />
-                    <span style={{ fontSize: '1.1rem', fontWeight: 700, color: '#4C1D95' }}>in Cart</span>
+                    <span style={{ fontSize: '1.1rem', fontWeight: 700, color: '#843F43' }}>in Cart</span>
                   </div>
                   <button
                     type="button"
                     onClick={() => setQty(product.id, qty + 1)}
                     style={{
                       width: 38, height: 38, border: 'none', background: 'transparent',
-                      fontSize: '1.4rem', fontWeight: 700, cursor: 'pointer', color: '#4C1D95',
+                      fontSize: '1.4rem', fontWeight: 700, cursor: 'pointer', color: '#843F43',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1, flexShrink: 0,
                     }}
                   >+</button>
@@ -429,7 +429,7 @@ export default function ProductDetail() {
             {qty > 0 && (
               <Link to="/cart" style={{
                 display: 'block', textAlign: 'center', marginTop: 10,
-                color: '#4C1D95', fontSize: '0.88rem', fontWeight: 600,
+                color: '#843F43', fontSize: '0.88rem', fontWeight: 600,
                 textDecoration: 'none',
               }}>
                 View Cart →
@@ -444,10 +444,10 @@ export default function ProductDetail() {
         const similar = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 8)
         if (!similar.length) return null
         return (
-          <div style={{ background: '#FFFBF5', borderTop: '1px solid #E9D5B8', padding: '40px 0' }}>
+          <div style={{ background: '#ffffff', borderTop: '1px solid #E6DED3', padding: '40px 0' }}>
             <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 16px' }}>
               <div style={{ marginBottom: 24 }}>
-                <p style={{ margin: '0 0 4px', fontSize: '0.82rem', color: '#4C1D95', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
+                <p style={{ margin: '0 0 4px', fontSize: '0.82rem', color: '#843F43', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
                   More from this category
                 </p>
                 <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800, color: '#0f172a' }}>

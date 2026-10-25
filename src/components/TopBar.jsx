@@ -9,18 +9,18 @@ export default function TopBar() {
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 16, whiteSpace: 'nowrap' }}>
       <img src={LOGO} alt="Sanvika Crackers" style={{ height: 28, width: 'auto', objectFit: 'contain', verticalAlign: 'middle', borderRadius: 3 }} />
       {announcement && (
-        <span style={{ color: '#fcd34d', fontWeight: 600 }}>{announcement}</span>
+        <span style={{ color: '#B4965A', fontWeight: 600 }}>{announcement}</span>
       )}
-      <span style={{ color: '#FDE68A' }}>
+      <span style={{ color: '#ffffff' }}>
         Browse our products and send enquiry via WhatsApp.&nbsp;
         <strong style={{ color: '#ffffff' }}>Not a direct sale portal.</strong>
       </span>
-      <span style={{ color: '#4b5563', margin: '0 20px' }}>·</span>
+      <span style={{ color: 'rgba(241,233,220,0.4)', margin: '0 20px' }}>·</span>
     </span>
   )
 
   return (
-    <div style={{ background: '#3a0003', borderBottom: '1px solid rgba(245,158,11,0.25)', color: '#d1d5db', fontSize: 12, padding: '7px 0', overflow: 'hidden', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+    <div style={{ background: '#603034', borderBottom: '1px solid rgba(180,150,90,0.25)', color: '#ffffff', fontSize: 12, padding: '7px 0', overflow: 'hidden', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
       <div style={{ display: 'flex', whiteSpace: 'nowrap', overflow: 'hidden' }}>
         <div style={{ display: 'inline-flex', animation: 'marquee-scroll 30s linear infinite' }}>
           {marqueeContent}{marqueeContent}{marqueeContent}

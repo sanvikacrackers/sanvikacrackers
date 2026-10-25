@@ -76,7 +76,7 @@ function ProductCard({ product }) {
           {offerPct > 0 && (
             <div style={{
               position: 'absolute', top: 10, left: 10, zIndex: 3,
-              background: '#4d0004', color: '#FDE68A',
+              background: '#843F43', color: '#ffffff',
               borderRadius: 20, padding: '4px 10px',
               fontSize: 10, fontWeight: 800,
               letterSpacing: '0.4px', textTransform: 'uppercase',
@@ -110,7 +110,7 @@ function ProductCard({ product }) {
                 onClick={e => { e.stopPropagation(); setActiveImg(i) }}
                 style={{
                   width: 24, height: 24, borderRadius: 5, overflow: 'hidden', padding: 0, flexShrink: 0,
-                  border: i === activeImg ? '2px solid #4d0004' : '1px solid #ddd',
+                  border: i === activeImg ? '2px solid #843F43' : '1px solid #ddd',
                   cursor: 'pointer', opacity: i === activeImg ? 1 : 0.55, transition: '0.15s', background: 'none',
                 }}
               >
@@ -137,45 +137,28 @@ function ProductCard({ product }) {
             {product.category && (
               <div style={{ flex: 1, padding: '7px 8px', borderRight: product.order_unit ? '1px solid #f0ece6' : 'none' }}>
                 <p style={{ fontSize: 9, color: '#bbb', margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.4px' }}>Category</p>
-                <p style={{ fontSize: 11, fontWeight: 700, color: '#4d0004', margin: 0, lineHeight: 1.2 }}>{product.category}</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: '#843F43', margin: 0, lineHeight: 1.2 }}>{product.category}</p>
               </div>
             )}
             {product.order_unit && (
               <div style={{ flex: 1, padding: '7px 8px' }}>
                 <p style={{ fontSize: 9, color: '#bbb', margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.4px' }}>Unit</p>
-                <p style={{ fontSize: 11, fontWeight: 700, color: '#4d0004', margin: 0, lineHeight: 1.2 }}>{product.order_unit}</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: '#843F43', margin: 0, lineHeight: 1.2 }}>{product.order_unit}</p>
               </div>
             )}
           </div>
         )}
 
         <div style={{ flex: 1 }} />
-
-        {/* Quantity row — only when in cart */}
-        {qty > 0 && (
-          <div
-            onClick={e => e.stopPropagation()}
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}
-          >
-            <span style={{ fontSize: 12, fontWeight: 600, color: '#888' }}>Quantity</span>
-            <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid #d1d5db', borderRadius: 20, overflow: 'hidden' }}>
-              <button type="button" onClick={() => setQty(product.id, qty - 1)}
-                style={{ width: 30, height: 28, border: 'none', background: 'transparent', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', color: '#4d0004', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
-              <span style={{ minWidth: 24, textAlign: 'center', fontSize: 13, fontWeight: 800, color: '#1a1a1a' }}>{qty}</span>
-              <button type="button" onClick={() => setQty(product.id, qty + 1)}
-                style={{ width: 30, height: 28, border: 'none', background: 'transparent', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', color: '#4d0004', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* Price + Add to Cart row */}
+      {/* Price + Cart / Qty row */}
       <div
         style={{ padding: '0 14px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}
         onClick={e => e.stopPropagation()}
       >
         <div>
-          <p style={{ fontSize: 17, fontWeight: 900, color: '#4d0004', margin: 0, lineHeight: 1 }}>
+          <p style={{ fontSize: 17, fontWeight: 900, color: '#843F43', margin: 0, lineHeight: 1 }}>
             {fmtPrice(product.price)}
           </p>
           {hasMrp && (
@@ -184,11 +167,21 @@ function ProductCard({ product }) {
             </span>
           )}
         </div>
-        <AddToCartButton
-          disabled={!product.is_active}
-          label={qty > 0 ? 'More' : 'Cart'}
-          onClick={() => addToCart(product.id)}
-        />
+        {qty > 0 ? (
+          <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid #d1d5db', borderRadius: 20, overflow: 'hidden', flexShrink: 0 }}>
+            <button type="button" onClick={() => setQty(product.id, qty - 1)}
+              style={{ width: 32, height: 36, border: 'none', background: 'transparent', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', color: '#1a1a1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
+            <span style={{ minWidth: 28, textAlign: 'center', fontSize: 13, fontWeight: 800, color: '#1a1a1a' }}>{qty}</span>
+            <button type="button" onClick={() => setQty(product.id, qty + 1)}
+              style={{ width: 32, height: 36, border: 'none', background: 'transparent', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', color: '#1a1a1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+          </div>
+        ) : (
+          <AddToCartButton
+            disabled={!product.is_active}
+            label="Cart"
+            onClick={() => addToCart(product.id)}
+          />
+        )}
       </div>
     </div>
   )
@@ -210,12 +203,12 @@ function FilterSidebar({ categories, selectedCats, onToggleCat, search, onSearch
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 14, borderBottom: '1px solid #f1f5f9', marginBottom: 18 }}>
         <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#1e293b', display: 'flex', alignItems: 'center', gap: 8 }}>
-          <SlidersHorizontal size={18} color="#4C1D95" />
+          <SlidersHorizontal size={18} color="#843F43" />
           Filters
         </h4>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           {hasAnyFilter && (
-            <button onClick={onClearAll} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#BE185D', fontSize: '0.8rem', fontWeight: 600 }}>
+            <button onClick={onClearAll} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#843F43', fontSize: '0.8rem', fontWeight: 600 }}>
               Clear all
             </button>
           )}
@@ -245,7 +238,7 @@ function FilterSidebar({ categories, selectedCats, onToggleCat, search, onSearch
               height: 40, fontSize: '0.88rem',
               border: '1px solid #e2e8f0', outline: 'none', fontFamily: 'inherit',
             }}
-            onFocus={e => e.target.style.borderColor = '#4C1D95'}
+            onFocus={e => e.target.style.borderColor = '#843F43'}
             onBlur={e => e.target.style.borderColor = '#e2e8f0'}
           />
           {search && (
@@ -278,7 +271,7 @@ function FilterSidebar({ categories, selectedCats, onToggleCat, search, onSearch
               step={10}
               value={priceRange[1]}
               onChange={e => onPriceRange([priceRange[0], Number(e.target.value)])}
-              style={{ width: '100%', accentColor: '#4C1D95', marginBottom: 10 }}
+              style={{ width: '100%', accentColor: '#843F43', marginBottom: 10 }}
             />
             {/* Min / Max inputs */}
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
@@ -295,7 +288,7 @@ function FilterSidebar({ categories, selectedCats, onToggleCat, search, onSearch
                     border: '1px solid #e2e8f0', borderRadius: 8,
                     fontSize: '0.85rem', fontFamily: 'inherit', outline: 'none',
                   }}
-                  onFocus={e => e.target.style.borderColor = '#4C1D95'}
+                  onFocus={e => e.target.style.borderColor = '#843F43'}
                   onBlur={e => e.target.style.borderColor = '#e2e8f0'}
                 />
               </div>
@@ -313,12 +306,12 @@ function FilterSidebar({ categories, selectedCats, onToggleCat, search, onSearch
                     border: '1px solid #e2e8f0', borderRadius: 8,
                     fontSize: '0.85rem', fontFamily: 'inherit', outline: 'none',
                   }}
-                  onFocus={e => e.target.style.borderColor = '#4C1D95'}
+                  onFocus={e => e.target.style.borderColor = '#843F43'}
                   onBlur={e => e.target.style.borderColor = '#e2e8f0'}
                 />
               </div>
             </div>
-            <div style={{ fontSize: '0.75rem', color: '#4C1D95', fontWeight: 600, marginTop: 6, textAlign: 'center' }}>
+            <div style={{ fontSize: '0.75rem', color: '#843F43', fontWeight: 600, marginTop: 6, textAlign: 'center' }}>
               ₹{priceRange[0].toLocaleString('en-IN')} – ₹{priceRange[1].toLocaleString('en-IN')}
             </div>
           </div>
@@ -348,16 +341,16 @@ function FilterSidebar({ categories, selectedCats, onToggleCat, search, onSearch
             <label style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
               padding: '7px 8px', borderRadius: 8, marginBottom: 2, cursor: 'pointer',
-              background: selectedCats.length === 0 ? '#F3E8FF' : 'transparent',
+              background: selectedCats.length === 0 ? '#ffffff' : 'transparent',
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <input
                   type="checkbox"
                   checked={selectedCats.length === 0}
                   onChange={() => onToggleCat(null)}
-                  style={{ width: 15, height: 15, accentColor: '#4C1D95', cursor: 'pointer' }}
+                  style={{ width: 15, height: 15, accentColor: '#843F43', cursor: 'pointer' }}
                 />
-                <span style={{ fontSize: '0.88rem', fontWeight: selectedCats.length === 0 ? 700 : 400, color: selectedCats.length === 0 ? '#4C1D95' : '#334155' }}>
+                <span style={{ fontSize: '0.88rem', fontWeight: selectedCats.length === 0 ? 700 : 400, color: selectedCats.length === 0 ? '#843F43' : '#334155' }}>
                   All Categories
                 </span>
               </div>
@@ -372,23 +365,23 @@ function FilterSidebar({ categories, selectedCats, onToggleCat, search, onSearch
                 <label key={name} style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                   padding: '7px 8px', borderRadius: 8, marginBottom: 2, cursor: 'pointer',
-                  background: checked ? '#F3E8FF' : 'transparent',
+                  background: checked ? '#ffffff' : 'transparent',
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
                     <input
                       type="checkbox"
                       checked={checked}
                       onChange={() => onToggleCat(name)}
-                      style={{ width: 15, height: 15, accentColor: '#4C1D95', cursor: 'pointer', flexShrink: 0 }}
+                      style={{ width: 15, height: 15, accentColor: '#843F43', cursor: 'pointer', flexShrink: 0 }}
                     />
                     <span style={{
                       width: 7, height: 7, borderRadius: '50%', flexShrink: 0,
-                      background: checked ? '#4C1D95' : '#cbd5e1',
+                      background: checked ? '#843F43' : '#cbd5e1',
                       display: 'inline-block',
                     }} />
                     <span style={{
                       fontSize: '0.88rem', fontWeight: checked ? 700 : 400,
-                      color: checked ? '#4C1D95' : '#334155',
+                      color: checked ? '#843F43' : '#334155',
                     }}>{name}</span>
                   </div>
                   <span style={{ fontSize: '0.72rem', background: '#f1f5f9', color: '#64748b', borderRadius: 999, padding: '1px 8px', flexShrink: 0 }}>
@@ -485,7 +478,7 @@ export default function Products() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FFFBF5' }}>
+    <div style={{ minHeight: '100vh', background: '#ffffff' }}>
 
       <TopBar />
 
@@ -516,7 +509,7 @@ export default function Products() {
                   fontSize: '0.9rem', border: '1.5px solid #e2e8f0',
                   background: '#fff', outline: 'none', fontFamily: 'inherit',
                 }}
-                onFocus={e => e.target.style.borderColor = '#4C1D95'}
+                onFocus={e => e.target.style.borderColor = '#843F43'}
                 onBlur={e => e.target.style.borderColor = '#e2e8f0'}
               />
               {search && (
@@ -531,13 +524,13 @@ export default function Products() {
               className="lg:hidden"
               style={{
                 display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0,
-                background: '#4C1D95', color: '#fff', border: 'none',
+                background: '#843F43', color: '#fff', border: 'none',
                 borderRadius: 8, padding: '8px 14px', fontSize: 14, fontWeight: 600, cursor: 'pointer',
               }}
             >
               <SlidersVertical size={16} /> Filters
               {hasAnyFilter && (
-                <span style={{ background: '#fff', color: '#4C1D95', borderRadius: '50%', width: 18, height: 18, fontSize: 11, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800 }}>
+                <span style={{ background: '#fff', color: '#843F43', borderRadius: '50%', width: 18, height: 18, fontSize: 11, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800 }}>
                   !
                 </span>
               )}
@@ -604,7 +597,7 @@ export default function Products() {
                 <p style={{ margin: '0 0 16px' }}>Try adjusting your search or filters</p>
                 <button
                   onClick={clearAll}
-                  style={{ background: '#4C1D95', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', cursor: 'pointer', fontWeight: 600 }}
+                  style={{ background: '#843F43', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', cursor: 'pointer', fontWeight: 600 }}
                 >
                   Clear Filters
                 </button>

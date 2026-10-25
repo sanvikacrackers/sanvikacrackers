@@ -10,12 +10,12 @@ export default function AddToCartButton({ onClick, label = 'Cart', disabled = fa
         height: 44,
         padding: '0 18px',
         background: disabled
-          ? 'rgba(255,255,255,0.06)'
-          : 'linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%)',
-        color: disabled ? 'rgba(255,255,255,0.28)' : '#ffffff',
+          ? 'rgba(0,0,0,0.04)'
+          : '#1a1a1a',
+        color: disabled ? 'rgba(0,0,0,0.25)' : '#ffffff',
         border: disabled
-          ? '1px solid rgba(255,255,255,0.08)'
-          : '1px solid #3a3a3a',
+          ? '1px solid rgba(0,0,0,0.08)'
+          : '1px solid #2a2a2a',
         borderRadius: 8,
         display: 'flex',
         alignItems: 'center',
@@ -26,36 +26,36 @@ export default function AddToCartButton({ onClick, label = 'Cart', disabled = fa
         fontFamily: 'inherit',
         letterSpacing: '0.01em',
         cursor: disabled ? 'not-allowed' : 'pointer',
-        boxShadow: disabled ? 'none' : '0 2px 8px rgba(0,0,0,0.45)',
+        boxShadow: disabled ? 'none' : '0 2px 8px rgba(0,0,0,0.35)',
         transition: 'background 0.18s, transform 0.12s, box-shadow 0.18s',
         userSelect: 'none',
         outline: 'none',
       }}
       onMouseEnter={e => {
         if (disabled) return
-        e.currentTarget.style.background = 'linear-gradient(180deg, #363636 0%, #262626 100%)'
+        e.currentTarget.style.background = '#333333'
         e.currentTarget.style.transform = 'translateY(-2px)'
-        e.currentTarget.style.boxShadow = '0 6px 18px rgba(0,0,0,0.55)'
+        e.currentTarget.style.boxShadow = '0 6px 18px rgba(0,0,0,0.45)'
       }}
       onMouseLeave={e => {
         if (disabled) return
-        e.currentTarget.style.background = 'linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%)'
+        e.currentTarget.style.background = '#1a1a1a'
         e.currentTarget.style.transform = ''
-        e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.45)'
+        e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.35)'
       }}
       onMouseDown={e => {
         if (disabled) return
         e.currentTarget.style.transform = 'translateY(1px)'
-        e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.4)'
+        e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.3)'
       }}
       onMouseUp={e => {
         if (disabled) return
         e.currentTarget.style.transform = 'translateY(-2px)'
-        e.currentTarget.style.boxShadow = '0 6px 18px rgba(0,0,0,0.55)'
+        e.currentTarget.style.boxShadow = '0 6px 18px rgba(0,0,0,0.45)'
       }}
       onFocus={e => {
         if (disabled) return
-        e.currentTarget.style.outline = '2px solid rgba(245,158,11,0.6)'
+        e.currentTarget.style.outline = '2px solid rgba(180,150,90,0.6)'
         e.currentTarget.style.outlineOffset = '2px'
       }}
       onBlur={e => {

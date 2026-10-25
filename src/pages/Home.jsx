@@ -78,7 +78,7 @@ function ProductCard({ product }) {
         {offerPct > 0 && (
           <div style={{
             position: 'absolute', top: 10, left: 10, zIndex: 3,
-            background: '#4d0004', color: '#FDE68A',
+            background: '#843F43', color: '#ffffff',
             borderRadius: 20, padding: '4px 10px',
             fontSize: 10, fontWeight: 800,
             letterSpacing: '0.4px', textTransform: 'uppercase',
@@ -121,45 +121,28 @@ function ProductCard({ product }) {
             {product.category && (
               <div style={{ flex: 1, padding: '7px 8px', borderRight: product.order_unit ? '1px solid #f0ece6' : 'none' }}>
                 <p style={{ fontSize: 9, color: '#bbb', margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.4px' }}>Category</p>
-                <p style={{ fontSize: 11, fontWeight: 700, color: '#4d0004', margin: 0, lineHeight: 1.2 }}>{product.category}</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: '#843F43', margin: 0, lineHeight: 1.2 }}>{product.category}</p>
               </div>
             )}
             {product.order_unit && (
               <div style={{ flex: 1, padding: '7px 8px' }}>
                 <p style={{ fontSize: 9, color: '#bbb', margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.4px' }}>Unit</p>
-                <p style={{ fontSize: 11, fontWeight: 700, color: '#4d0004', margin: 0, lineHeight: 1.2 }}>{product.order_unit}</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: '#843F43', margin: 0, lineHeight: 1.2 }}>{product.order_unit}</p>
               </div>
             )}
           </div>
         )}
 
         <div style={{ flex: 1 }} />
-
-        {/* Quantity row — only when in cart */}
-        {qty > 0 && (
-          <div
-            onClick={e => e.stopPropagation()}
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}
-          >
-            <span style={{ fontSize: 12, fontWeight: 600, color: '#888' }}>Quantity</span>
-            <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid #d1d5db', borderRadius: 20, overflow: 'hidden' }}>
-              <button type="button" onClick={() => setQty(product.id, qty - 1)}
-                style={{ width: 30, height: 28, border: 'none', background: 'transparent', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', color: '#4d0004', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
-              <span style={{ minWidth: 24, textAlign: 'center', fontSize: 13, fontWeight: 800, color: '#1a1a1a' }}>{qty}</span>
-              <button type="button" onClick={() => setQty(product.id, qty + 1)}
-                style={{ width: 30, height: 28, border: 'none', background: 'transparent', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', color: '#4d0004', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* Price + Add to Cart row */}
+      {/* Price + Cart / Qty row */}
       <div
         style={{ padding: '0 14px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}
         onClick={e => e.stopPropagation()}
       >
         <div>
-          <p style={{ fontSize: 17, fontWeight: 900, color: '#4d0004', margin: 0, lineHeight: 1 }}>
+          <p style={{ fontSize: 17, fontWeight: 900, color: '#843F43', margin: 0, lineHeight: 1 }}>
             {fmtPrice(product.price)}
           </p>
           {hasMrp && (
@@ -168,11 +151,21 @@ function ProductCard({ product }) {
             </span>
           )}
         </div>
-        <AddToCartButton
-          disabled={!product.is_active}
-          label={qty > 0 ? 'More' : 'Cart'}
-          onClick={() => addToCart(product.id)}
-        />
+        {qty > 0 ? (
+          <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid #d1d5db', borderRadius: 20, overflow: 'hidden', flexShrink: 0 }}>
+            <button type="button" onClick={() => setQty(product.id, qty - 1)}
+              style={{ width: 32, height: 36, border: 'none', background: 'transparent', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', color: '#1a1a1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
+            <span style={{ minWidth: 28, textAlign: 'center', fontSize: 13, fontWeight: 800, color: '#1a1a1a' }}>{qty}</span>
+            <button type="button" onClick={() => setQty(product.id, qty + 1)}
+              style={{ width: 32, height: 36, border: 'none', background: 'transparent', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', color: '#1a1a1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+          </div>
+        ) : (
+          <AddToCartButton
+            disabled={!product.is_active}
+            label="Cart"
+            onClick={() => addToCart(product.id)}
+          />
+        )}
       </div>
     </div>
   )
@@ -268,15 +261,15 @@ export default function Home() {
           </div>
           {banners.length > 1 && (
             <>
-              <button onClick={() => goSlide(-1)} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.92)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#4d0004' }}>
+              <button onClick={() => goSlide(-1)} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.92)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#843F43' }}>
                 <ChevronLeft size={22} />
               </button>
-              <button onClick={() => goSlide(1)} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.92)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#4d0004' }}>
+              <button onClick={() => goSlide(1)} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.92)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#843F43' }}>
                 <ChevronRight size={22} />
               </button>
               <div style={{ position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 6 }}>
                 {banners.map((_, i) => (
-                  <button key={i} onClick={() => setActiveSlide(i)} style={{ width: i === activeSlide ? 24 : 8, height: 8, borderRadius: 4, background: i === activeSlide ? '#F59E0B' : 'rgba(255,255,255,0.6)', border: 'none', cursor: 'pointer', padding: 0, transition: 'width 0.3s' }} />
+                  <button key={i} onClick={() => setActiveSlide(i)} style={{ width: i === activeSlide ? 24 : 8, height: 8, borderRadius: 4, background: i === activeSlide ? '#B4965A' : 'rgba(255,255,255,0.6)', border: 'none', cursor: 'pointer', padding: 0, transition: 'width 0.3s' }} />
                 ))}
               </div>
             </>
@@ -285,14 +278,14 @@ export default function Home() {
       )}
 
       {/* ── Category Showcase Section ────────────────────────────────── */}
-      <section style={{ background: '#FFFBF5', padding: '72px 16px' }}>
+      <section style={{ background: '#ffffff', padding: '72px 16px' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           {/* Heading */}
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <h2 style={{ fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 900, color: '#4d0004', margin: '0 0 8px' }}>
+            <h2 style={{ fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 900, color: '#843F43', margin: '0 0 8px' }}>
               Our Products
             </h2>
-            <div style={{ width: 40, height: 3, background: '#4C1D95', margin: '8px auto 0', borderRadius: 2 }} />
+            <div style={{ width: 40, height: 3, background: '#843F43', margin: '8px auto 0', borderRadius: 2 }} />
           </div>
 
           {/* 3×2 grid — fixed 6 template category images */}
@@ -331,10 +324,10 @@ export default function Home() {
                 >
                   <img src={img} alt={label} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.4s ease' }} />
                   <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.18) 50%, transparent 100%)' }} />
-                  <div className="cat-overlay" style={{ position: 'absolute', inset: 0, background: 'rgba(77,0,4,0.25)', opacity: 0, transition: 'opacity 0.3s' }} />
+                  <div className="cat-overlay" style={{ position: 'absolute', inset: 0, background: 'rgba(132,63,67,0.25)', opacity: 0, transition: 'opacity 0.3s' }} />
                   <div style={{ position: 'absolute', bottom: 18, left: 18, right: 18 }}>
                     <p style={{ color: '#ffffff', fontWeight: 800, fontSize: '1.05rem', margin: '0 0 6px', lineHeight: 1.3 }}>{label}</p>
-                    <span className="cat-underline" style={{ display: 'block', height: 3, width: 24, background: '#F59E0B', borderRadius: 2, transition: 'width 0.3s ease' }} />
+                    <span className="cat-underline" style={{ display: 'block', height: 3, width: 24, background: '#B4965A', borderRadius: 2, transition: 'width 0.3s ease' }} />
                   </div>
                 </div>
               </Link>
@@ -344,7 +337,7 @@ export default function Home() {
       </section>
 
       {/* ── CTA Band ─────────────────────────────────────────────────── */}
-      <section style={{ background: '#4d0004', padding: '52px 16px' }}>
+      <section style={{ background: '#603034', padding: '52px 16px' }}>
         <div style={{
           maxWidth: 1200, margin: '0 auto',
           display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 24,
@@ -353,7 +346,7 @@ export default function Home() {
             <h2 style={{ color: '#ffffff', fontWeight: 900, fontSize: 'clamp(1.4rem, 3vw, 2rem)', margin: '0 0 10px', lineHeight: 1.25 }}>
               Explore Sanvika Crackers
             </h2>
-            <p style={{ color: 'rgba(255,255,255,0.88)', fontSize: '1rem', margin: 0, lineHeight: 1.7 }}>
+            <p style={{ color: '#ffffff', fontSize: '1rem', margin: 0, lineHeight: 1.7 }}>
               Direct from Sivakasi factory. Shop quality crackers at the best prices.
             </p>
           </div>
@@ -362,8 +355,8 @@ export default function Home() {
               to="/products"
               style={{
                 display: 'inline-block',
-                background: '#F59E0B',
-                color: '#24163D',
+                background: '#ffffff',
+                color: '#843F43',
                 padding: '14px 36px',
                 borderRadius: 8,
                 fontWeight: 800,
@@ -371,9 +364,10 @@ export default function Home() {
                 textDecoration: 'none',
                 letterSpacing: '0.04em',
                 transition: 'background 0.2s',
+                border: '2px solid #ffffff',
               }}
-              onMouseEnter={e => e.currentTarget.style.background = '#D97706'}
-              onMouseLeave={e => e.currentTarget.style.background = '#F59E0B'}
+              onMouseEnter={e => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.borderColor = '#ffffff' }}
+              onMouseLeave={e => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.borderColor = '#ffffff' }}
             >
               Shop Now
             </Link>
@@ -383,7 +377,7 @@ export default function Home() {
 
       {/* ── Skeleton Loader ──────────────────────────────────────────── */}
       {loading && [0, 1, 2].map(s => (
-        <section key={s} className="py-10 overflow-hidden" style={{ background: s % 2 === 0 ? '#FFFBF5' : '#fff' }}>
+        <section key={s} className="py-10 overflow-hidden" style={{ background: '#ffffff' }}>
           <div className="skeleton-section">
             <div className="skeleton-heading">
               <div className="skeleton skeleton-heading-sub" />
@@ -410,7 +404,7 @@ export default function Home() {
         <section
           key={cat}
           id={idx === 0 ? 'products' : undefined}
-          className={`py-10 overflow-hidden`} style={{ background: idx % 2 === 0 ? '#FFFBF5' : '#ffffff' }}
+          className={`py-10 overflow-hidden`} style={{ background: '#ffffff' }}
         >
           <div className="max-w-[1400px] mx-auto px-4">
             <div className="text-center mb-8">
@@ -426,14 +420,14 @@ export default function Home() {
 
 
       {/* ── Services ────────────────────────────────────────────────── */}
-      <section className="py-10" style={{ background: '#FFFBF5' }}>
+      <section className="py-10" style={{ background: '#ffffff' }}>
         <div className="max-w-[1400px] mx-auto px-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
             {[
-              { icon: <Clock size={32} color="#4C1D95" />,    title: '24hrs Shipping',  sub: 'At Season Time' },
-              { icon: <ThumbsUp size={32} color="#4C1D95" />, title: '100%',            sub: 'Satisfied Guarantee' },
-              { icon: <Package size={32} color="#4C1D95" />,  title: '30+ Varieties',   sub: 'More than 200+ Products' },
-              { icon: <Tag size={32} color="#4C1D95" />,      title: 'Low Price',       sub: 'Available in Low Price' },
+              { icon: <Clock size={32} color="#843F43" />,    title: '24hrs Shipping',  sub: 'At Season Time' },
+              { icon: <ThumbsUp size={32} color="#843F43" />, title: '100%',            sub: 'Satisfied Guarantee' },
+              { icon: <Package size={32} color="#843F43" />,  title: '30+ Varieties',   sub: 'More than 200+ Products' },
+              { icon: <Tag size={32} color="#843F43" />,      title: 'Low Price',       sub: 'Available in Low Price' },
             ].map(({ icon, title, sub }) => (
               <div key={title} className="service-wrap">
                 <div className="service-icon">{icon}</div>
