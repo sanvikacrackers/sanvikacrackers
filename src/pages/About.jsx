@@ -31,7 +31,7 @@ export default function About() {
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 48 }}>
           {/* Left text */}
           <div style={{ flex: '1 1 340px', minWidth: 0 }}>
-            <p style={{ color: '#7c3aed', fontWeight: 700, fontSize: '0.88rem', letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 14px' }}>
+            <p style={{ color: '#0d7480', fontWeight: 700, fontSize: '0.88rem', letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 14px' }}>
               Who We Are
             </p>
             <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 900, color: '#ffffff', lineHeight: 1.2, margin: '0 0 18px' }}>
@@ -63,7 +63,7 @@ export default function About() {
             padding: '36px 32px',
           }}>
             <h2 style={{ color: '#ffffff', fontWeight: 900, fontSize: '1.5rem', margin: '0 0 6px' }}>Our Story</h2>
-            <div style={{ width: 40, height: 3, background: '#7c3aed', borderRadius: 2, marginBottom: 20 }} />
+            <div style={{ width: 40, height: 3, background: '#0d7480', borderRadius: 2, marginBottom: 20 }} />
             <p style={{ color: '#a0aec0', lineHeight: 1.8, margin: '0 0 16px', fontSize: '0.97rem' }}>
               Sanvika Crackers is a trusted factory outlet based in Sivakasi, Tamil Nadu — the fireworks capital of India.
               We manufacture and sell premium quality fireworks directly to customers at factory prices,
@@ -110,7 +110,7 @@ export default function About() {
             <h2 style={{ fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)', fontWeight: 900, color: '#111111', margin: '0 0 8px' }}>
               Why Choose Us
             </h2>
-            <div style={{ width: 40, height: 3, background: '#7c3aed', margin: '8px auto 0', borderRadius: 2 }} />
+            <div style={{ width: 40, height: 3, background: '#0d7480', margin: '8px auto 0', borderRadius: 2 }} />
           </div>
 
           {/* 3×2 grid of text cards */}
@@ -127,7 +127,7 @@ export default function About() {
                 background: '#111111',
                 borderRadius: 12,
                 padding: '28px 24px',
-                borderTop: '3px solid #7c3aed',
+                borderTop: '3px solid #0d7480',
               }}>
                 <h3 style={{ color: '#ffffff', fontWeight: 800, fontSize: '1rem', margin: '0 0 12px' }}>{title}</h3>
                 <p style={{ color: '#a0aec0', fontSize: '0.9rem', lineHeight: 1.7, margin: 0 }}>{desc}</p>
@@ -138,7 +138,7 @@ export default function About() {
       </section>
 
       {/* ── Contact Strip ── */}
-      <section style={{ background: '#7c3aed', padding: '52px 16px' }}>
+      <section style={{ background: '#0d7480', padding: '52px 16px' }}>
         <div style={{ maxWidth: 700, margin: '0 auto', textAlign: 'center' }}>
           <h2 style={{ color: '#ffffff', fontWeight: 900, fontSize: 'clamp(1.4rem, 3vw, 2rem)', margin: '0 0 16px' }}>
             Ready to Order?

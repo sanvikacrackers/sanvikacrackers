@@ -22,15 +22,15 @@ export default function Footer() {
               <img src={LOGO} alt="Sanvika Crackers" className="h-10 w-auto object-contain mb-4" />
               <ul className="space-y-2 text-[13px] list-none p-0">
                 <li className="flex gap-2">
-                  <Phone size={14} className="mt-0.5 flex-shrink-0 text-[#7c3aed]" />
+                  <Phone size={14} className="mt-0.5 flex-shrink-0 text-[#0d7480]" />
                   <span>83000 57711</span>
                 </li>
                 <li className="flex gap-2">
-                  <MapPin size={14} className="mt-0.5 flex-shrink-0 text-[#7c3aed]" />
+                  <MapPin size={14} className="mt-0.5 flex-shrink-0 text-[#0d7480]" />
                   <span>1/204-6, NH-07, Chatram Road, Vachakkarapatti, RR Nagar, Virudhunagar District - 626204</span>
                 </li>
                 <li className="flex gap-2">
-                  <Mail size={14} className="mt-0.5 flex-shrink-0 text-[#7c3aed]" />
+                  <Mail size={14} className="mt-0.5 flex-shrink-0 text-[#0d7480]" />
                   <span>sanvikacrackers2020@gmail.com</span>
                 </li>
               </ul>
@@ -38,7 +38,7 @@ export default function Footer() {
 
             {/* Payment image */}
             <div className="flex flex-col justify-center items-center">
-              <h3 className="text-base font-bold text-white mb-4 pb-2 border-b-2 border-[#7c3aed] inline-block">Accepted Payments</h3>
+              <h3 className="text-base font-bold text-white mb-4 pb-2 border-b-2 border-[#0d7480] inline-block">Accepted Payments</h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
                 <img src={paymentImg} alt="Payment Options" style={{ maxWidth: 280, width: '100%', objectFit: 'contain', borderRadius: 8 }} />
                 <img src={gpayImg} alt="GPay" style={{ maxWidth: 300, width: '100%', objectFit: 'contain', borderRadius: 8 }} />
@@ -76,7 +76,7 @@ export default function Footer() {
       >
         <span style={{
           fontSize: 11, fontWeight: 700, color: '#fff',
-          background: '#7c3aed',
+          background: '#0d7480',
           borderRadius: 6, padding: '4px 10px', whiteSpace: 'nowrap',
           animation: 'float-label 2.5s ease-in-out infinite',
         }}>Call Us</span>

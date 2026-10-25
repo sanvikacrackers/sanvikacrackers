@@ -45,7 +45,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50" style={{ background: '#3b0764', boxShadow: '0 2px 16px rgba(0,0,0,0.35)', paddingTop: 8, paddingBottom: 8 }}>
+      <header className="sticky top-0 z-50" style={{ background: '#1f3038', boxShadow: '0 2px 16px rgba(0,0,0,0.35)', paddingTop: 8, paddingBottom: 8 }}>
         <div className="max-w-[1400px] mx-auto px-4">
           <div className="flex items-center justify-between h-20 gap-4">
 
@@ -103,10 +103,10 @@ export default function Header() {
                 <span className="hidden lg:inline">Wishlist</span>
                 {wishlistCount > 0 && <span className="bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center font-bold">{wishlistCount}</span>}
               </Link>
-              <Link to="/cart" className="flex items-center gap-1.5 bg-[#7c3aed] text-white border-none rounded-md px-3 py-2 text-sm font-semibold hover:bg-[#6d28d9] transition-colors no-underline">
+              <Link to="/cart" className="flex items-center gap-1.5 bg-[#0d7480] text-white border-none rounded-md px-3 py-2 text-sm font-semibold hover:bg-[#0a5c66] transition-colors no-underline">
                 <ShoppingCart size={18} />
                 <span className="hidden lg:inline">Cart</span>
-                {cartCount > 0 && <span className="bg-white text-[#7c3aed] rounded-full w-5 h-5 text-xs flex items-center justify-center font-bold">{cartCount}</span>}
+                {cartCount > 0 && <span className="bg-white text-[#0d7480] rounded-full w-5 h-5 text-xs flex items-center justify-center font-bold">{cartCount}</span>}
               </Link>
 
               {/* Hamburger — mobile only */}
@@ -125,7 +125,7 @@ export default function Header() {
 
       {/* Search Dropdown */}
       {searchOpen && (
-        <div style={{ background: '#3b0764', borderTop: '1px solid rgba(255,255,255,0.1)', padding: '12px 16px', position: 'sticky', top: 88, zIndex: 49, boxShadow: '0 4px 16px rgba(0,0,0,0.3)' }}>
+        <div style={{ background: '#1f3038', borderTop: '1px solid rgba(255,255,255,0.1)', padding: '12px 16px', position: 'sticky', top: 88, zIndex: 49, boxShadow: '0 4px 16px rgba(0,0,0,0.3)' }}>
           <form onSubmit={handleSearch} style={{ maxWidth: 600, margin: '0 auto', display: 'flex', gap: 10 }}>
             <div style={{ position: 'relative', flex: 1 }}>
               <Search size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', pointerEvents: 'none' }} />
@@ -142,12 +142,12 @@ export default function Header() {
                   background: 'rgba(255,255,255,0.1)', color: '#fff',
                   outline: 'none', fontFamily: 'inherit',
                 }}
-                onFocus={e => e.target.style.borderColor = '#7c3aed'}
+                onFocus={e => e.target.style.borderColor = '#0d7480'}
                 onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.15)'}
               />
             </div>
             <button type="submit" style={{
-              background: '#7c3aed', color: '#fff', border: 'none',
+              background: '#0d7480', color: '#fff', border: 'none',
               borderRadius: 10, padding: '0 20px', fontSize: '0.9rem',
               fontWeight: 700, cursor: 'pointer',
             }}>
@@ -195,9 +195,9 @@ export default function Header() {
               style={{
                 display: 'block', padding: '13px 20px',
                 fontSize: 15, fontWeight: isActive(to) ? 700 : 500,
-                color: isActive(to) ? '#7c3aed' : '#222',
+                color: isActive(to) ? '#0d7480' : '#222',
                 textDecoration: 'none',
-                borderLeft: isActive(to) ? '3px solid #7c3aed' : '3px solid transparent',
+                borderLeft: isActive(to) ? '3px solid #0d7480' : '3px solid transparent',
                 background: isActive(to) ? '#fff8f0' : 'transparent',
                 transition: 'background 0.15s',
               }}
@@ -251,8 +251,8 @@ export default function Header() {
           <Link to="/wishlist" onClick={() => setOpen(false)} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px', border: '1px solid #e2e8f0', borderRadius: 8, textDecoration: 'none', color: '#333', fontSize: 13, fontWeight: 600 }}>
             <Heart size={16} /> Wishlist {wishlistCount > 0 && <span style={{ background: '#ef4444', color: '#fff', borderRadius: '50%', width: 18, height: 18, fontSize: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>{wishlistCount}</span>}
           </Link>
-          <Link to="/cart" onClick={() => setOpen(false)} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px', background: '#7c3aed', borderRadius: 8, textDecoration: 'none', color: '#fff', fontSize: 13, fontWeight: 600 }}>
-            <ShoppingCart size={16} /> Cart {cartCount > 0 && <span style={{ background: '#fff', color: '#7c3aed', borderRadius: '50%', width: 18, height: 18, fontSize: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>{cartCount}</span>}
+          <Link to="/cart" onClick={() => setOpen(false)} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px', background: '#0d7480', borderRadius: 8, textDecoration: 'none', color: '#fff', fontSize: 13, fontWeight: 600 }}>
+            <ShoppingCart size={16} /> Cart {cartCount > 0 && <span style={{ background: '#fff', color: '#0d7480', borderRadius: '50%', width: 18, height: 18, fontSize: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>{cartCount}</span>}
           </Link>
         </div>
       </div>
