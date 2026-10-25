@@ -221,7 +221,7 @@ export default function Home() {
           </div>
 
           {/* 3×2 grid — fixed 6 template category images */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 20 }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {[
               { label: 'Wala Crackers', img: '/category-images/wala-crackers.jpg' },
               { label: 'Sparklers',     img: '/category-images/sparklers.jpg' },
