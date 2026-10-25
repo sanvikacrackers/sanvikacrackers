@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Heart, ShoppingCart, Menu, X, Download, Search } from 'lucide-react'
+
 import { useShop } from '../context/ShopContext'
 import '../App.css'
 import LOGO from '../assets/websitelogo.jpeg'
@@ -79,11 +80,32 @@ export default function Header() {
               >
                 Tracking
               </a>
+              <Link
+                to="/wishlist"
+                className="nav-link"
+                style={isActive('/wishlist') ? { color: '#F59E0B', fontWeight: 700 } : { color: '#e2e8f0' }}
+              >
+                <span className="flex items-center gap-1">
+                  <Heart size={14} />
+                  Wishlist
+                  {wishlistCount > 0 && <span style={{ background: '#BE185D', color: '#fff', borderRadius: '50%', width: 16, height: 16, fontSize: 9, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>{wishlistCount}</span>}
+                </span>
+              </Link>
+              <Link
+                to="/cart"
+                className="nav-link"
+                style={isActive('/cart') ? { color: '#F59E0B', fontWeight: 700 } : { color: '#e2e8f0' }}
+              >
+                <span className="flex items-center gap-1">
+                  <ShoppingCart size={14} />
+                  Cart
+                  {cartCount > 0 && <span style={{ background: '#BE185D', color: '#fff', borderRadius: '50%', width: 16, height: 16, fontSize: 9, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>{cartCount}</span>}
+                </span>
+              </Link>
             </nav>
 
-            {/* Right side */}
+            {/* Right side — search + price list only */}
             <div className="flex items-center gap-2">
-              {/* Search icon */}
               <button
                 onClick={() => { setSearchOpen(o => !o); setSearchVal('') }}
                 style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#e2e8f0', borderRadius: 8, width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
@@ -102,16 +124,6 @@ export default function Header() {
                   <span className="hidden lg:inline">Price List</span>
                 </a>
               )}
-              <Link to="/wishlist" className="relative flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold transition-colors no-underline" style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#e2e8f0' }}>
-                <Heart size={18} />
-                <span className="hidden lg:inline">Wishlist</span>
-                {wishlistCount > 0 && <span className="bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center font-bold">{wishlistCount}</span>}
-              </Link>
-              <Link to="/cart" className="flex items-center gap-1.5 bg-[#4C1D95] text-white border-none rounded-md px-3 py-2 text-sm font-semibold hover:bg-[#3B1577] transition-colors no-underline">
-                <ShoppingCart size={18} />
-                <span className="hidden lg:inline">Cart</span>
-                {cartCount > 0 && <span className="bg-white text-[#BE185D] rounded-full w-5 h-5 text-xs flex items-center justify-center font-bold">{cartCount}</span>}
-              </Link>
 
               {/* Hamburger — mobile only */}
               <button
@@ -229,6 +241,40 @@ export default function Header() {
             Tracking
           </a>
 
+          {/* Wishlist */}
+          <Link
+            to="/wishlist"
+            onClick={() => setOpen(false)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 8, padding: '13px 20px',
+              fontSize: 15, fontWeight: isActive('/wishlist') ? 700 : 500,
+              color: isActive('/wishlist') ? '#4C1D95' : '#222',
+              textDecoration: 'none',
+              borderLeft: isActive('/wishlist') ? '3px solid #4C1D95' : '3px solid transparent',
+              background: isActive('/wishlist') ? '#F3E8FF' : 'transparent',
+            }}
+          >
+            <Heart size={15} /> Wishlist
+            {wishlistCount > 0 && <span style={{ background: '#BE185D', color: '#fff', borderRadius: '50%', width: 18, height: 18, fontSize: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>{wishlistCount}</span>}
+          </Link>
+
+          {/* Cart */}
+          <Link
+            to="/cart"
+            onClick={() => setOpen(false)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 8, padding: '13px 20px',
+              fontSize: 15, fontWeight: isActive('/cart') ? 700 : 500,
+              color: isActive('/cart') ? '#4C1D95' : '#222',
+              textDecoration: 'none',
+              borderLeft: isActive('/cart') ? '3px solid #4C1D95' : '3px solid transparent',
+              background: isActive('/cart') ? '#F3E8FF' : 'transparent',
+            }}
+          >
+            <ShoppingCart size={15} /> Cart
+            {cartCount > 0 && <span style={{ background: '#BE185D', color: '#fff', borderRadius: '50%', width: 18, height: 18, fontSize: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>{cartCount}</span>}
+          </Link>
+
           {/* Download Price List — below Contact */}
           {pricelistUrl && (
             <div style={{ padding: '10px 16px 4px' }}>
@@ -250,15 +296,6 @@ export default function Header() {
           )}
         </nav>
 
-        {/* Cart & Wishlist in sidebar */}
-        <div style={{ padding: '16px', borderTop: '1px solid #f1f5f9', display: 'flex', gap: 10 }}>
-          <Link to="/wishlist" onClick={() => setOpen(false)} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px', border: '1px solid #e2e8f0', borderRadius: 8, textDecoration: 'none', color: '#333', fontSize: 13, fontWeight: 600 }}>
-            <Heart size={16} /> Wishlist {wishlistCount > 0 && <span style={{ background: '#ef4444', color: '#fff', borderRadius: '50%', width: 18, height: 18, fontSize: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>{wishlistCount}</span>}
-          </Link>
-          <Link to="/cart" onClick={() => setOpen(false)} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px', background: '#4C1D95', borderRadius: 8, textDecoration: 'none', color: '#fff', fontSize: 13, fontWeight: 600 }}>
-            <ShoppingCart size={16} /> Cart {cartCount > 0 && <span style={{ background: '#fff', color: '#BE185D', borderRadius: '50%', width: 18, height: 18, fontSize: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>{cartCount}</span>}
-          </Link>
-        </div>
       </div>
     </>
   )
