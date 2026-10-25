@@ -34,22 +34,22 @@ export default function Contact() {
 
   const infoBoxes = [
     {
-      icon: <MapPin size={26} color="#ff7011" />,
+      icon: <MapPin size={22} color="#ffffff" />,
       title: 'Address',
       content: (
-        <p style={{ margin: 0, fontSize: '0.95rem', color: '#475569', lineHeight: 1.7 }}>
+        <p style={{ margin: 0, fontSize: '0.93rem', color: '#475569', lineHeight: 1.7 }}>
           SANVIKA CRACKERS<br />1/204-6, NH-07, Chatram Road,<br />Vachakkarapatti, RR Nagar,<br />Virudhunagar District - 626204
         </p>
       ),
     },
     {
-      icon: <Phone size={26} color="#ff7011" />,
+      icon: <Phone size={22} color="#ffffff" />,
       title: 'Mobile',
       content: (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
           {['83000 57711'].map(n => (
             <a key={n} href={`tel:+91${n.replace(/\s/g,'')}`}
-              style={{ fontSize: '0.95rem', color: '#475569', textDecoration: 'none', whiteSpace: 'nowrap' }}
+              style={{ fontSize: '0.93rem', color: '#475569', textDecoration: 'none', whiteSpace: 'nowrap' }}
               onMouseEnter={e => e.currentTarget.style.color = '#ff7011'}
               onMouseLeave={e => e.currentTarget.style.color = '#475569'}
             >+91 {n}</a>
@@ -58,11 +58,11 @@ export default function Contact() {
       ),
     },
     {
-      icon: <Mail size={26} color="#ff7011" />,
+      icon: <Mail size={22} color="#ffffff" />,
       title: 'Email',
       content: (
         <a href="mailto:sanvikacrackers2020@gmail.com"
-          style={{ fontSize: '0.95rem', color: '#475569', textDecoration: 'none', wordBreak: 'break-all' }}
+          style={{ fontSize: '0.93rem', color: '#475569', textDecoration: 'none', wordBreak: 'break-all' }}
           onMouseEnter={e => e.currentTarget.style.color = '#ff7011'}
           onMouseLeave={e => e.currentTarget.style.color = '#475569'}
         >
@@ -79,45 +79,58 @@ export default function Contact() {
 
       <Header />
 
-      {/* ── Hero Image ── */}
-      <div style={{ width: '100%', lineHeight: 0 }}>
-        <img
-          src={contactImg}
-          alt="Contact Sanvika Crackers"
-          style={{ width: '100%', maxHeight: 420, objectFit: 'cover', display: 'block' }}
-        />
-      </div>
-
-      {/* ── Contact Now + 3 Boxes ── */}
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '48px 16px 0' }}>
-        <h1 style={{ textAlign: 'center', fontWeight: 800, fontSize: '2rem', color: '#0f172a', marginBottom: 32 }}>
-          Contact Now
-        </h1>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 20 }}>
-          {infoBoxes.map(box => (
-            <div key={box.title} style={{
-              background: '#fff', borderRadius: 16,
-              padding: '28px 24px',
-              boxShadow: '0 2px 12px rgba(0,0,0,0.07)',
-              border: '1px solid #f1f5f9',
-              display: 'flex', flexDirection: 'column', gap: 14,
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                {box.icon}
-                <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 800, color: '#0f172a' }}>
-                  {box.title}
-                </h3>
-              </div>
-              <div style={{ paddingTop: 4, borderTop: '1px solid #f1f5f9' }}>
-                {box.content}
-              </div>
-            </div>
-          ))}
+      {/* ── Hero Section ── */}
+      <section style={{ background: '#0b0b0b', padding: '72px 16px', textAlign: 'center' }}>
+        <div style={{ maxWidth: 700, margin: '0 auto' }}>
+          <p style={{ color: '#e87316', fontWeight: 700, fontSize: '0.88rem', letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 14px' }}>
+            Get In Touch
+          </p>
+          <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 900, color: '#ffffff', lineHeight: 1.2, margin: '0 0 16px' }}>
+            Contact Us
+          </h1>
+          <p style={{ color: '#a0aec0', fontSize: '1.05rem', margin: 0, lineHeight: 1.7 }}>
+            We'd love to hear from you. Reach out for orders, bulk enquiries, or any questions about our products.
+          </p>
         </div>
-      </div>
+      </section>
+
+      {/* ── 3 Contact Info Cards ── */}
+      <section style={{ background: '#ffffff', padding: '60px 16px' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 24 }}>
+            {infoBoxes.map(box => (
+              <div key={box.title} style={{
+                background: '#ffffff',
+                borderRadius: 14,
+                padding: '32px 28px',
+                border: '1px solid #e8e8e8',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 16,
+              }}>
+                {/* Icon in orange circle */}
+                <div style={{
+                  width: 52, height: 52, borderRadius: '50%',
+                  background: '#e87316',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  flexShrink: 0,
+                }}>
+                  {box.icon}
+                </div>
+                <div>
+                  <h3 style={{ margin: '0 0 8px', fontSize: '1.05rem', fontWeight: 800, color: '#0f172a' }}>
+                    {box.title}
+                  </h3>
+                  {box.content}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ── Map + Form ── */}
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '36px 16px 48px' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 16px 72px' }}>
         <div style={{ display: 'flex', gap: 28, flexWrap: 'wrap', alignItems: 'flex-start' }}>
 
           {/* Map */}

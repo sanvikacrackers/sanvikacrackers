@@ -152,6 +152,13 @@ export default function Home() {
     categoryMap[p.category].push(p)
   })
 
+  // ── Showcase categories (top 6) ───────────────────────────────────────────
+  const showcaseCategories = categoryOrder.slice(0, 6)
+
+  // ── Circular product images for Welcome section ───────────────────────────
+  const welcomeImg1 = products.length > 0 ? parseImages(products[0]?.image_url)[0] : null
+  const welcomeImg2 = products.length > 1 ? parseImages(products[1]?.image_url)[0] : null
+
   return (
     <div className="theme-color4 light ltr" id="home">
 
@@ -202,6 +209,198 @@ export default function Home() {
         </section>
       )}
 
+      {/* ── Welcome / Intro Section ──────────────────────────────────── */}
+      <section style={{ background: '#0b0b0b', padding: '72px 16px' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 48 }}>
+          {/* Left column */}
+          <div style={{ flex: '1 1 380px', minWidth: 0 }}>
+            <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 900, color: '#ffffff', lineHeight: 1.2, margin: '0 0 20px' }}>
+              Welcome to Sanvika Crackers
+            </h2>
+            <p style={{ color: '#a0aec0', fontSize: '1rem', lineHeight: 1.8, margin: '0 0 20px' }}>
+              Sanvika Crackers is a trusted factory outlet based in Sivakasi, Tamil Nadu — the fireworks capital of India.
+              We manufacture and sell premium quality fireworks directly to customers at factory prices,
+              cutting out middlemen so you always get the best value.
+            </p>
+            <p style={{ color: '#fcb326', fontWeight: 700, fontSize: '1rem', margin: '0 0 16px', letterSpacing: '0.03em' }}>
+              127+ Products &nbsp;·&nbsp; 21 Categories &nbsp;·&nbsp; Factory Direct
+            </p>
+            <p style={{ color: '#718096', fontSize: '0.88rem', margin: '0 0 28px' }}>
+              Minimum order applies. Contact us for bulk pricing and special rates.
+            </p>
+            <Link
+              to="/products"
+              style={{
+                display: 'inline-block',
+                background: '#e87316',
+                color: '#fff',
+                padding: '12px 32px',
+                borderRadius: 8,
+                fontWeight: 700,
+                fontSize: '0.97rem',
+                textDecoration: 'none',
+                letterSpacing: '0.04em',
+                transition: 'background 0.2s',
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = '#cf6512'}
+              onMouseLeave={e => e.currentTarget.style.background = '#e87316'}
+            >
+              Shop Now
+            </Link>
+          </div>
+
+          {/* Right column */}
+          <div style={{ flex: '1 1 300px', minWidth: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24, position: 'relative' }}>
+            {/* Dot grid decoration — top-right */}
+            <div style={{ position: 'absolute', top: -20, right: -10, display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 8, opacity: 0.5, zIndex: 0 }}>
+              {Array.from({length: 36}).map((_, i) => (
+                <span key={i} style={{ width: 6, height: 6, borderRadius: '50%', background: i % 2 === 0 ? '#ff007f' : '#fcb326', display: 'block' }} />
+              ))}
+            </div>
+
+            <div style={{ display: 'flex', gap: 24, alignItems: 'center', position: 'relative', zIndex: 1 }}>
+              {/* Circle image 1 */}
+              <div style={{
+                width: 160, height: 160, borderRadius: '50%', overflow: 'hidden',
+                border: '4px solid #e87316', flexShrink: 0,
+                background: welcomeImg1 ? 'transparent' : '#1a1a1a',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                {welcomeImg1
+                  ? <img src={welcomeImg1} alt="Product" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : <span style={{ color: '#fcb326', fontSize: '2rem' }}>✦</span>
+                }
+              </div>
+              {/* Circle image 2 */}
+              <div style={{
+                width: 130, height: 130, borderRadius: '50%', overflow: 'hidden',
+                border: '4px solid #fcb326', flexShrink: 0,
+                background: welcomeImg2 ? 'transparent' : '#1a1a1a',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginTop: 32,
+              }}>
+                {welcomeImg2
+                  ? <img src={welcomeImg2} alt="Product" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : <span style={{ color: '#e87316', fontSize: '1.6rem' }}>✦</span>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Category Showcase Section ────────────────────────────────── */}
+      <section style={{ background: '#ffffff', padding: '72px 16px' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          {/* Heading */}
+          <div style={{ textAlign: 'center', marginBottom: 48 }}>
+            <h2 style={{ fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 900, color: '#111111', margin: '0 0 8px' }}>
+              Our Products
+            </h2>
+            <div style={{ width: 40, height: 3, background: '#e87316', margin: '8px auto 0', borderRadius: 2 }} />
+          </div>
+
+          {/* 3×2 grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 20 }}>
+            {showcaseCategories.map(cat => {
+              const catImg = parseImages(categoryMap[cat][0]?.image_url)[0]
+              return (
+                <Link
+                  key={cat}
+                  to="/products"
+                  style={{ textDecoration: 'none', display: 'block' }}
+                >
+                  <div style={{
+                    position: 'relative',
+                    aspectRatio: '1 / 1',
+                    borderRadius: 12,
+                    overflow: 'hidden',
+                    background: '#111',
+                    cursor: 'pointer',
+                  }}
+                    onMouseEnter={e => {
+                      const overlay = e.currentTarget.querySelector('.cat-overlay')
+                      if (overlay) overlay.style.opacity = '1'
+                      const underline = e.currentTarget.querySelector('.cat-underline')
+                      if (underline) underline.style.width = '60px'
+                    }}
+                    onMouseLeave={e => {
+                      const overlay = e.currentTarget.querySelector('.cat-overlay')
+                      if (overlay) overlay.style.opacity = '0'
+                      const underline = e.currentTarget.querySelector('.cat-underline')
+                      if (underline) underline.style.width = '24px'
+                    }}
+                  >
+                    {catImg
+                      ? <img src={catImg} alt={cat} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.4s ease' }} />
+                      : <div style={{ width: '100%', height: '100%', background: '#222' }} />
+                    }
+                    {/* Gradient overlay */}
+                    <div style={{
+                      position: 'absolute', inset: 0,
+                      background: 'linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.18) 50%, transparent 100%)',
+                    }} />
+                    {/* Hover tint overlay */}
+                    <div className="cat-overlay" style={{
+                      position: 'absolute', inset: 0,
+                      background: 'rgba(232,115,22,0.15)',
+                      opacity: 0,
+                      transition: 'opacity 0.3s',
+                    }} />
+                    {/* Category name */}
+                    <div style={{ position: 'absolute', bottom: 18, left: 18, right: 18 }}>
+                      <p style={{ color: '#ffffff', fontWeight: 800, fontSize: '1.05rem', margin: '0 0 6px', lineHeight: 1.3 }}>{cat}</p>
+                      <span className="cat-underline" style={{
+                        display: 'block', height: 3, width: 24,
+                        background: '#e87316', borderRadius: 2,
+                        transition: 'width 0.3s ease',
+                      }} />
+                    </div>
+                  </div>
+                </Link>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA Band ─────────────────────────────────────────────────── */}
+      <section style={{ background: '#f05a28', padding: '52px 16px' }}>
+        <div style={{
+          maxWidth: 1200, margin: '0 auto',
+          display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 24,
+        }}>
+          <div style={{ flex: '1 1 300px' }}>
+            <h2 style={{ color: '#ffffff', fontWeight: 900, fontSize: 'clamp(1.4rem, 3vw, 2rem)', margin: '0 0 10px', lineHeight: 1.25 }}>
+              Explore Sanvika Crackers
+            </h2>
+            <p style={{ color: 'rgba(255,255,255,0.88)', fontSize: '1rem', margin: 0, lineHeight: 1.7 }}>
+              Direct from Sivakasi factory. Shop quality crackers at the best prices.
+            </p>
+          </div>
+          <div style={{ flexShrink: 0 }}>
+            <Link
+              to="/products"
+              style={{
+                display: 'inline-block',
+                background: '#111111',
+                color: '#ffffff',
+                padding: '14px 36px',
+                borderRadius: 8,
+                fontWeight: 800,
+                fontSize: '1rem',
+                textDecoration: 'none',
+                letterSpacing: '0.04em',
+                transition: 'background 0.2s',
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = '#222222'}
+              onMouseLeave={e => e.currentTarget.style.background = '#111111'}
+            >
+              Shop Now
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* ── Skeleton Loader ──────────────────────────────────────────── */}
       {loading && [0, 1, 2].map(s => (
