@@ -20,7 +20,7 @@ export default function TopBar() {
   )
 
   return (
-    <div style={{ background: '#111827', color: '#d1d5db', fontSize: 12, padding: '7px 0', overflow: 'hidden', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+    <div style={{ background: '#1E1B4B', color: '#d1d5db', fontSize: 12, padding: '7px 0', overflow: 'hidden', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
       <div style={{ display: 'flex', whiteSpace: 'nowrap', overflow: 'hidden' }}>
         <div style={{ display: 'inline-flex', animation: 'marquee-scroll 30s linear infinite' }}>
           {marqueeContent}{marqueeContent}{marqueeContent}

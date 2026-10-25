@@ -193,15 +193,15 @@ export default function Home() {
           </div>
           {banners.length > 1 && (
             <>
-              <button onClick={() => goSlide(-1)} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.92)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#111827' }}>
+              <button onClick={() => goSlide(-1)} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.92)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#1E1B4B' }}>
                 <ChevronLeft size={22} />
               </button>
-              <button onClick={() => goSlide(1)} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.92)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#111827' }}>
+              <button onClick={() => goSlide(1)} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.92)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#1E1B4B' }}>
                 <ChevronRight size={22} />
               </button>
               <div style={{ position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 6 }}>
                 {banners.map((_, i) => (
-                  <button key={i} onClick={() => setActiveSlide(i)} style={{ width: i === activeSlide ? 24 : 8, height: 8, borderRadius: 4, background: i === activeSlide ? '#0d7480' : 'rgba(255,255,255,0.6)', border: 'none', cursor: 'pointer', padding: 0, transition: 'width 0.3s' }} />
+                  <button key={i} onClick={() => setActiveSlide(i)} style={{ width: i === activeSlide ? 24 : 8, height: 8, borderRadius: 4, background: i === activeSlide ? '#BE185D' : 'rgba(255,255,255,0.6)', border: 'none', cursor: 'pointer', padding: 0, transition: 'width 0.3s' }} />
                 ))}
               </div>
             </>
@@ -210,7 +210,7 @@ export default function Home() {
       )}
 
       {/* ── Welcome / Intro Section ──────────────────────────────────── */}
-      <section style={{ background: '#0b0b0b', padding: '72px 16px' }}>
+      <section style={{ background: '#1E1B4B', padding: '72px 16px' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 48 }}>
           {/* Left column */}
           <div style={{ flex: '1 1 380px', minWidth: 0 }}>
@@ -222,7 +222,7 @@ export default function Home() {
               We manufacture and sell premium quality fireworks directly to customers at factory prices,
               cutting out middlemen so you always get the best value.
             </p>
-            <p style={{ color: '#fcb326', fontWeight: 700, fontSize: '1rem', margin: '0 0 16px', letterSpacing: '0.03em' }}>
+            <p style={{ color: '#F59E0B', fontWeight: 700, fontSize: '1rem', margin: '0 0 16px', letterSpacing: '0.03em' }}>
               127+ Products &nbsp;·&nbsp; 21 Categories &nbsp;·&nbsp; Factory Direct
             </p>
             <p style={{ color: '#718096', fontSize: '0.88rem', margin: '0 0 28px' }}>
@@ -232,7 +232,7 @@ export default function Home() {
               to="/products"
               style={{
                 display: 'inline-block',
-                background: '#0d7480',
+                background: '#BE185D',
                 color: '#fff',
                 padding: '12px 32px',
                 borderRadius: 8,
@@ -242,8 +242,8 @@ export default function Home() {
                 letterSpacing: '0.04em',
                 transition: 'background 0.2s',
               }}
-              onMouseEnter={e => e.currentTarget.style.background = '#0a5c66'}
-              onMouseLeave={e => e.currentTarget.style.background = '#0d7480'}
+              onMouseEnter={e => e.currentTarget.style.background = '#9d1457'}
+              onMouseLeave={e => e.currentTarget.style.background = '#BE185D'}
             >
               Shop Now
             </Link>
@@ -254,7 +254,7 @@ export default function Home() {
             {/* Dot grid decoration — top-right */}
             <div style={{ position: 'absolute', top: -20, right: -10, display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 8, opacity: 0.5, zIndex: 0 }}>
               {Array.from({length: 36}).map((_, i) => (
-                <span key={i} style={{ width: 6, height: 6, borderRadius: '50%', background: i % 2 === 0 ? '#ff007f' : '#fcb326', display: 'block' }} />
+                <span key={i} style={{ width: 6, height: 6, borderRadius: '50%', background: i % 2 === 0 ? '#ff007f' : '#F59E0B', display: 'block' }} />
               ))}
             </div>
 
@@ -262,26 +262,26 @@ export default function Home() {
               {/* Circle image 1 */}
               <div style={{
                 width: 160, height: 160, borderRadius: '50%', overflow: 'hidden',
-                border: '4px solid #0d7480', flexShrink: 0,
+                border: '4px solid #BE185D', flexShrink: 0,
                 background: welcomeImg1 ? 'transparent' : '#1a1a1a',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
                 {welcomeImg1
                   ? <img src={welcomeImg1} alt="Product" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  : <span style={{ color: '#fcb326', fontSize: '2rem' }}>✦</span>
+                  : <span style={{ color: '#F59E0B', fontSize: '2rem' }}>✦</span>
                 }
               </div>
               {/* Circle image 2 */}
               <div style={{
                 width: 130, height: 130, borderRadius: '50%', overflow: 'hidden',
-                border: '4px solid #fcb326', flexShrink: 0,
+                border: '4px solid #F59E0B', flexShrink: 0,
                 background: welcomeImg2 ? 'transparent' : '#1a1a1a',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 marginTop: 32,
               }}>
                 {welcomeImg2
                   ? <img src={welcomeImg2} alt="Product" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  : <span style={{ color: '#0d7480', fontSize: '1.6rem' }}>✦</span>
+                  : <span style={{ color: '#BE185D', fontSize: '1.6rem' }}>✦</span>
                 }
               </div>
             </div>
@@ -294,10 +294,10 @@ export default function Home() {
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           {/* Heading */}
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <h2 style={{ fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 900, color: '#111111', margin: '0 0 8px' }}>
+            <h2 style={{ fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 900, color: '#1E1B4B', margin: '0 0 8px' }}>
               Our Products
             </h2>
-            <div style={{ width: 40, height: 3, background: '#0d7480', margin: '8px auto 0', borderRadius: 2 }} />
+            <div style={{ width: 40, height: 3, background: '#BE185D', margin: '8px auto 0', borderRadius: 2 }} />
           </div>
 
           {/* 3×2 grid */}
@@ -352,7 +352,7 @@ export default function Home() {
                       <p style={{ color: '#ffffff', fontWeight: 800, fontSize: '1.05rem', margin: '0 0 6px', lineHeight: 1.3 }}>{cat}</p>
                       <span className="cat-underline" style={{
                         display: 'block', height: 3, width: 24,
-                        background: '#0d7480', borderRadius: 2,
+                        background: '#BE185D', borderRadius: 2,
                         transition: 'width 0.3s ease',
                       }} />
                     </div>
@@ -365,7 +365,7 @@ export default function Home() {
       </section>
 
       {/* ── CTA Band ─────────────────────────────────────────────────── */}
-      <section style={{ background: '#0d7480', padding: '52px 16px' }}>
+      <section style={{ background: '#BE185D', padding: '52px 16px' }}>
         <div style={{
           maxWidth: 1200, margin: '0 auto',
           display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 24,
@@ -383,7 +383,7 @@ export default function Home() {
               to="/products"
               style={{
                 display: 'inline-block',
-                background: '#111111',
+                background: '#1E1B4B',
                 color: '#ffffff',
                 padding: '14px 36px',
                 borderRadius: 8,
@@ -394,7 +394,7 @@ export default function Home() {
                 transition: 'background 0.2s',
               }}
               onMouseEnter={e => e.currentTarget.style.background = '#222222'}
-              onMouseLeave={e => e.currentTarget.style.background = '#111111'}
+              onMouseLeave={e => e.currentTarget.style.background = '#1E1B4B'}
             >
               Shop Now
             </Link>
@@ -449,10 +449,10 @@ export default function Home() {
         <div className="max-w-[1400px] mx-auto px-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
             {[
-              { icon: <Clock size={32} color="#0d7480" />,    title: '24hrs Shipping',  sub: 'At Season Time' },
-              { icon: <ThumbsUp size={32} color="#0d7480" />, title: '100%',            sub: 'Satisfied Guarantee' },
-              { icon: <Package size={32} color="#0d7480" />,  title: '30+ Varieties',   sub: 'More than 200+ Products' },
-              { icon: <Tag size={32} color="#0d7480" />,      title: 'Low Price',       sub: 'Available in Low Price' },
+              { icon: <Clock size={32} color="#BE185D" />,    title: '24hrs Shipping',  sub: 'At Season Time' },
+              { icon: <ThumbsUp size={32} color="#BE185D" />, title: '100%',            sub: 'Satisfied Guarantee' },
+              { icon: <Package size={32} color="#BE185D" />,  title: '30+ Varieties',   sub: 'More than 200+ Products' },
+              { icon: <Tag size={32} color="#BE185D" />,      title: 'Low Price',       sub: 'Available in Low Price' },
             ].map(({ icon, title, sub }) => (
               <div key={title} className="service-wrap">
                 <div className="service-icon">{icon}</div>
