@@ -1,19 +1,13 @@
 import { Link } from 'react-router-dom'
 import { Phone, MapPin, Mail } from 'lucide-react'
-import { useShop } from '../context/ShopContext'
-import whatsappImg from '../assets/WhatsApp.svg.webp'
-import facebookImg from '../assets/facebook.png'
 import LOGO from '../assets/websitelogo.jpeg'
 import paymentImg from '../assets/payment.jpeg'
 import gpayImg from '../assets/gpay.jpeg'
 
 
 export default function Footer() {
-  const { siteSettings } = useShop()
-
   return (
-    <>
-      <footer id="contact" className="bg-[#4d0004] text-gray-400 pt-12 pb-6">
+    <footer id="contact" className="bg-[#4d0004] text-gray-400 pt-12 pb-6">
         <div className="max-w-[1400px] mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
@@ -66,53 +60,6 @@ export default function Footer() {
             <p className="text-[12px] text-gray-500">© 2026, Sanvika Crackers. All Rights Reserved.</p>
           </div>
         </div>
-      </footer>
-
-      {/* Phone Float */}
-      <a
-        href="tel:+918300057711"
-        title="Call Us"
-        style={{ position: 'fixed', bottom: 180, right: 16, textDecoration: 'none', zIndex: 999, display: 'flex', alignItems: 'center', gap: 8 }}
-      >
-        <span style={{
-          fontSize: 11, fontWeight: 700, color: '#fff',
-          background: '#4C1D95',
-          borderRadius: 6, padding: '4px 10px', whiteSpace: 'nowrap',
-        }}>Call Us</span>
-        <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 52 52" style={{ display: 'block', flexShrink: 0 }}>
-          <circle cx="26" cy="26" r="26" fill="#00b900"/>
-          <path fill="#fff" d="M36.5 32.1c-.7-.7-4.4-2.9-5.2-2.9-.4 0-.8.2-1.1.5l-1.5 1.5c-.2.2-.5.3-.7.2-1-.4-3.2-2.2-4.6-3.6-1.4-1.4-3.2-3.6-3.6-4.6-.1-.3 0-.5.2-.7l1.5-1.5c.3-.3.5-.7.5-1.1 0-.8-2.2-4.5-2.9-5.2-.3-.3-.7-.5-1.1-.5-1.5 0-4.5 2-4.5 4 0 5.5 6.5 12.5 10.5 15.5 2 1.5 5.5 3.5 8 3.5 2 0 4-3 4-4.5 0-.4-.2-.8-.5-1.1z"/>
-        </svg>
-      </a>
-
-      {/* WhatsApp Float */}
-      <a
-        href={`https://api.whatsapp.com/send?phone=${siteSettings?.whatsapp || '918300057711'}&text=Hello,%20Sanvika%20Crackers`}
-        target="_blank" rel="noreferrer" title="Chat on WhatsApp"
-        style={{ position: 'fixed', bottom: 96, right: 16, textDecoration: 'none', zIndex: 999, display: 'flex', alignItems: 'center', gap: 8 }}
-      >
-        <span style={{
-          fontSize: 11, fontWeight: 700, color: '#fff',
-          background: '#25d366',
-          borderRadius: 6, padding: '4px 10px', whiteSpace: 'nowrap',
-        }}>WhatsApp</span>
-        <img src={whatsappImg} alt="WhatsApp" style={{ width: 56, height: 56, display: 'block', borderRadius: '50%', flexShrink: 0 }} />
-      </a>
-
-      {/* Facebook Float */}
-      <a
-        href="https://www.facebook.com/profile.php?id=61579704510215"
-        target="_blank" rel="noreferrer" title="Follow on Facebook"
-        style={{ position: 'fixed', bottom: 16, right: 16, textDecoration: 'none', zIndex: 999, display: 'flex', alignItems: 'center', gap: 8 }}
-      >
-        <span style={{
-          fontSize: 11, fontWeight: 700, color: '#fff',
-          background: '#1877f2',
-          borderRadius: 6, padding: '4px 10px', whiteSpace: 'nowrap',
-        }}>Facebook</span>
-        <img src={facebookImg} alt="Facebook" style={{ width: 48, height: 48, display: 'block', borderRadius: '50%', flexShrink: 0 }} />
-      </a>
-
-    </>
+    </footer>
   )
 }

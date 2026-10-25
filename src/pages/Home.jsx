@@ -5,6 +5,7 @@ import {
 } from 'lucide-react'
 import { useShop } from '../context/ShopContext'
 import Footer from '../components/Footer'
+import AddToCartButton from '../components/AddToCartButton'
 import TopBar from '../components/TopBar'
 import Header from '../components/Header'
 import useSEO from '../utils/useSEO'
@@ -43,61 +44,135 @@ function ProductCard({ product }) {
 
   return (
     <div
-      className="product-box rounded-lg overflow-hidden shadow-sm bg-white transition-transform hover:-translate-y-1 hover:shadow-md flex flex-col h-full"
       onClick={() => navigate(`/products/${product.id}`)}
-      style={{ cursor: 'pointer' }}
+      onMouseEnter={e => {
+        e.currentTarget.style.transform = 'translateY(-4px)'
+        e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.12)'
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.transform = ''
+        e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.07)'
+      }}
+      style={{
+        background: '#ffffff',
+        borderRadius: 16,
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        border: '1px solid #ece8e1',
+        cursor: 'pointer',
+        transition: 'transform 0.22s, box-shadow 0.22s',
+        boxShadow: '0 2px 10px rgba(0,0,0,0.07)',
+      }}
     >
-      <div className="img-wrapper relative">
-        <div className="img-host">
-          <img src={imgs[0] || '/images/noimage.jpg'} alt={product.name} loading="lazy" />
-          {offerPct > 0 && (
-            <div className="label-block">
-              <span className="label-theme">{offerPct}% Off</span>
-            </div>
-          )}
-          <button
-            className="wishlist-heart-btn"
-            onClick={e => { e.stopPropagation(); toggleWishlist(product.id) }}
-            title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-          >
-            <Heart size={16} fill={wishlisted ? '#ef4444' : 'none'} color={wishlisted ? '#ef4444' : '#999'} />
-          </button>
-        </div>
-      </div>
-      <div className="product-style-6 px-3 pt-2 pb-1 flex-1 flex flex-col">
-        <h3 className="text-sm font-bold text-gray-800 leading-tight mb-0.5">{product.name}</h3>
-        {product.description && (
-          <p className="text-[11px] text-gray-500 leading-tight mb-1" style={{ fontFamily: 'inherit' }}>{product.description}</p>
-        )}
-        <p className="price-box">
-          {fmtPrice(product.price)}
-          {hasMrp && <del> {fmtPrice(product.mrp)}</del>}
-        </p>
-        {product.order_unit && <p className="text-[11px] text-gray-400 mt-0.5">{product.order_unit}</p>}
-        <div className="flex-1" />
-      </div>
-      <div className="px-3 pb-3 pt-1">
-        {!product.is_active ? (
-          <button disabled style={{ width: '100%', background: '#e2e8f0', color: '#94a3b8', border: 'none', borderRadius: 6, padding: '9px 0', fontSize: '0.88rem', fontWeight: 700, cursor: 'not-allowed' }}>
-            Out of Stock
-          </button>
-        ) : qty === 0 ? (
-          <button className="btn-add-cart" onClick={e => { e.stopPropagation(); addToCart(product.id) }}>Add to Cart</button>
-        ) : (
-          <div className="qty-row" onClick={e => e.stopPropagation()}>
-            <button onClick={() => setQty(product.id, qty - 1)}>−</button>
-            <input
-              type="number"
-              value={qty}
-              min={1}
-              onChange={e => {
-                const v = parseInt(e.target.value)
-                if (!isNaN(v) && v > 0) setQty(product.id, v)
-              }}
-            />
-            <button onClick={() => setQty(product.id, qty + 1)}>+</button>
+      {/* Image area */}
+      <div style={{ position: 'relative', paddingTop: '68%', background: '#f5f3f0', flexShrink: 0 }}>
+        <img
+          src={imgs[0] || '/images/noimage.jpg'}
+          alt={product.name}
+          loading="lazy"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+        {/* Offer pill — top left */}
+        {offerPct > 0 && (
+          <div style={{
+            position: 'absolute', top: 10, left: 10, zIndex: 3,
+            background: '#4d0004', color: '#FDE68A',
+            borderRadius: 20, padding: '4px 10px',
+            fontSize: 10, fontWeight: 800,
+            letterSpacing: '0.4px', textTransform: 'uppercase',
+          }}>
+            {offerPct}% Off
           </div>
         )}
+        {/* Wishlist — top right */}
+        <button
+          onClick={e => { e.stopPropagation(); toggleWishlist(product.id) }}
+          title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+          style={{
+            position: 'absolute', top: 10, right: 10, zIndex: 10,
+            background: 'rgba(255,255,255,0.9)',
+            border: '1px solid #e5e5e5',
+            borderRadius: '50%', width: 32, height: 32,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer',
+          }}
+        >
+          <Heart size={15} fill={wishlisted ? '#ef4444' : 'none'} color={wishlisted ? '#ef4444' : '#aaa'} />
+        </button>
+      </div>
+
+      {/* Content */}
+      <div style={{ padding: '14px 14px 0', flex: 1, display: 'flex', flexDirection: 'column' }}>
+        {/* Name */}
+        <h3 style={{ fontSize: 13, fontWeight: 700, color: '#1a1a1a', margin: '0 0 4px', lineHeight: 1.35 }}>
+          {product.name}
+        </h3>
+        {/* Description */}
+        {product.description && (
+          <p style={{ fontSize: 11, color: '#888', margin: '0 0 6px', lineHeight: 1.45 }}>
+            {product.description}
+          </p>
+        )}
+        {/* Info chips */}
+        {(product.category || product.order_unit) && (
+          <div style={{ display: 'flex', borderTop: '1px solid #f0ece6', borderBottom: '1px solid #f0ece6', margin: '0 0 12px' }}>
+            {product.category && (
+              <div style={{ flex: 1, padding: '7px 8px', borderRight: product.order_unit ? '1px solid #f0ece6' : 'none' }}>
+                <p style={{ fontSize: 9, color: '#bbb', margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.4px' }}>Category</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: '#4d0004', margin: 0, lineHeight: 1.2 }}>{product.category}</p>
+              </div>
+            )}
+            {product.order_unit && (
+              <div style={{ flex: 1, padding: '7px 8px' }}>
+                <p style={{ fontSize: 9, color: '#bbb', margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.4px' }}>Unit</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: '#4d0004', margin: 0, lineHeight: 1.2 }}>{product.order_unit}</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        <div style={{ flex: 1 }} />
+
+        {/* Quantity row — only when in cart */}
+        {qty > 0 && (
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}
+          >
+            <span style={{ fontSize: 12, fontWeight: 600, color: '#888' }}>Quantity</span>
+            <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid #d1d5db', borderRadius: 20, overflow: 'hidden' }}>
+              <button type="button" onClick={() => setQty(product.id, qty - 1)}
+                style={{ width: 30, height: 28, border: 'none', background: 'transparent', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', color: '#4d0004', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
+              <span style={{ minWidth: 24, textAlign: 'center', fontSize: 13, fontWeight: 800, color: '#1a1a1a' }}>{qty}</span>
+              <button type="button" onClick={() => setQty(product.id, qty + 1)}
+                style={{ width: 30, height: 28, border: 'none', background: 'transparent', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', color: '#4d0004', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Price + Add to Cart row */}
+      <div
+        style={{ padding: '0 14px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}
+        onClick={e => e.stopPropagation()}
+      >
+        <div>
+          <p style={{ fontSize: 17, fontWeight: 900, color: '#4d0004', margin: 0, lineHeight: 1 }}>
+            {fmtPrice(product.price)}
+          </p>
+          {hasMrp && (
+            <span style={{ fontSize: 11, color: '#bbb', textDecoration: 'line-through', display: 'block', marginTop: 2 }}>
+              {fmtPrice(product.mrp)}
+            </span>
+          )}
+        </div>
+        <AddToCartButton
+          disabled={!product.is_active}
+          label={qty > 0 ? 'More' : 'Cart'}
+          onClick={() => addToCart(product.id)}
+        />
       </div>
     </div>
   )
@@ -308,7 +383,7 @@ export default function Home() {
 
       {/* ── Skeleton Loader ──────────────────────────────────────────── */}
       {loading && [0, 1, 2].map(s => (
-        <section key={s} className="py-10 overflow-hidden" style={{ background: s % 2 === 0 ? '#FFFBF5' : '#F3E8FF' }}>
+        <section key={s} className="py-10 overflow-hidden" style={{ background: s % 2 === 0 ? '#FFFBF5' : '#fff' }}>
           <div className="skeleton-section">
             <div className="skeleton-heading">
               <div className="skeleton skeleton-heading-sub" />
@@ -316,11 +391,13 @@ export default function Home() {
             </div>
             <div className="skeleton-grid">
               {Array.from({ length: 10 }).map((_, i) => (
-                <div key={i} className="skeleton-card">
-                  <div className="skeleton skeleton-card-img" />
-                  <div className="skeleton skeleton-card-line1" />
-                  <div className="skeleton skeleton-card-line2" />
-                  <div className="skeleton skeleton-card-btn" />
+                <div key={i} style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', border: '1px solid #ece8e1' }}>
+                  <div className="skeleton" style={{ height: 170 }} />
+                  <div style={{ padding: '12px 12px 12px' }}>
+                    <div className="skeleton" style={{ height: 13, marginBottom: 8, borderRadius: 4 }} />
+                    <div className="skeleton" style={{ height: 18, width: '55%', marginBottom: 10, borderRadius: 4 }} />
+                    <div className="skeleton" style={{ height: 36, borderRadius: 10 }} />
+                  </div>
                 </div>
               ))}
             </div>

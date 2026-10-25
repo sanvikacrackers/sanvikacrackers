@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Heart, ShoppingCart, ArrowLeft, Tag, Package } from 'lucide-react'
 import { useShop } from '../context/ShopContext'
 import Footer from '../components/Footer'
+import AddToCartButton from '../components/AddToCartButton'
 import TopBar from '../components/TopBar'
 import Header from '../components/Header'
 import useSEO from '../utils/useSEO'
@@ -27,104 +28,112 @@ function SimilarCard({ product }) {
   const imgs       = parseImages(product.image_url)
   const qty        = cartQtys[product.id] || 0
   const wishlisted = isWishlisted(product.id)
+  const price  = parseFloat(product.price || 0)
+  const mrp    = parseFloat(product.mrp || 0)
+  const offerPct = product.discount_percentage > 0
+    ? product.discount_percentage
+    : (mrp > price && price > 0 ? Math.round((1 - price / mrp) * 100) : 0)
+  const hasMrp = mrp > price
 
   return (
-    <div style={{
-      background: '#fff', borderRadius: 16, overflow: 'hidden',
-      boxShadow: '0 2px 10px rgba(0,0,0,0.07)', border: '1px solid #f1f1f1',
-      display: 'flex', flexDirection: 'column',
-      transition: 'transform 0.2s, box-shadow 0.2s',
-    }}
-      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 8px 22px rgba(0,0,0,0.12)' }}
-      onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.07)' }}
+    <div
+      onClick={() => navigate(`/products/${product.id}`)}
+      onMouseEnter={e => {
+        e.currentTarget.style.transform = 'translateY(-4px)'
+        e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.12)'
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.transform = ''
+        e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.07)'
+      }}
+      style={{
+        background: '#ffffff',
+        borderRadius: 16, overflow: 'hidden',
+        display: 'flex', flexDirection: 'column',
+        border: '1px solid #ece8e1',
+        cursor: 'pointer',
+        transition: 'transform 0.22s, box-shadow 0.22s',
+        boxShadow: '0 2px 10px rgba(0,0,0,0.07)',
+      }}
     >
       {/* Image */}
-      <div style={{ position: 'relative', padding: '8px 8px 0' }}>
-        <div
-          onClick={() => navigate(`/products/${product.id}`)}
-          style={{ background: '#f5f5f7', borderRadius: 12, padding: 10, textAlign: 'center', position: 'relative', cursor: 'pointer' }}
-        >
-          <button
-            onClick={e => { e.stopPropagation(); toggleWishlist(product.id) }}
-            style={{
-              position: 'absolute', top: 8, right: 8,
-              width: 30, height: 30, borderRadius: '50%',
-              background: '#fff', border: 'none',
-              boxShadow: '0 1px 5px rgba(0,0,0,0.1)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              cursor: 'pointer', zIndex: 2,
-            }}
-          >
-            <Heart size={14} fill={wishlisted ? '#ef4444' : 'none'} color={wishlisted ? '#ef4444' : '#64748b'} />
-          </button>
-          {product.discount_percentage > 0 && (
-            <span style={{
-              position: 'absolute', top: 8, left: 8,
-              background: '#ef4444', color: '#fff',
-              fontSize: '0.65rem', fontWeight: 700, borderRadius: 5, padding: '2px 6px', zIndex: 2,
-            }}>-{product.discount_percentage}% OFF</span>
-          )}
-          <div style={{ height: 130, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-            <img src={imgs[0] || '/images/noimage.jpg'} alt={product.name} loading="lazy"
-              style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
+      <div style={{ position: 'relative', background: '#f5f3f0', height: 130, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <img
+          src={imgs[0] || '/images/noimage.jpg'}
+          alt={product.name}
+          loading="lazy"
+          style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }}
+        />
+        {offerPct > 0 && (
+          <div style={{
+            position: 'absolute', top: 7, left: 7, zIndex: 3,
+            background: '#4d0004', color: '#FDE68A',
+            borderRadius: 20, padding: '3px 8px',
+            fontSize: 9, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.3px',
+          }}>
+            {offerPct}% Off
           </div>
-        </div>
+        )}
+        <button
+          onClick={e => { e.stopPropagation(); toggleWishlist(product.id) }}
+          style={{
+            position: 'absolute', top: 7, right: 7,
+            background: 'rgba(255,255,255,0.9)', border: '1px solid #e5e5e5',
+            borderRadius: '50%', width: 28, height: 28,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', zIndex: 10,
+          }}
+        >
+          <Heart size={13} fill={wishlisted ? '#ef4444' : 'none'} color={wishlisted ? '#ef4444' : '#aaa'} />
+        </button>
       </div>
 
       {/* Body */}
-      <div style={{ padding: '10px 12px 12px', display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0, overflow: 'hidden' }}>
-        <span style={{ fontSize: '0.65rem', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.4px', marginBottom: 3 }}>
+      <div style={{ padding: '10px 12px 8px', display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
+        <span style={{ fontSize: '0.65rem', color: '#bbb', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.4px', marginBottom: 3 }}>
           {product.category}
         </span>
-        <h3
-          onClick={() => navigate(`/products/${product.id}`)}
-          style={{ fontSize: '0.85rem', fontWeight: 700, color: '#1a1a1a', margin: '0 0 3px', lineHeight: 1.3, cursor: 'pointer' }}
-        >
+        <h3 style={{ fontSize: '0.83rem', fontWeight: 700, color: '#1a1a1a', margin: '0 0 4px', lineHeight: 1.3 }}>
           {product.name}
         </h3>
         {product.order_unit && (
-          <p style={{ fontSize: '0.72rem', color: '#94a3b8', margin: '0 0 6px' }}>{product.order_unit}</p>
+          <p style={{ fontSize: '0.68rem', color: '#aaa', margin: '0 0 6px' }}>{product.order_unit}</p>
         )}
         <div style={{ flex: 1 }} />
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 5, marginBottom: 8 }}>
-          <span style={{ fontSize: '1.05rem', fontWeight: 800, color: '#4C1D95' }}>{fmtPrice(product.price)}</span>
-          {product.discount_percentage > 0 && product.mrp && (
-            <span style={{ fontSize: '0.75rem', color: '#94a3b8', textDecoration: 'line-through' }}>{fmtPrice(product.mrp)}</span>
-          )}
-        </div>
 
-        {/* Add to Cart / Qty pill */}
-        {qty === 0 ? (
-          <button
-            onClick={() => addToCart(product.id)}
-            style={{
-              display: 'block', width: '100%', boxSizing: 'border-box',
-              background: '#4C1D95', color: '#fff', border: 'none', borderRadius: 999,
-              padding: '8px 0', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer',
-            }}
-            onMouseEnter={e => e.currentTarget.style.background = '#3B1577'}
-            onMouseLeave={e => e.currentTarget.style.background = '#4C1D95'}
-          >Add to Cart</button>
-        ) : (
-          <div style={{
-            display: 'flex', alignItems: 'center',
-            border: '2px solid #4C1D95', borderRadius: 999,
-            height: 36, background: '#fff', width: '100%', boxSizing: 'border-box', overflow: 'hidden',
-          }}>
-            <button type="button"
-              onClick={() => qty <= 1 ? setQty(product.id, 0) : setQty(product.id, qty - 1)}
-              style={{ flexShrink: 0, width: 32, height: '100%', border: 'none', background: 'transparent', fontSize: '1.1rem', fontWeight: 700, cursor: 'pointer', color: '#4C1D95', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            >−</button>
-            <input type="number" value={qty} min={1}
-              onChange={e => { const v = parseInt(e.target.value); if (!isNaN(v) && v > 0) setQty(product.id, v) }}
-              style={{ flex: 1, minWidth: 0, textAlign: 'center', fontWeight: 800, fontSize: '0.88rem', color: '#4C1D95', border: 'none', background: 'transparent', outline: 'none', padding: 0, margin: 0, MozAppearance: 'textfield', WebkitAppearance: 'none' }}
-            />
-            <button type="button"
-              onClick={() => setQty(product.id, qty + 1)}
-              style={{ flexShrink: 0, width: 32, height: '100%', border: 'none', background: 'transparent', fontSize: '1.1rem', fontWeight: 700, cursor: 'pointer', color: '#4C1D95', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            >+</button>
+        {/* Quantity row — when in cart */}
+        {qty > 0 && (
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}
+          >
+            <span style={{ fontSize: 11, fontWeight: 600, color: '#888' }}>Quantity</span>
+            <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid #d1d5db', borderRadius: 20, overflow: 'hidden' }}>
+              <button type="button" onClick={() => setQty(product.id, qty - 1)}
+                style={{ width: 26, height: 26, border: 'none', background: 'transparent', fontSize: '0.9rem', fontWeight: 700, cursor: 'pointer', color: '#4d0004', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
+              <span style={{ minWidth: 20, textAlign: 'center', fontSize: 12, fontWeight: 800, color: '#1a1a1a' }}>{qty}</span>
+              <button type="button" onClick={() => setQty(product.id, qty + 1)}
+                style={{ width: 26, height: 26, border: 'none', background: 'transparent', fontSize: '0.9rem', fontWeight: 700, cursor: 'pointer', color: '#4d0004', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+            </div>
           </div>
         )}
+      </div>
+
+      {/* Price + Add to Cart row */}
+      <div
+        style={{ padding: '0 12px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}
+        onClick={e => e.stopPropagation()}
+      >
+        <div>
+          <span style={{ fontSize: '1rem', fontWeight: 800, color: '#4d0004', display: 'block', lineHeight: 1 }}>{fmtPrice(product.price)}</span>
+          {hasMrp && (
+            <span style={{ fontSize: '0.68rem', color: '#bbb', textDecoration: 'line-through', display: 'block', marginTop: 2 }}>{fmtPrice(product.mrp)}</span>
+          )}
+        </div>
+        <AddToCartButton
+          label={qty > 0 ? 'More' : 'Cart'}
+          onClick={() => addToCart(product.id)}
+        />
       </div>
     </div>
   )

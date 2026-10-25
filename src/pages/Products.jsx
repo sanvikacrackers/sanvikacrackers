@@ -6,6 +6,7 @@ import {
 } from 'lucide-react'
 import { useShop } from '../context/ShopContext'
 import Footer from '../components/Footer'
+import AddToCartButton from '../components/AddToCartButton'
 import TopBar from '../components/TopBar'
 import Header from '../components/Header'
 import useSEO from '../utils/useSEO'
@@ -39,177 +40,155 @@ function ProductCard({ product }) {
   const hasMrp = mrp > price
 
   return (
-    <div style={{
-      background: '#fff',
-      borderRadius: 16,
-      overflow: 'hidden',
-      boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
-      border: '1px solid #f1f1f1',
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-      transition: 'transform 0.2s, box-shadow 0.2s',
-      cursor: 'pointer',
-    }}
+    <div
       onClick={() => navigate(`/products/${product.id}`)}
-      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.13)' }}
-      onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.08)' }}
+      onMouseEnter={e => {
+        e.currentTarget.style.transform = 'translateY(-4px)'
+        e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.12)'
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.transform = ''
+        e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.07)'
+      }}
+      style={{
+        background: '#ffffff',
+        borderRadius: 16,
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        border: '1px solid #ece8e1',
+        cursor: 'pointer',
+        transition: 'transform 0.22s, box-shadow 0.22s',
+        boxShadow: '0 2px 10px rgba(0,0,0,0.07)',
+      }}
     >
       {/* Image area */}
-      <div style={{ position: 'relative', padding: '8px 8px 0', background: '#fff' }}>
-        <div style={{ background: '#f5f5f7', borderRadius: 12, padding: '12px', textAlign: 'center', position: 'relative' }}>
-          {/* Wishlist btn */}
+      <div style={{ position: 'relative', background: '#f5f3f0', flexShrink: 0 }}>
+        <div style={{ position: 'relative', height: 170, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <img
+            src={imgs[activeImg] || '/images/noimage.jpg'}
+            alt={product.name}
+            loading="lazy"
+            style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }}
+          />
+          {/* Offer pill — top left */}
+          {offerPct > 0 && (
+            <div style={{
+              position: 'absolute', top: 10, left: 10, zIndex: 3,
+              background: '#4d0004', color: '#FDE68A',
+              borderRadius: 20, padding: '4px 10px',
+              fontSize: 10, fontWeight: 800,
+              letterSpacing: '0.4px', textTransform: 'uppercase',
+            }}>
+              {offerPct}% Off
+            </div>
+          )}
+          {/* Wishlist — top right */}
           <button
             onClick={e => { e.stopPropagation(); toggleWishlist(product.id) }}
-            style={{
-              position: 'absolute', top: 10, right: 10,
-              width: 34, height: 34, borderRadius: '50%',
-              background: '#fff', border: 'none',
-              boxShadow: '0 1px 6px rgba(0,0,0,0.12)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              cursor: 'pointer', zIndex: 2, transition: '0.2s',
-            }}
             title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+            style={{
+              position: 'absolute', top: 10, right: 10, zIndex: 10,
+              background: 'rgba(255,255,255,0.9)',
+              border: '1px solid #e5e5e5',
+              borderRadius: '50%', width: 32, height: 32,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer',
+            }}
           >
-            <Heart size={16} fill={wishlisted ? '#ef4444' : 'none'} color={wishlisted ? '#ef4444' : '#64748b'} />
+            <Heart size={15} fill={wishlisted ? '#ef4444' : 'none'} color={wishlisted ? '#ef4444' : '#aaa'} />
           </button>
-
-          {/* Discount badge */}
-          {offerPct > 0 && (
-            <div className="label-block">
-              <span className="label-theme">{offerPct}% Off</span>
-            </div>
-          )}
-
-          {/* Main image */}
-          <div
-            style={{ height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}
-          >
-            <img
-              src={imgs[activeImg] || '/images/noimage.jpg'}
-              alt={product.name}
-              loading="lazy"
-              style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }}
-            />
-          </div>
-
-          {/* Thumbnails */}
-          {imgs.length > 1 && (
-            <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 8 }}>
-              {imgs.slice(0, 4).map((src, i) => (
-                <button
-                  key={i}
-                  onClick={e => { e.stopPropagation(); setActiveImg(i) }}
-                  style={{
-                    width: 26, height: 26, borderRadius: 6, overflow: 'hidden', padding: 0,
-                    border: i === activeImg ? '2px solid #4C1D95' : '1px solid #d1d5db',
-                    cursor: 'pointer', opacity: i === activeImg ? 1 : 0.6, transition: '0.15s',
-                  }}
-                >
-                  <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </button>
-              ))}
-            </div>
-          )}
         </div>
+
+        {/* Thumbnails */}
+        {imgs.length > 1 && (
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 5, padding: '6px 8px 8px', background: '#f5f3f0' }}>
+            {imgs.slice(0, 4).map((src, i) => (
+              <button
+                key={i}
+                onClick={e => { e.stopPropagation(); setActiveImg(i) }}
+                style={{
+                  width: 24, height: 24, borderRadius: 5, overflow: 'hidden', padding: 0, flexShrink: 0,
+                  border: i === activeImg ? '2px solid #4d0004' : '1px solid #ddd',
+                  cursor: 'pointer', opacity: i === activeImg ? 1 : 0.55, transition: '0.15s', background: 'none',
+                }}
+              >
+                <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Card body */}
-      <div style={{ display: 'flex', flexDirection: 'column', padding: '12px', flex: 1, minWidth: 0, overflow: 'hidden' }}>
-        {/* Category */}
-        <span style={{
-          fontSize: '0.7rem', color: '#94a3b8', fontWeight: 700,
-          textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 4,
-        }}>
-          {product.category}
-        </span>
-
-        <h3
-          style={{
-            fontSize: '0.92rem', fontWeight: 700, color: '#1a1a1a',
-            margin: '0 0 4px', lineHeight: 1.3,
-          }}
-        >
+      {/* Content */}
+      <div style={{ padding: '14px 14px 0', flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <h3 style={{ fontSize: 13, fontWeight: 700, color: '#1a1a1a', margin: '0 0 4px', lineHeight: 1.35 }}>
           {product.name}
         </h3>
-
-        {/* Order unit */}
-        {product.order_unit && (
-          <p style={{ fontSize: '0.76rem', color: '#94a3b8', margin: '0 0 8px' }}>
-            {product.order_unit}
+        {product.description && (
+          <p style={{ fontSize: 11, color: '#888', margin: '0 0 6px', lineHeight: 1.45 }}>
+            {product.description}
           </p>
+        )}
+        {/* Info chips */}
+        {(product.category || product.order_unit) && (
+          <div style={{ display: 'flex', borderTop: '1px solid #f0ece6', borderBottom: '1px solid #f0ece6', margin: '0 0 12px' }}>
+            {product.category && (
+              <div style={{ flex: 1, padding: '7px 8px', borderRight: product.order_unit ? '1px solid #f0ece6' : 'none' }}>
+                <p style={{ fontSize: 9, color: '#bbb', margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.4px' }}>Category</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: '#4d0004', margin: 0, lineHeight: 1.2 }}>{product.category}</p>
+              </div>
+            )}
+            {product.order_unit && (
+              <div style={{ flex: 1, padding: '7px 8px' }}>
+                <p style={{ fontSize: 9, color: '#bbb', margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.4px' }}>Unit</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: '#4d0004', margin: 0, lineHeight: 1.2 }}>{product.order_unit}</p>
+              </div>
+            )}
+          </div>
         )}
 
         <div style={{ flex: 1 }} />
 
-        {/* Price */}
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 10, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#1a1a1a' }}>
+        {/* Quantity row — only when in cart */}
+        {qty > 0 && (
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}
+          >
+            <span style={{ fontSize: 12, fontWeight: 600, color: '#888' }}>Quantity</span>
+            <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid #d1d5db', borderRadius: 20, overflow: 'hidden' }}>
+              <button type="button" onClick={() => setQty(product.id, qty - 1)}
+                style={{ width: 30, height: 28, border: 'none', background: 'transparent', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', color: '#4d0004', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
+              <span style={{ minWidth: 24, textAlign: 'center', fontSize: 13, fontWeight: 800, color: '#1a1a1a' }}>{qty}</span>
+              <button type="button" onClick={() => setQty(product.id, qty + 1)}
+                style={{ width: 30, height: 28, border: 'none', background: 'transparent', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', color: '#4d0004', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Price + Add to Cart row */}
+      <div
+        style={{ padding: '0 14px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}
+        onClick={e => e.stopPropagation()}
+      >
+        <div>
+          <p style={{ fontSize: 17, fontWeight: 900, color: '#4d0004', margin: 0, lineHeight: 1 }}>
             {fmtPrice(product.price)}
-          </span>
+          </p>
           {hasMrp && (
-            <span style={{ fontSize: '0.8rem', color: '#94a3b8', textDecoration: 'line-through' }}>
+            <span style={{ fontSize: 11, color: '#bbb', textDecoration: 'line-through', display: 'block', marginTop: 2 }}>
               {fmtPrice(product.mrp)}
             </span>
           )}
         </div>
-
-        {/* Add to Cart → Qty pill */}
-        {!product.is_active ? (
-          <button disabled style={{ display: 'block', width: '100%', boxSizing: 'border-box', background: '#e2e8f0', color: '#94a3b8', border: 'none', borderRadius: 999, padding: '9px 0', fontSize: '0.88rem', fontWeight: 700, cursor: 'not-allowed' }}>
-            Out of Stock
-          </button>
-        ) : qty === 0 ? (
-          <button
-            className="btn-add-cart"
-            onClick={e => { e.stopPropagation(); addToCart(product.id) }}
-          >
-            Add to Cart
-          </button>
-        ) : (
-          <div onClick={e => e.stopPropagation()} style={{
-            display: 'flex', alignItems: 'center',
-            border: '2px solid #4C1D95', borderRadius: 999,
-            height: 40, background: '#fff',
-            width: '100%', boxSizing: 'border-box', overflow: 'hidden',
-          }}>
-            <button
-              type="button"
-              onClick={() => qty <= 1 ? setQty(product.id, 0) : setQty(product.id, qty - 1)}
-              style={{
-                flexShrink: 0, width: 36, height: '100%',
-                border: 'none', background: 'transparent',
-                fontSize: '1.2rem', fontWeight: 700, cursor: 'pointer', color: '#4C1D95',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}
-            >−</button>
-            <input
-              type="number"
-              value={qty}
-              min={1}
-              onChange={e => {
-                const v = parseInt(e.target.value)
-                if (!isNaN(v) && v > 0) setQty(product.id, v)
-              }}
-              style={{
-                flex: 1, minWidth: 0, textAlign: 'center', fontWeight: 800,
-                fontSize: '0.95rem', color: '#4C1D95',
-                border: 'none', background: 'transparent', outline: 'none', padding: 0, margin: 0,
-                MozAppearance: 'textfield', WebkitAppearance: 'none',
-              }}
-            />
-            <button
-              type="button"
-              onClick={() => setQty(product.id, qty + 1)}
-              style={{
-                flexShrink: 0, width: 36, height: '100%',
-                border: 'none', background: 'transparent',
-                fontSize: '1.2rem', fontWeight: 700, cursor: 'pointer', color: '#4C1D95',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}
-            >+</button>
-          </div>
-        )}
+        <AddToCartButton
+          disabled={!product.is_active}
+          label={qty > 0 ? 'More' : 'Cart'}
+          onClick={() => addToCart(product.id)}
+        />
       </div>
     </div>
   )
@@ -607,21 +586,13 @@ export default function Products() {
             {loading ? (
               <div className="products-grid">
                 {Array.from({ length: 8 }).map((_, i) => (
-                  <div key={i} style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.08)', border: '1px solid #f1f1f1', display: 'flex', flexDirection: 'column' }}>
-                    {/* image area */}
-                    <div style={{ padding: '8px 8px 0' }}>
-                      <div style={{ background: '#f5f5f7', borderRadius: 12, padding: 12 }}>
-                        <div className="skeleton" style={{ height: 160, borderRadius: 8 }} />
-                      </div>
-                    </div>
-                    {/* card body */}
+                  <div key={i} style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', border: '1px solid #ece8e1', display: 'flex', flexDirection: 'column' }}>
+                    <div className="skeleton" style={{ height: 170, background: 'linear-gradient(90deg,#f0ede8 25%,#f8f6f3 50%,#f0ede8 75%)', backgroundSize: '1200px 100%' }} />
                     <div style={{ padding: '12px', flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                      <div className="skeleton" style={{ height: 10, width: '45%', borderRadius: 6 }} />
-                      <div className="skeleton" style={{ height: 15, borderRadius: 6 }} />
-                      <div className="skeleton" style={{ height: 10, width: '35%', borderRadius: 6 }} />
+                      <div className="skeleton" style={{ height: 13, borderRadius: 4 }} />
+                      <div className="skeleton" style={{ height: 18, width: '50%', borderRadius: 4 }} />
                       <div style={{ flex: 1, minHeight: 8 }} />
-                      <div className="skeleton" style={{ height: 20, width: '50%', borderRadius: 6 }} />
-                      <div className="skeleton" style={{ height: 38, borderRadius: 999, marginTop: 4 }} />
+                      <div className="skeleton" style={{ height: 36, borderRadius: 10, marginTop: 4 }} />
                     </div>
                   </div>
                 ))}
