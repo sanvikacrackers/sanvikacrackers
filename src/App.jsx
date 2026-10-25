@@ -3,19 +3,12 @@ import { useEffect } from 'react'
 import { ShopProvider } from './context/ShopContext'
 import { AuthProvider } from './context/AuthContext'
 import { Toaster } from 'react-hot-toast'
-import Fireworks from './components/Fireworks'
 import pricelistImg from './assets/pricelist.png'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
   useEffect(() => { window.scrollTo(0, 0) }, [pathname])
   return null
-}
-
-function FireworksOverlay() {
-  const { pathname } = useLocation()
-  if (pathname.startsWith('/admin') || pathname.startsWith('/staff')) return null
-  return <Fireworks />
 }
 
 function PricelistFAB() {
@@ -84,7 +77,6 @@ export default function App() {
       <AuthProvider>
         <ShopProvider>
           <ScrollToTop />
-          <FireworksOverlay />
           <PricelistFAB />
           <Toaster position="top-center" containerStyle={{ zIndex: 1000000 }} />
           <Routes>
