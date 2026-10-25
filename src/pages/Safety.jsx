@@ -120,7 +120,7 @@ export default function Safety() {
 
         {/* CTA */}
         <div className="mt-12 text-center">
-          <Link to="/#products" className="inline-block bg-[#e87316] text-white rounded-xl px-8 py-3 font-semibold hover:bg-[#cf6512] transition-colors no-underline">
+          <Link to="/#products" className="inline-block bg-[#f05a28] text-white rounded-xl px-8 py-3 font-semibold hover:bg-[#e04522] transition-colors no-underline">
             Shop Safely →
           </Link>
         </div>

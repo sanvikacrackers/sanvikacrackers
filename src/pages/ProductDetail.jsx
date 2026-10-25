@@ -99,29 +99,29 @@ function SimilarCard({ product }) {
             onClick={() => addToCart(product.id)}
             style={{
               display: 'block', width: '100%', boxSizing: 'border-box',
-              background: '#ff7011', color: '#fff', border: 'none', borderRadius: 999,
+              background: '#f05a28', color: '#fff', border: 'none', borderRadius: 999,
               padding: '8px 0', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer',
             }}
             onMouseEnter={e => e.currentTarget.style.background = '#e06510'}
-            onMouseLeave={e => e.currentTarget.style.background = '#ff7011'}
+            onMouseLeave={e => e.currentTarget.style.background = '#f05a28'}
           >Add to Cart</button>
         ) : (
           <div style={{
             display: 'flex', alignItems: 'center',
-            border: '2px solid #ff7011', borderRadius: 999,
+            border: '2px solid #f05a28', borderRadius: 999,
             height: 36, background: '#fff', width: '100%', boxSizing: 'border-box', overflow: 'hidden',
           }}>
             <button type="button"
               onClick={() => qty <= 1 ? setQty(product.id, 0) : setQty(product.id, qty - 1)}
-              style={{ flexShrink: 0, width: 32, height: '100%', border: 'none', background: 'transparent', fontSize: '1.1rem', fontWeight: 700, cursor: 'pointer', color: '#ff7011', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              style={{ flexShrink: 0, width: 32, height: '100%', border: 'none', background: 'transparent', fontSize: '1.1rem', fontWeight: 700, cursor: 'pointer', color: '#f05a28', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             >−</button>
             <input type="number" value={qty} min={1}
               onChange={e => { const v = parseInt(e.target.value); if (!isNaN(v) && v > 0) setQty(product.id, v) }}
-              style={{ flex: 1, minWidth: 0, textAlign: 'center', fontWeight: 800, fontSize: '0.88rem', color: '#ff7011', border: 'none', background: 'transparent', outline: 'none', padding: 0, margin: 0, MozAppearance: 'textfield', WebkitAppearance: 'none' }}
+              style={{ flex: 1, minWidth: 0, textAlign: 'center', fontWeight: 800, fontSize: '0.88rem', color: '#f05a28', border: 'none', background: 'transparent', outline: 'none', padding: 0, margin: 0, MozAppearance: 'textfield', WebkitAppearance: 'none' }}
             />
             <button type="button"
               onClick={() => setQty(product.id, qty + 1)}
-              style={{ flexShrink: 0, width: 32, height: '100%', border: 'none', background: 'transparent', fontSize: '1.1rem', fontWeight: 700, cursor: 'pointer', color: '#ff7011', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              style={{ flexShrink: 0, width: 32, height: '100%', border: 'none', background: 'transparent', fontSize: '1.1rem', fontWeight: 700, cursor: 'pointer', color: '#f05a28', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             >+</button>
           </div>
         )}
@@ -152,7 +152,7 @@ export default function ProductDetail() {
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
         <div style={{ fontSize: '3rem' }}>🎆</div>
         <p style={{ color: '#64748b', fontSize: '1.1rem' }}>Product not found</p>
-        <button onClick={() => navigate('/products')} style={{ background: '#ff7011', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', cursor: 'pointer', fontWeight: 600 }}>
+        <button onClick={() => navigate('/products')} style={{ background: '#f05a28', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', cursor: 'pointer', fontWeight: 600 }}>
           Back to Products
         </button>
       </div>
@@ -188,14 +188,14 @@ export default function ProductDetail() {
                 onClick={() => navigate(-1)}
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 6,
-                  background: '#fff', border: '1px solid #ff7011', color: '#ff7011',
+                  background: '#fff', border: '1px solid #f05a28', color: '#f05a28',
                   borderRadius: 999, padding: '6px 16px', fontSize: '0.85rem',
                   fontWeight: 700, cursor: 'pointer', transition: '0.2s',
                 }}
                 onMouseEnter={e => { e.currentTarget.style.background = '#fff3ee' }}
                 onMouseLeave={e => { e.currentTarget.style.background = '#fff' }}
               >
-                <ArrowLeft size={14} color="#ff7011" /> Back
+                <ArrowLeft size={14} color="#f05a28" /> Back
               </button>
             </div>
 
@@ -253,7 +253,7 @@ export default function ProductDetail() {
                     style={{
                       width: 80, height: 80, flexShrink: 0,
                       borderRadius: 12, overflow: 'hidden', padding: 0,
-                      border: i === activeImg ? '3px solid #ff7011' : '1px solid #e2e8f0',
+                      border: i === activeImg ? '3px solid #f05a28' : '1px solid #e2e8f0',
                       cursor: 'pointer', opacity: i === activeImg ? 1 : 0.65,
                       boxShadow: i === activeImg ? '0 4px 12px rgba(255,112,17,0.25)' : 'none',
                       transition: '0.2s', background: 'none',
@@ -273,7 +273,7 @@ export default function ProductDetail() {
             <div style={{ marginBottom: 12 }}>
               <span style={{
                 display: 'inline-flex', alignItems: 'center', gap: 5,
-                background: '#fff3ee', color: '#ff7011',
+                background: '#fff3ee', color: '#f05a28',
                 border: '1px solid rgba(255,112,17,0.2)',
                 borderRadius: 6, padding: '5px 12px', fontSize: '0.8rem', fontWeight: 600,
               }}>
@@ -346,7 +346,7 @@ export default function ProductDetail() {
                   borderRadius: 10, padding: '12px 16px',
                   display: 'inline-flex', alignItems: 'center', gap: 8, width: '100%', boxSizing: 'border-box',
                 }}>
-                  <Package size={16} color="#ff7011" />
+                  <Package size={16} color="#f05a28" />
                   <span style={{ fontWeight: 700, color: '#1e293b', fontSize: '1rem' }}>{product.order_unit}</span>
                 </div>
               </div>
@@ -358,21 +358,21 @@ export default function ProductDetail() {
                 <button
                   onClick={() => addToCart(product.id)}
                   style={{
-                    width: '100%', background: '#ff7011', color: '#fff',
+                    width: '100%', background: '#f05a28', color: '#fff',
                     border: 'none', borderRadius: 999,
                     padding: '14px 0', fontSize: '1rem', fontWeight: 700,
                     cursor: 'pointer', transition: 'background 0.2s',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                   }}
                   onMouseEnter={e => e.currentTarget.style.background = '#e06510'}
-                  onMouseLeave={e => e.currentTarget.style.background = '#ff7011'}
+                  onMouseLeave={e => e.currentTarget.style.background = '#f05a28'}
                 >
                   <ShoppingCart size={18} /> Add to Cart
                 </button>
               ) : (
                 <div style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  border: '2px solid #ff7011', borderRadius: 999,
+                  border: '2px solid #f05a28', borderRadius: 999,
                   minHeight: 52, padding: '0 8px', background: '#fff', width: '100%',
                   boxSizing: 'border-box',
                 }}>
@@ -381,7 +381,7 @@ export default function ProductDetail() {
                     onClick={() => qty <= 1 ? setQty(product.id, 0) : setQty(product.id, qty - 1)}
                     style={{
                       width: 38, height: 38, border: 'none', background: 'transparent',
-                      fontSize: '1.4rem', fontWeight: 700, cursor: 'pointer', color: '#ff7011',
+                      fontSize: '1.4rem', fontWeight: 700, cursor: 'pointer', color: '#f05a28',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1, flexShrink: 0,
                     }}
                   >−</button>
@@ -396,19 +396,19 @@ export default function ProductDetail() {
                       }}
                       style={{
                         width: 50, textAlign: 'center', fontWeight: 800,
-                        fontSize: '1.25rem', color: '#ff7011',
+                        fontSize: '1.25rem', color: '#f05a28',
                         border: 'none', background: 'transparent', outline: 'none', padding: 0, margin: 0,
                         MozAppearance: 'textfield', WebkitAppearance: 'none',
                       }}
                     />
-                    <span style={{ fontSize: '1.1rem', fontWeight: 700, color: '#ff7011' }}>in Cart</span>
+                    <span style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f05a28' }}>in Cart</span>
                   </div>
                   <button
                     type="button"
                     onClick={() => setQty(product.id, qty + 1)}
                     style={{
                       width: 38, height: 38, border: 'none', background: 'transparent',
-                      fontSize: '1.4rem', fontWeight: 700, cursor: 'pointer', color: '#ff7011',
+                      fontSize: '1.4rem', fontWeight: 700, cursor: 'pointer', color: '#f05a28',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1, flexShrink: 0,
                     }}
                   >+</button>
@@ -420,7 +420,7 @@ export default function ProductDetail() {
             {qty > 0 && (
               <Link to="/cart" style={{
                 display: 'block', textAlign: 'center', marginTop: 10,
-                color: '#ff7011', fontSize: '0.88rem', fontWeight: 600,
+                color: '#f05a28', fontSize: '0.88rem', fontWeight: 600,
                 textDecoration: 'none',
               }}>
                 View Cart →
@@ -438,7 +438,7 @@ export default function ProductDetail() {
           <div style={{ background: '#f9fafb', borderTop: '1px solid #e8e8e8', padding: '40px 0' }}>
             <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 16px' }}>
               <div style={{ marginBottom: 24 }}>
-                <p style={{ margin: '0 0 4px', fontSize: '0.82rem', color: '#ff7011', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
+                <p style={{ margin: '0 0 4px', fontSize: '0.82rem', color: '#f05a28', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
                   More from this category
                 </p>
                 <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800, color: '#0f172a' }}>
