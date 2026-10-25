@@ -20,7 +20,7 @@ export default function About() {
   const { } = useShop()
 
   return (
-    <div className="theme-color4 light ltr" style={{ minHeight: '100vh', background: 'rgb(255,251,235)' }}>
+    <div className="theme-color4 light ltr" style={{ minHeight: '100vh', background: '#ffffff' }}>
 
       <TopBar />
 
@@ -60,7 +60,7 @@ export default function About() {
       </section>
 
       {/* Stats */}
-      <section className="py-12 bg-orange-50">
+      <section style={{ background: "#f9fafb" }} className="py-12">
         <div className="max-w-[1100px] mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
             {[
@@ -94,8 +94,7 @@ export default function About() {
               { title: 'Trusted Since Years',     desc: 'Sanvika Crackers has been serving customers across Tamil Nadu and all over India with trust and quality.' },
               { title: 'Easy Online Ordering',    desc: 'Browse, add to cart, and send your enquiry via WhatsApp in minutes. Simple, fast, and hassle-free.' },
             ].map(({ title, desc }) => (
-              <div key={title} className="bg-gray-50 rounded-2xl p-6">
-                <div className="w-10 h-10 bg-[#e87316] rounded-xl mb-4" />
+              <div key={title} style={{ background: '#fff', borderRadius: 10, padding: '20px 24px', borderTop: '3px solid #e87316', borderLeft: '1px solid #e8e8e8', borderRight: '1px solid #e8e8e8', borderBottom: '1px solid #e8e8e8' }}>
                 <h3 className="font-bold text-gray-900 mb-2">{title}</h3>
                 <p className="text-sm text-gray-500 leading-relaxed">{desc}</p>
               </div>
@@ -105,7 +104,7 @@ export default function About() {
       </section>
 
       {/* Contact Info */}
-      <section className="py-12 bg-orange-50">
+      <section style={{ background: "#f9fafb" }} className="py-12">
         <div className="max-w-[700px] mx-auto px-4 text-center">
           <p className="subtitle-two">Get In Touch</p>
           <h2 className="text-3xl font-extrabold text-gray-900 mb-8">Contact Us</h2>

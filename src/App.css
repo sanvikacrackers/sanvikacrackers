@@ -19,8 +19,8 @@
 }
 
 @keyframes float-label {
-  0%, 100% { transform: translateX(0); }
-  50%       { transform: translateX(-5px); }
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-3px); }
 }
 
 @keyframes tagline-shine {
@@ -47,7 +47,8 @@
 html, body {
   overflow-x: clip;
   max-width: 100vw;
-  background: rgb(255, 251, 235);
+  background: #ffffff;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 }
 
 /* ── Products Page Grid ──────────────────────────── */
@@ -175,7 +176,7 @@ html, body {
   width: 100%;
 }
 .qty-row button {
-  background: linear-gradient(135deg, #c0392b 0%, #8e44ad 100%);
+  background: #e87316;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -188,7 +189,6 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 6px rgba(142,68,173,0.3);
 }
 .qty-row input {
   flex: 1;
@@ -341,7 +341,7 @@ html, body {
 /* Add to cart */
 .btn-add-cart {
   width: 100%;
-  background: linear-gradient(135deg, #c0392b 0%, #8e44ad 100%);
+  background: #e87316;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -349,20 +349,20 @@ html, body {
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  transition: opacity 0.2s, transform 0.15s;
-  letter-spacing: 0.4px;
-  box-shadow: 0 2px 8px rgba(142,68,173,0.35);
+  transition: background 0.2s, transform 0.15s;
+  letter-spacing: 0.2px;
 }
-.btn-add-cart:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn-add-cart:hover { background: #d06910; transform: translateY(-1px); }
 
 /* Section title */
 .subtitle-two {
-  color: var(--theme);
-  font-size: 13px;
-  font-weight: 600;
+  color: #e87316;
+  font-size: 12px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 2px;
-  margin: 0 0 4px;
+  letter-spacing: 2.5px;
+  margin: 0 0 6px;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
 }
 
 /* Services */
@@ -490,19 +490,8 @@ html, body {
 .wishlist-heart-btn:hover { transform: scale(1.2); }
 
 /* ── Skeleton Loader ──────────────────────────────── */
-@keyframes pricelist-pulse {
-  0%   { box-shadow: 0 0 0 0 rgba(99,102,241,0.55); transform: scale(1); }
-  50%  { box-shadow: 0 0 0 7px rgba(99,102,241,0); transform: scale(1.04); }
-  100% { box-shadow: 0 0 0 0 rgba(99,102,241,0); transform: scale(1); }
-}
-@keyframes pricelist-shimmer {
-  0%   { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
 .pricelist-btn {
-  background: linear-gradient(270deg, #6366f1, #8b5cf6, #06b6d4, #6366f1);
-  background-size: 300% 100%;
-  animation: pricelist-pulse 1.8s ease-in-out infinite, pricelist-shimmer 3s linear infinite;
+  background: #4f46e5;
   color: #fff !important;
   border: none !important;
   border-radius: 8px;
@@ -514,9 +503,10 @@ html, body {
   text-decoration: none !important;
   align-items: center;
   gap: 6px;
+  transition: background 0.2s;
 }
 .pricelist-btn:hover {
-  filter: brightness(1.12);
+  background: #4338ca;
 }
 
 @keyframes skeleton-shimmer {
@@ -593,3 +583,12 @@ html, body {
   width: 8px;
 }
 .skeleton-banner-dot.active { width: 24px; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.5s ease both;
+}

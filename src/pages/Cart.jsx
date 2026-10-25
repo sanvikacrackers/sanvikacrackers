@@ -127,7 +127,7 @@ export default function Cart() {
   }
 
   return (
-    <div className="theme-color4 light ltr" style={{ minHeight: '100vh', background: 'rgb(255,251,235)' }}>
+    <div className="theme-color4 light ltr" style={{ minHeight: '100vh', background: '#ffffff' }}>
 
       <Header />
 
@@ -218,7 +218,7 @@ export default function Cart() {
                   <span>Total</span>
                   <span className="text-[#e87316]">{fmtPrice(cartTotal)}</span>
                 </div>
-                <div className="mt-3 text-xs text-gray-400 bg-orange-50 rounded-lg px-3 py-2">
+                <div className="mt-3 text-xs text-gray-400 rounded-lg px-3 py-2" style={{ background: "#fff3ee" }}>
                   Min. order: ₹{minOrder.toLocaleString('en-IN')} ({form.isTN ? labelTN : labelOther})
                 </div>
               </div>

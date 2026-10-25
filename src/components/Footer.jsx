@@ -75,12 +75,11 @@ export default function Footer() {
         style={{ position: 'fixed', bottom: 180, right: 16, textDecoration: 'none', zIndex: 999, display: 'flex', alignItems: 'center', gap: 8 }}
       >
         <span style={{
-          fontSize: 11, fontWeight: 800, color: '#fff',
-          background: 'linear-gradient(135deg, #e87316, #f59e0b)',
+          fontSize: 11, fontWeight: 700, color: '#fff',
+          background: '#e87316',
           borderRadius: 6, padding: '4px 10px', whiteSpace: 'nowrap',
-          boxShadow: '0 2px 8px rgba(232,115,22,0.4)',
-          animation: 'float-label 2s ease-in-out infinite',
-        }}>📞 Call Us</span>
+          animation: 'float-label 2.5s ease-in-out infinite',
+        }}>Call Us</span>
         <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 52 52" style={{ display: 'block', flexShrink: 0 }}>
           <circle cx="26" cy="26" r="26" fill="#00b900"/>
           <path fill="#fff" d="M36.5 32.1c-.7-.7-4.4-2.9-5.2-2.9-.4 0-.8.2-1.1.5l-1.5 1.5c-.2.2-.5.3-.7.2-1-.4-3.2-2.2-4.6-3.6-1.4-1.4-3.2-3.6-3.6-4.6-.1-.3 0-.5.2-.7l1.5-1.5c.3-.3.5-.7.5-1.1 0-.8-2.2-4.5-2.9-5.2-.3-.3-.7-.5-1.1-.5-1.5 0-4.5 2-4.5 4 0 5.5 6.5 12.5 10.5 15.5 2 1.5 5.5 3.5 8 3.5 2 0 4-3 4-4.5 0-.4-.2-.8-.5-1.1z"/>
@@ -94,12 +93,11 @@ export default function Footer() {
         style={{ position: 'fixed', bottom: 96, right: 16, textDecoration: 'none', zIndex: 999, display: 'flex', alignItems: 'center', gap: 8 }}
       >
         <span style={{
-          fontSize: 11, fontWeight: 800, color: '#fff',
-          background: 'linear-gradient(135deg, #8b5cf6, #ec4899)',
+          fontSize: 11, fontWeight: 700, color: '#fff',
+          background: '#25d366',
           borderRadius: 6, padding: '4px 10px', whiteSpace: 'nowrap',
-          boxShadow: '0 2px 8px rgba(139,92,246,0.4)',
-          animation: 'float-label 2s ease-in-out infinite 0.5s',
-        }}>💬 WhatsApp</span>
+          animation: 'float-label 2.5s ease-in-out infinite 0.4s',
+        }}>WhatsApp</span>
         <img src={whatsappImg} alt="WhatsApp" style={{ width: 56, height: 56, display: 'block', borderRadius: '50%', flexShrink: 0 }} />
       </a>
 
@@ -110,12 +108,11 @@ export default function Footer() {
         style={{ position: 'fixed', bottom: 16, right: 16, textDecoration: 'none', zIndex: 999, display: 'flex', alignItems: 'center', gap: 8 }}
       >
         <span style={{
-          fontSize: 11, fontWeight: 800, color: '#fff',
-          background: 'linear-gradient(135deg, #1877f2, #0a5dc2)',
+          fontSize: 11, fontWeight: 700, color: '#fff',
+          background: '#1877f2',
           borderRadius: 6, padding: '4px 10px', whiteSpace: 'nowrap',
-          boxShadow: '0 2px 8px rgba(24,119,242,0.4)',
-          animation: 'float-label 2s ease-in-out infinite 1s',
-        }}>👍 Facebook</span>
+          animation: 'float-label 2.5s ease-in-out infinite 0.8s',
+        }}>Facebook</span>
         <img src={facebookImg} alt="Facebook" style={{ width: 48, height: 48, display: 'block', borderRadius: '50%', flexShrink: 0 }} />
       </a>
 

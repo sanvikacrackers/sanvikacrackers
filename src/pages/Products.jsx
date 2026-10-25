@@ -506,14 +506,14 @@ export default function Products() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: 'rgb(255,251,235)' }}>
+    <div style={{ minHeight: '100vh', background: '#ffffff' }}>
 
       <TopBar />
 
       <Header />
 
       {/* ── Page title bar ───────────────────────────────────────────── */}
-      <div style={{ background: 'rgb(255,251,235)', borderBottom: '1px solid #e9d97a', padding: '14px 0' }}>
+      <div style={{ background: '#ffffff', borderBottom: '1px solid #e8e8e8', padding: '14px 0' }}>
         <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
           <div>
             <h1 style={{ margin: 0, fontSize: '1.35rem', fontWeight: 800, color: '#1e293b' }}>All Products</h1>
@@ -576,7 +576,7 @@ export default function Products() {
           <div
             style={{
               position: 'absolute', bottom: 0, left: 0, right: 0,
-              background: 'rgb(255,251,235)', borderRadius: '20px 20px 0 0',
+              background: '#ffffff', borderRadius: '20px 20px 0 0',
               maxHeight: '88vh', overflowY: 'auto',
               animation: 'slideUp 0.28s ease',
             }}

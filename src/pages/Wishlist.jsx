@@ -19,7 +19,7 @@ export default function Wishlist() {
   const { wishlistItems, toggleWishlist, addToCart, setQty, cartQtys, cartCount, wishlistCount } = useShop()
 
   return (
-    <div className="theme-color4 light ltr" style={{ minHeight: '100vh', background: 'rgb(255,251,235)' }}>
+    <div className="theme-color4 light ltr" style={{ minHeight: '100vh', background: '#ffffff' }}>
 
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -36,7 +36,7 @@ export default function Wishlist() {
               <Link to="/#contact"  className="nav-link">Contact</Link>
             </nav>
             <div className="flex items-center gap-2">
-              <Link to="/wishlist" className="relative flex items-center gap-1.5 bg-orange-50 border border-orange-200 text-[#e87316] rounded-md px-3 py-2 text-sm font-semibold hover:bg-orange-100 transition-colors no-underline">
+              <Link to="/wishlist" className="relative flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold no-underline" style={{ background: "#fff3ee", border: "1px solid #fcd9bd", color: "#e87316" }}>
                 <Heart size={18} fill="#e87316" />
                 <span className="hidden sm:inline">Wishlist</span>
                 {wishlistCount > 0 && <span className="bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center font-bold">{wishlistCount}</span>}

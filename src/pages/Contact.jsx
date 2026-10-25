@@ -73,7 +73,7 @@ export default function Contact() {
   ]
 
   return (
-    <div style={{ minHeight: '100vh', background: 'rgb(255,251,235)' }}>
+    <div style={{ minHeight: '100vh', background: '#ffffff' }}>
 
       <TopBar />
 
@@ -171,7 +171,9 @@ export default function Contact() {
             }}>
               {sent ? (
                 <div style={{ textAlign: 'center', padding: '32px 0' }}>
-                  <div style={{ fontSize: '2.5rem', marginBottom: 10 }}>🎉</div>
+                  <div style={{ width: 48, height: 48, borderRadius: '50%', background: '#dcfce7', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
                   <h3 style={{ color: '#059669', margin: '0 0 6px' }}>Message Sent!</h3>
                   <p style={{ color: '#64748b', fontSize: '0.88rem', margin: 0 }}>We'll get back to you on WhatsApp shortly.</p>
                 </div>

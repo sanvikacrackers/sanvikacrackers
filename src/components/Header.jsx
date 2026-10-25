@@ -45,7 +45,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50" style={{ background: '#1a1a2e', boxShadow: '0 2px 16px rgba(0,0,0,0.35)', paddingTop: 8, paddingBottom: 8 }}>
+      <header className="sticky top-0 z-50" style={{ background: '#111827', boxShadow: '0 2px 16px rgba(0,0,0,0.35)', paddingTop: 8, paddingBottom: 8 }}>
         <div className="max-w-[1400px] mx-auto px-4">
           <div className="flex items-center justify-between h-20 gap-4">
 
@@ -125,7 +125,7 @@ export default function Header() {
 
       {/* Search Dropdown */}
       {searchOpen && (
-        <div style={{ background: '#1a1a2e', borderTop: '1px solid rgba(255,255,255,0.1)', padding: '12px 16px', position: 'sticky', top: 88, zIndex: 49, boxShadow: '0 4px 16px rgba(0,0,0,0.3)' }}>
+        <div style={{ background: '#111827', borderTop: '1px solid rgba(255,255,255,0.1)', padding: '12px 16px', position: 'sticky', top: 88, zIndex: 49, boxShadow: '0 4px 16px rgba(0,0,0,0.3)' }}>
           <form onSubmit={handleSearch} style={{ maxWidth: 600, margin: '0 auto', display: 'flex', gap: 10 }}>
             <div style={{ position: 'relative', flex: 1 }}>
               <Search size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', pointerEvents: 'none' }} />

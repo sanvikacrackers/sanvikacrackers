@@ -50,8 +50,6 @@ function ProductCard({ product }) {
       <div className="img-wrapper relative">
         <div className="img-host">
           <img src={imgs[0] || '/images/noimage.jpg'} alt={product.name} loading="lazy" />
-          <div className="circle-shape" />
-          <span className="background-text">FIREWORKS</span>
           {offerPct > 0 && (
             <div className="label-block">
               <span className="label-theme">{offerPct}% Off</span>
@@ -188,10 +186,10 @@ export default function Home() {
           </div>
           {banners.length > 1 && (
             <>
-              <button onClick={() => goSlide(-1)} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', background: '#FFF8DC', border: '1px solid #f5d87a', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#b45309', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
+              <button onClick={() => goSlide(-1)} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.92)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#111827' }}>
                 <ChevronLeft size={22} />
               </button>
-              <button onClick={() => goSlide(1)} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: '#FFF8DC', border: '1px solid #f5d87a', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#b45309', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
+              <button onClick={() => goSlide(1)} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.92)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#111827' }}>
                 <ChevronRight size={22} />
               </button>
               <div style={{ position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 6 }}>
@@ -207,7 +205,7 @@ export default function Home() {
 
       {/* ── Skeleton Loader ──────────────────────────────────────────── */}
       {loading && [0, 1, 2].map(s => (
-        <section key={s} className="py-10 overflow-hidden" style={{ background: s % 2 === 0 ? '#FFFBEB' : '#FFF8DC' }}>
+        <section key={s} className="py-10 overflow-hidden" style={{ background: s % 2 === 0 ? '#ffffff' : '#f9fafb' }}>
           <div className="skeleton-section">
             <div className="skeleton-heading">
               <div className="skeleton skeleton-heading-sub" />
@@ -232,7 +230,7 @@ export default function Home() {
         <section
           key={cat}
           id={idx === 0 ? 'products' : undefined}
-          className={`py-10 overflow-hidden`} style={{ background: idx % 2 === 0 ? '#FFFBEB' : '#FFF8DC' }}
+          className={`py-10 overflow-hidden`} style={{ background: idx % 2 === 0 ? '#ffffff' : '#f9fafb' }}
         >
           <div className="max-w-[1400px] mx-auto px-4">
             <div className="text-center mb-8">
@@ -248,7 +246,7 @@ export default function Home() {
 
 
       {/* ── Services ────────────────────────────────────────────────── */}
-      <section className="py-10" style={{ background: '#FFF8DC' }}>
+      <section className="py-10" style={{ background: '#f9fafb' }}>
         <div className="max-w-[1400px] mx-auto px-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
             {[

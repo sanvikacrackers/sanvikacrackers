@@ -167,7 +167,7 @@ export default function ProductDetail() {
     : 0
 
   return (
-    <div style={{ minHeight: '100vh', background: 'rgb(255,251,235)' }}>
+    <div style={{ minHeight: '100vh', background: '#ffffff' }}>
 
       <TopBar />
 
@@ -201,7 +201,7 @@ export default function ProductDetail() {
 
             {/* Main image box */}
             <div style={{
-              position: 'relative', background: 'rgb(255,251,235)',
+              position: 'relative', background: '#ffffff',
               borderRadius: 16, border: '1px solid #e2e8f0',
               padding: 24, textAlign: 'center', marginBottom: 14,
             }}>
@@ -435,7 +435,7 @@ export default function ProductDetail() {
         const similar = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 8)
         if (!similar.length) return null
         return (
-          <div style={{ background: 'rgb(255,251,235)', borderTop: '1px solid #e9d97a', padding: '40px 0' }}>
+          <div style={{ background: '#f9fafb', borderTop: '1px solid #e8e8e8', padding: '40px 0' }}>
             <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 16px' }}>
               <div style={{ marginBottom: 24 }}>
                 <p style={{ margin: '0 0 4px', fontSize: '0.82rem', color: '#ff7011', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
