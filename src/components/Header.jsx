@@ -23,21 +23,11 @@ export default function Header() {
   const [open, setOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchVal, setSearchVal] = useState('')
-  const [scrolled, setScrolled] = useState(false)
   const searchRef = useRef(null)
 
   useEffect(() => {
     if (searchOpen) searchRef.current?.focus()
   }, [searchOpen])
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    onScroll()
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  const isHome = pathname === '/'
 
   function handleSearch(e) {
     e.preventDefault()
@@ -56,9 +46,8 @@ export default function Header() {
   return (
     <>
       <header className="sticky top-0 z-50" style={{
-        background: (isHome && !scrolled) ? 'transparent' : '#1E1B4B',
-        boxShadow: (isHome && !scrolled) ? 'none' : '0 2px 16px rgba(0,0,0,0.35)',
-        transition: 'background 0.4s ease, box-shadow 0.4s ease',
+        background: '#4d0004',
+        boxShadow: '0 2px 16px rgba(0,0,0,0.4)',
         paddingTop: 8, paddingBottom: 8
       }}>
         <div className="max-w-[1400px] mx-auto px-4">
@@ -140,7 +129,7 @@ export default function Header() {
 
       {/* Search Dropdown */}
       {searchOpen && (
-        <div style={{ background: '#1E1B4B', borderTop: '1px solid rgba(255,255,255,0.1)', padding: '12px 16px', position: 'sticky', top: 88, zIndex: 49, boxShadow: '0 4px 16px rgba(0,0,0,0.3)' }}>
+        <div style={{ background: '#4d0004', borderTop: '1px solid rgba(255,255,255,0.1)', padding: '12px 16px', position: 'sticky', top: 88, zIndex: 49, boxShadow: '0 4px 16px rgba(0,0,0,0.3)' }}>
           <form onSubmit={handleSearch} style={{ maxWidth: 600, margin: '0 auto', display: 'flex', gap: 10 }}>
             <div style={{ position: 'relative', flex: 1 }}>
               <Search size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', pointerEvents: 'none' }} />

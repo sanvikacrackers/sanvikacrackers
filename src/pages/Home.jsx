@@ -168,7 +168,7 @@ export default function Home() {
 
       {/* ── Banner Skeleton ────────────────────────────────────────── */}
       {bannerLoading && (
-        <div className="skeleton-banner-wrap" style={{ marginTop: '-104px' }}>
+        <div className="skeleton-banner-wrap">
           <div className="skeleton skeleton-banner" />
           <div className="skeleton-banner-dots">
             {[0, 1, 2].map(i => (
@@ -180,7 +180,7 @@ export default function Home() {
 
       {/* ── Hero Banner Carousel ───────────────────────────────────── */}
       {!bannerLoading && banners.length > 0 && (
-        <section style={{ position: 'relative', overflow: 'hidden', background: '#111', width: '100%', marginTop: '-104px' }}>
+        <section style={{ position: 'relative', overflow: 'hidden', background: '#111', width: '100%' }}>
           <div style={{ display: 'flex', transition: 'transform 0.5s ease', transform: `translateX(-${activeSlide * 100}%)` }}>
             {banners.map((b, i) => (
               <img
@@ -193,10 +193,10 @@ export default function Home() {
           </div>
           {banners.length > 1 && (
             <>
-              <button onClick={() => goSlide(-1)} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.92)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#1E1B4B' }}>
+              <button onClick={() => goSlide(-1)} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.92)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#4d0004' }}>
                 <ChevronLeft size={22} />
               </button>
-              <button onClick={() => goSlide(1)} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.92)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#1E1B4B' }}>
+              <button onClick={() => goSlide(1)} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.92)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#4d0004' }}>
                 <ChevronRight size={22} />
               </button>
               <div style={{ position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 6 }}>
@@ -210,7 +210,7 @@ export default function Home() {
       )}
 
       {/* ── Welcome / Intro Section ──────────────────────────────────── */}
-      <section style={{ background: '#1E1B4B', padding: '72px 16px' }}>
+      <section style={{ background: '#4d0004', padding: '72px 16px' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 48 }}>
           {/* Left column */}
           <div style={{ flex: '1 1 380px', minWidth: 0 }}>
@@ -294,7 +294,7 @@ export default function Home() {
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           {/* Heading */}
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <h2 style={{ fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 900, color: '#1E1B4B', margin: '0 0 8px' }}>
+            <h2 style={{ fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 900, color: '#4d0004', margin: '0 0 8px' }}>
               Our Products
             </h2>
             <div style={{ width: 40, height: 3, background: '#4C1D95', margin: '8px auto 0', borderRadius: 2 }} />
@@ -365,7 +365,7 @@ export default function Home() {
       </section>
 
       {/* ── CTA Band ─────────────────────────────────────────────────── */}
-      <section style={{ background: '#1E1B4B', padding: '52px 16px' }}>
+      <section style={{ background: '#4d0004', padding: '52px 16px' }}>
         <div style={{
           maxWidth: 1200, margin: '0 auto',
           display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 24,

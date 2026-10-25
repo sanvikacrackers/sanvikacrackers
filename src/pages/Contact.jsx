@@ -80,7 +80,7 @@ export default function Contact() {
       <Header />
 
       {/* ── Hero Section ── */}
-      <section style={{ background: '#1E1B4B', padding: '72px 16px', textAlign: 'center' }}>
+      <section style={{ background: '#4d0004', padding: '72px 16px', textAlign: 'center' }}>
         <div style={{ maxWidth: 700, margin: '0 auto' }}>
           <p style={{ color: '#FDE68A', fontWeight: 700, fontSize: '0.88rem', letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 14px' }}>
             Get In Touch

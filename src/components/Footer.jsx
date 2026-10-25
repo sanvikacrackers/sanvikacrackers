@@ -13,7 +13,7 @@ export default function Footer() {
 
   return (
     <>
-      <footer id="contact" className="bg-[#1E1B4B] text-gray-400 pt-12 pb-6">
+      <footer id="contact" className="bg-[#4d0004] text-gray-400 pt-12 pb-6">
         <div className="max-w-[1400px] mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
@@ -49,7 +49,7 @@ export default function Footer() {
         </div>
 
         {/* Legal Disclaimer */}
-        <div className="border-t border-[#35275F] mt-10 pt-6">
+        <div className="border-t border-[#6b0205] mt-10 pt-6">
           <div className="max-w-[1400px] mx-auto px-4">
             <div style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 10, padding: '14px 20px' }}>
               <p className="text-[12px] leading-relaxed text-center" style={{ color: '#e2e8f0', margin: 0 }}>
@@ -61,7 +61,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-[#35275F] mt-5 pt-5" style={{ background: '#17143D' }}>
+        <div className="border-t border-[#6b0205] mt-5 pt-5" style={{ background: '#2a0002' }}>
           <div className="max-w-[1400px] mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-[12px] text-gray-500">© 2026, Sanvika Crackers. All Rights Reserved.</p>
           </div>

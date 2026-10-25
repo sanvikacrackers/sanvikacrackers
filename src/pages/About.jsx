@@ -27,7 +27,7 @@ export default function About() {
       <Header />
 
       {/* ── Hero Section ── */}
-      <section style={{ background: '#1E1B4B', padding: '72px 16px' }}>
+      <section style={{ background: '#4d0004', padding: '72px 16px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 48 }}>
           {/* Left text */}
           <div style={{ flex: '1 1 340px', minWidth: 0 }}>
@@ -58,7 +58,7 @@ export default function About() {
           {/* Left: story card */}
           <div style={{
             flex: '1 1 320px', minWidth: 0,
-            background: '#1E1B4B',
+            background: '#4d0004',
             borderRadius: 16,
             padding: '36px 32px',
           }}>
@@ -107,7 +107,7 @@ export default function About() {
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           {/* Heading */}
           <div style={{ textAlign: 'center', marginBottom: 40 }}>
-            <h2 style={{ fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)', fontWeight: 900, color: '#1E1B4B', margin: '0 0 8px' }}>
+            <h2 style={{ fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)', fontWeight: 900, color: '#4d0004', margin: '0 0 8px' }}>
               Why Choose Us
             </h2>
             <div style={{ width: 40, height: 3, background: '#4C1D95', margin: '8px auto 0', borderRadius: 2 }} />
@@ -124,7 +124,7 @@ export default function About() {
               { title: 'Easy Online Ordering',    desc: 'Browse, add to cart, and send your enquiry via WhatsApp in minutes. Simple, fast, and hassle-free.' },
             ].map(({ title, desc }) => (
               <div key={title} style={{
-                background: '#1E1B4B',
+                background: '#4d0004',
                 borderRadius: 12,
                 padding: '28px 24px',
                 borderTop: '3px solid #4C1D95',
