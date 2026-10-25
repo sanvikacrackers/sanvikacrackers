@@ -201,7 +201,7 @@ export default function Home() {
               </button>
               <div style={{ position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 6 }}>
                 {banners.map((_, i) => (
-                  <button key={i} onClick={() => setActiveSlide(i)} style={{ width: i === activeSlide ? 24 : 8, height: 8, borderRadius: 4, background: i === activeSlide ? '#BE185D' : 'rgba(255,255,255,0.6)', border: 'none', cursor: 'pointer', padding: 0, transition: 'width 0.3s' }} />
+                  <button key={i} onClick={() => setActiveSlide(i)} style={{ width: i === activeSlide ? 24 : 8, height: 8, borderRadius: 4, background: i === activeSlide ? '#F59E0B' : 'rgba(255,255,255,0.6)', border: 'none', cursor: 'pointer', padding: 0, transition: 'width 0.3s' }} />
                 ))}
               </div>
             </>
@@ -232,7 +232,7 @@ export default function Home() {
               to="/products"
               style={{
                 display: 'inline-block',
-                background: '#BE185D',
+                background: '#4C1D95',
                 color: '#fff',
                 padding: '12px 32px',
                 borderRadius: 8,
@@ -242,8 +242,8 @@ export default function Home() {
                 letterSpacing: '0.04em',
                 transition: 'background 0.2s',
               }}
-              onMouseEnter={e => e.currentTarget.style.background = '#9d1457'}
-              onMouseLeave={e => e.currentTarget.style.background = '#BE185D'}
+              onMouseEnter={e => e.currentTarget.style.background = '#3B1577'}
+              onMouseLeave={e => e.currentTarget.style.background = '#4C1D95'}
             >
               Shop Now
             </Link>
@@ -262,7 +262,7 @@ export default function Home() {
               {/* Circle image 1 */}
               <div style={{
                 width: 160, height: 160, borderRadius: '50%', overflow: 'hidden',
-                border: '4px solid #BE185D', flexShrink: 0,
+                border: '4px solid #4C1D95', flexShrink: 0,
                 background: welcomeImg1 ? 'transparent' : '#1a1a1a',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
@@ -281,7 +281,7 @@ export default function Home() {
               }}>
                 {welcomeImg2
                   ? <img src={welcomeImg2} alt="Product" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  : <span style={{ color: '#BE185D', fontSize: '1.6rem' }}>✦</span>
+                  : <span style={{ color: '#FDE68A', fontSize: '1.6rem' }}>✦</span>
                 }
               </div>
             </div>
@@ -290,14 +290,14 @@ export default function Home() {
       </section>
 
       {/* ── Category Showcase Section ────────────────────────────────── */}
-      <section style={{ background: '#ffffff', padding: '72px 16px' }}>
+      <section style={{ background: '#FFFBF5', padding: '72px 16px' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           {/* Heading */}
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <h2 style={{ fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 900, color: '#1E1B4B', margin: '0 0 8px' }}>
               Our Products
             </h2>
-            <div style={{ width: 40, height: 3, background: '#BE185D', margin: '8px auto 0', borderRadius: 2 }} />
+            <div style={{ width: 40, height: 3, background: '#4C1D95', margin: '8px auto 0', borderRadius: 2 }} />
           </div>
 
           {/* 3×2 grid */}
@@ -343,7 +343,7 @@ export default function Home() {
                     {/* Hover tint overlay */}
                     <div className="cat-overlay" style={{
                       position: 'absolute', inset: 0,
-                      background: 'rgba(232,115,22,0.15)',
+                      background: 'rgba(76,29,149,0.18)',
                       opacity: 0,
                       transition: 'opacity 0.3s',
                     }} />
@@ -352,7 +352,7 @@ export default function Home() {
                       <p style={{ color: '#ffffff', fontWeight: 800, fontSize: '1.05rem', margin: '0 0 6px', lineHeight: 1.3 }}>{cat}</p>
                       <span className="cat-underline" style={{
                         display: 'block', height: 3, width: 24,
-                        background: '#BE185D', borderRadius: 2,
+                        background: '#F59E0B', borderRadius: 2,
                         transition: 'width 0.3s ease',
                       }} />
                     </div>
@@ -365,7 +365,7 @@ export default function Home() {
       </section>
 
       {/* ── CTA Band ─────────────────────────────────────────────────── */}
-      <section style={{ background: '#BE185D', padding: '52px 16px' }}>
+      <section style={{ background: '#1E1B4B', padding: '52px 16px' }}>
         <div style={{
           maxWidth: 1200, margin: '0 auto',
           display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 24,
@@ -383,8 +383,8 @@ export default function Home() {
               to="/products"
               style={{
                 display: 'inline-block',
-                background: '#1E1B4B',
-                color: '#ffffff',
+                background: '#F59E0B',
+                color: '#24163D',
                 padding: '14px 36px',
                 borderRadius: 8,
                 fontWeight: 800,
@@ -393,8 +393,8 @@ export default function Home() {
                 letterSpacing: '0.04em',
                 transition: 'background 0.2s',
               }}
-              onMouseEnter={e => e.currentTarget.style.background = '#222222'}
-              onMouseLeave={e => e.currentTarget.style.background = '#1E1B4B'}
+              onMouseEnter={e => e.currentTarget.style.background = '#D97706'}
+              onMouseLeave={e => e.currentTarget.style.background = '#F59E0B'}
             >
               Shop Now
             </Link>
@@ -404,7 +404,7 @@ export default function Home() {
 
       {/* ── Skeleton Loader ──────────────────────────────────────────── */}
       {loading && [0, 1, 2].map(s => (
-        <section key={s} className="py-10 overflow-hidden" style={{ background: s % 2 === 0 ? '#ffffff' : '#f9fafb' }}>
+        <section key={s} className="py-10 overflow-hidden" style={{ background: s % 2 === 0 ? '#FFFBF5' : '#F3E8FF' }}>
           <div className="skeleton-section">
             <div className="skeleton-heading">
               <div className="skeleton skeleton-heading-sub" />
@@ -429,7 +429,7 @@ export default function Home() {
         <section
           key={cat}
           id={idx === 0 ? 'products' : undefined}
-          className={`py-10 overflow-hidden`} style={{ background: idx % 2 === 0 ? '#ffffff' : '#f9fafb' }}
+          className={`py-10 overflow-hidden`} style={{ background: idx % 2 === 0 ? '#FFFBF5' : '#ffffff' }}
         >
           <div className="max-w-[1400px] mx-auto px-4">
             <div className="text-center mb-8">
@@ -445,14 +445,14 @@ export default function Home() {
 
 
       {/* ── Services ────────────────────────────────────────────────── */}
-      <section className="py-10" style={{ background: '#f9fafb' }}>
+      <section className="py-10" style={{ background: '#FFFBF5' }}>
         <div className="max-w-[1400px] mx-auto px-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
             {[
-              { icon: <Clock size={32} color="#BE185D" />,    title: '24hrs Shipping',  sub: 'At Season Time' },
-              { icon: <ThumbsUp size={32} color="#BE185D" />, title: '100%',            sub: 'Satisfied Guarantee' },
-              { icon: <Package size={32} color="#BE185D" />,  title: '30+ Varieties',   sub: 'More than 200+ Products' },
-              { icon: <Tag size={32} color="#BE185D" />,      title: 'Low Price',       sub: 'Available in Low Price' },
+              { icon: <Clock size={32} color="#4C1D95" />,    title: '24hrs Shipping',  sub: 'At Season Time' },
+              { icon: <ThumbsUp size={32} color="#4C1D95" />, title: '100%',            sub: 'Satisfied Guarantee' },
+              { icon: <Package size={32} color="#4C1D95" />,  title: '30+ Varieties',   sub: 'More than 200+ Products' },
+              { icon: <Tag size={32} color="#4C1D95" />,      title: 'Low Price',       sub: 'Available in Low Price' },
             ].map(({ icon, title, sub }) => (
               <div key={title} className="service-wrap">
                 <div className="service-icon">{icon}</div>

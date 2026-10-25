@@ -13,7 +13,7 @@ export default function Footer() {
 
   return (
     <>
-      <footer id="contact" className="bg-[#1a1a1a] text-gray-400 pt-12 pb-6">
+      <footer id="contact" className="bg-[#1E1B4B] text-gray-400 pt-12 pb-6">
         <div className="max-w-[1400px] mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
@@ -22,15 +22,15 @@ export default function Footer() {
               <img src={LOGO} alt="Sanvika Crackers" className="h-10 w-auto object-contain mb-4" />
               <ul className="space-y-2 text-[13px] list-none p-0">
                 <li className="flex gap-2">
-                  <Phone size={14} className="mt-0.5 flex-shrink-0 text-[#BE185D]" />
+                  <Phone size={14} className="mt-0.5 flex-shrink-0 text-[#FDE68A]" />
                   <span>83000 57711</span>
                 </li>
                 <li className="flex gap-2">
-                  <MapPin size={14} className="mt-0.5 flex-shrink-0 text-[#BE185D]" />
+                  <MapPin size={14} className="mt-0.5 flex-shrink-0 text-[#FDE68A]" />
                   <span>1/204-6, NH-07, Chatram Road, Vachakkarapatti, RR Nagar, Virudhunagar District - 626204</span>
                 </li>
                 <li className="flex gap-2">
-                  <Mail size={14} className="mt-0.5 flex-shrink-0 text-[#BE185D]" />
+                  <Mail size={14} className="mt-0.5 flex-shrink-0 text-[#FDE68A]" />
                   <span>sanvikacrackers2020@gmail.com</span>
                 </li>
               </ul>
@@ -38,7 +38,7 @@ export default function Footer() {
 
             {/* Payment image */}
             <div className="flex flex-col justify-center items-center">
-              <h3 className="text-base font-bold text-white mb-4 pb-2 border-b-2 border-[#BE185D] inline-block">Accepted Payments</h3>
+              <h3 className="text-base font-bold text-white mb-4 pb-2 border-b-2 border-[#F59E0B] inline-block">Accepted Payments</h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
                 <img src={paymentImg} alt="Payment Options" style={{ maxWidth: 280, width: '100%', objectFit: 'contain', borderRadius: 8 }} />
                 <img src={gpayImg} alt="GPay" style={{ maxWidth: 300, width: '100%', objectFit: 'contain', borderRadius: 8 }} />
@@ -49,7 +49,7 @@ export default function Footer() {
         </div>
 
         {/* Legal Disclaimer */}
-        <div className="border-t border-gray-800 mt-10 pt-6">
+        <div className="border-t border-[#35275F] mt-10 pt-6">
           <div className="max-w-[1400px] mx-auto px-4">
             <div style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 10, padding: '14px 20px' }}>
               <p className="text-[12px] leading-relaxed text-center" style={{ color: '#e2e8f0', margin: 0 }}>
@@ -61,7 +61,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-gray-800 mt-5 pt-5">
+        <div className="border-t border-[#35275F] mt-5 pt-5" style={{ background: '#17143D' }}>
           <div className="max-w-[1400px] mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-[12px] text-gray-500">© 2026, Sanvika Crackers. All Rights Reserved.</p>
           </div>
@@ -76,7 +76,7 @@ export default function Footer() {
       >
         <span style={{
           fontSize: 11, fontWeight: 700, color: '#fff',
-          background: '#BE185D',
+          background: '#4C1D95',
           borderRadius: 6, padding: '4px 10px', whiteSpace: 'nowrap',
           animation: 'float-label 2.5s ease-in-out infinite',
         }}>Call Us</span>

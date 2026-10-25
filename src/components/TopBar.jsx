@@ -11,9 +11,9 @@ export default function TopBar() {
       {announcement && (
         <span style={{ color: '#fcd34d', fontWeight: 600 }}>{announcement}</span>
       )}
-      <span style={{ color: '#d1d5db' }}>
+      <span style={{ color: '#FDE68A' }}>
         Browse our products and send enquiry via WhatsApp.&nbsp;
-        <strong style={{ color: '#f9fafb' }}>Not a direct sale portal.</strong>
+        <strong style={{ color: '#ffffff' }}>Not a direct sale portal.</strong>
       </span>
       <span style={{ color: '#4b5563', margin: '0 20px' }}>·</span>
     </span>
