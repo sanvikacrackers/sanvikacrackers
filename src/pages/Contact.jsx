@@ -50,7 +50,7 @@ export default function Contact() {
           {['83000 57711'].map(n => (
             <a key={n} href={`tel:+91${n.replace(/\s/g,'')}`}
               style={{ fontSize: '0.93rem', color: '#475569', textDecoration: 'none', whiteSpace: 'nowrap' }}
-              onMouseEnter={e => e.currentTarget.style.color = '#f05a28'}
+              onMouseEnter={e => e.currentTarget.style.color = '#7c3aed'}
               onMouseLeave={e => e.currentTarget.style.color = '#475569'}
             >+91 {n}</a>
           ))}
@@ -63,7 +63,7 @@ export default function Contact() {
       content: (
         <a href="mailto:sanvikacrackers2020@gmail.com"
           style={{ fontSize: '0.93rem', color: '#475569', textDecoration: 'none', wordBreak: 'break-all' }}
-          onMouseEnter={e => e.currentTarget.style.color = '#f05a28'}
+          onMouseEnter={e => e.currentTarget.style.color = '#7c3aed'}
           onMouseLeave={e => e.currentTarget.style.color = '#475569'}
         >
           sanvikacrackers2020@gmail.com
@@ -82,7 +82,7 @@ export default function Contact() {
       {/* ── Hero Section ── */}
       <section style={{ background: '#0b0b0b', padding: '72px 16px', textAlign: 'center' }}>
         <div style={{ maxWidth: 700, margin: '0 auto' }}>
-          <p style={{ color: '#f05a28', fontWeight: 700, fontSize: '0.88rem', letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 14px' }}>
+          <p style={{ color: '#7c3aed', fontWeight: 700, fontSize: '0.88rem', letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 14px' }}>
             Get In Touch
           </p>
           <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 900, color: '#ffffff', lineHeight: 1.2, margin: '0 0 16px' }}>
@@ -111,7 +111,7 @@ export default function Contact() {
                 {/* Icon in orange circle */}
                 <div style={{
                   width: 52, height: 52, borderRadius: '50%',
-                  background: '#f05a28',
+                  background: '#7c3aed',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   flexShrink: 0,
                 }}>
@@ -153,7 +153,7 @@ export default function Contact() {
               boxShadow: '0 1px 6px rgba(0,0,0,0.06)', border: '1px solid #f1f5f9',
               display: 'flex', gap: 12, alignItems: 'flex-start',
             }}>
-              <MapPin size={18} color="#f05a28" style={{ flexShrink: 0, marginTop: 2 }} />
+              <MapPin size={18} color="#7c3aed" style={{ flexShrink: 0, marginTop: 2 }} />
               <div style={{ flex: 1 }}>
                 <p style={{ margin: '0 0 2px', fontWeight: 700, color: '#0f172a', fontSize: '0.9rem' }}>Sanvika Crackers</p>
                 <p style={{ margin: '0 0 10px', color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5 }}>
@@ -165,7 +165,7 @@ export default function Contact() {
                   rel="noreferrer"
                   style={{
                     display: 'inline-flex', alignItems: 'center', gap: 6,
-                    background: '#f05a28', color: '#fff', textDecoration: 'none',
+                    background: '#7c3aed', color: '#fff', textDecoration: 'none',
                     borderRadius: 8, padding: '8px 16px', fontSize: '0.82rem', fontWeight: 700,
                   }}
                 >
@@ -204,7 +204,7 @@ export default function Contact() {
                         border: '1px solid #e2e8f0', borderRadius: 10,
                         fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit',
                       }}
-                      onFocus={e => e.target.style.borderColor = '#f05a28'}
+                      onFocus={e => e.target.style.borderColor = '#7c3aed'}
                       onBlur={e => e.target.style.borderColor = '#e2e8f0'}
                     />
                   </div>
@@ -221,7 +221,7 @@ export default function Contact() {
                         border: '1px solid #e2e8f0', borderRadius: 10,
                         fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit',
                       }}
-                      onFocus={e => e.target.style.borderColor = '#f05a28'}
+                      onFocus={e => e.target.style.borderColor = '#7c3aed'}
                       onBlur={e => e.target.style.borderColor = '#e2e8f0'}
                     />
                   </div>
@@ -237,7 +237,7 @@ export default function Contact() {
                         border: '1px solid #e2e8f0', borderRadius: 10,
                         fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit',
                       }}
-                      onFocus={e => e.target.style.borderColor = '#f05a28'}
+                      onFocus={e => e.target.style.borderColor = '#7c3aed'}
                       onBlur={e => e.target.style.borderColor = '#e2e8f0'}
                     />
                   </div>
@@ -255,7 +255,7 @@ export default function Contact() {
                         fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit',
                         resize: 'vertical',
                       }}
-                      onFocus={e => e.target.style.borderColor = '#f05a28'}
+                      onFocus={e => e.target.style.borderColor = '#7c3aed'}
                       onBlur={e => e.target.style.borderColor = '#e2e8f0'}
                     />
                   </div>
