@@ -12,7 +12,7 @@ import {
   Barcode, ClipboardList, BarChart2,
 } from 'lucide-react';
 import '../Admin.css';
-import LOGO from '../assets/websitelogo.jpeg';
+import LOGO from '../assets/sanvikacrackerlogo.png';
 import { supabase } from '../lib/supabase';
 
 /* ── Supabase ─────────────────────────────────────── */

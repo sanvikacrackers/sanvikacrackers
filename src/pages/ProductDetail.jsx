@@ -57,7 +57,7 @@ function SimilarCard({ product }) {
       }}
     >
       {/* Image */}
-      <div style={{ position: 'relative', background: '#f5f3f0', height: 130, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <div style={{ position: 'relative', background: '#ffffff', height: 130, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
         <img
           src={imgs[0] || '/images/noimage.jpg'}
           alt={product.name}

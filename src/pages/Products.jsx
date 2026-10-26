@@ -64,7 +64,7 @@ function ProductCard({ product }) {
       }}
     >
       {/* Image area */}
-      <div style={{ position: 'relative', background: '#f5f3f0', flexShrink: 0 }}>
+      <div style={{ position: 'relative', background: '#ffffff', flexShrink: 0 }}>
         <div style={{ position: 'relative', height: 170, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <img
             src={imgs[activeImg] || '/images/noimage.jpg'}
@@ -103,7 +103,7 @@ function ProductCard({ product }) {
 
         {/* Thumbnails */}
         {imgs.length > 1 && (
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 5, padding: '6px 8px 8px', background: '#f5f3f0' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 5, padding: '6px 8px 8px', background: '#ffffff' }}>
             {imgs.slice(0, 4).map((src, i) => (
               <button
                 key={i}
@@ -580,7 +580,7 @@ export default function Products() {
               <div className="products-grid">
                 {Array.from({ length: 8 }).map((_, i) => (
                   <div key={i} style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', border: '1px solid #ece8e1', display: 'flex', flexDirection: 'column' }}>
-                    <div className="skeleton" style={{ height: 170, background: 'linear-gradient(90deg,#f0ede8 25%,#f8f6f3 50%,#f0ede8 75%)', backgroundSize: '1200px 100%' }} />
+                    <div className="skeleton" style={{ height: 170, background: 'linear-gradient(90deg,#e8e8e8 25%,#f5f5f5 50%,#e8e8e8 75%)', backgroundSize: '1200px 100%' }} />
                     <div style={{ padding: '12px', flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
                       <div className="skeleton" style={{ height: 13, borderRadius: 4 }} />
                       <div className="skeleton" style={{ height: 18, width: '50%', borderRadius: 4 }} />

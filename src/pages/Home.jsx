@@ -67,7 +67,7 @@ function ProductCard({ product }) {
       }}
     >
       {/* Image area */}
-      <div style={{ position: 'relative', paddingTop: '68%', background: '#f5f3f0', flexShrink: 0 }}>
+      <div style={{ position: 'relative', paddingTop: '68%', background: '#ffffff', flexShrink: 0 }}>
         <img
           src={imgs[0] || '/images/noimage.jpg'}
           alt={product.name}

@@ -7,7 +7,7 @@ import {
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import '../../Staff.css';
-import LOGO from '../../assets/websitelogo.jpeg';
+import LOGO from '../../assets/sanvikacrackerlogo.png';
 
 export default function StaffLayout() {
   const navigate = useNavigate();

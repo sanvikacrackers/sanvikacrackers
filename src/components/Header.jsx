@@ -4,7 +4,7 @@ import { Menu, X, Download } from 'lucide-react'
 
 import { useShop } from '../context/ShopContext'
 import '../App.css'
-import LOGO from '../assets/websitelogo.jpeg'
+import LOGO from '../assets/sanvikacrackerlogo.png'
 
 const NAV = [
   { label: 'Home',        to: '/' },

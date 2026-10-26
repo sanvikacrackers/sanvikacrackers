@@ -3,7 +3,7 @@ import { Heart, ShoppingCart, X, ShoppingBag } from 'lucide-react'
 import { useShop } from '../context/ShopContext'
 import Footer from '../components/Footer'
 import '../App.css'
-import LOGO from '../assets/websitelogo.jpeg'
+import LOGO from '../assets/sanvikacrackerlogo.png'
 
 function parseImages(imgUrl) {
   if (!imgUrl) return []
