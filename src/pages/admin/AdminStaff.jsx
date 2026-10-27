@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
   UserPlus, Search,
-  Lock, X, Eye, EyeOff, Users, Mail, ChevronRight, TrendingUp, Receipt, BarChart2,
+  Lock, X, Eye, EyeOff, Users, Mail, ChevronRight, TrendingUp, Receipt, BarChart2, Link2,
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { supabase } from '../../lib/supabase';
@@ -948,10 +948,22 @@ export default function AdminStaff() {
           <h1 style={S.h1}>Staff</h1>
           <p style={S.subtitle}>{activeCount} active member{activeCount !== 1 ? 's' : ''}</p>
         </div>
-        <button style={S.addBtn} onClick={() => setShowCreate(true)}>
-          <UserPlus size={14} />
-          Add member
-        </button>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <button
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '0 14px', height: 32, background: '#ffffff', color: '#374151', border: '1px solid #d1d5db', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', flexShrink: 0 }}
+            onClick={() => {
+              const url = `${window.location.origin}/staff/login`;
+              navigator.clipboard.writeText(url).then(() => toast.success('Staff login link copied!'));
+            }}
+          >
+            <Link2 size={14} />
+            Copy Staff Login Link
+          </button>
+          <button style={S.addBtn} onClick={() => setShowCreate(true)}>
+            <UserPlus size={14} />
+            Add member
+          </button>
+        </div>
       </div>
 
       {/* Search */}

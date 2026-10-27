@@ -23,6 +23,15 @@ export default function Header() {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
 
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [open])
+
   function isActive(to) {
     if (to === '/') return pathname === '/'
     return pathname.startsWith(to)

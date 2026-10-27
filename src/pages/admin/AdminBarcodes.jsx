@@ -393,7 +393,17 @@ export default function AdminBarcodes() {
           <div className="sf-card barcode-queue-card">
             <div className="sf-card-header">
               <span className="sf-card-title">Print Queue</span>
-              <span style={{ fontSize: 12, color: '#64748b' }}>{totalLabels} labels</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ fontSize: 12, color: '#64748b' }}>{totalLabels} labels</span>
+                {selected.length > 0 && (
+                  <button
+                    onClick={() => setSelected([])}
+                    style={{ fontSize: 11, fontWeight: 600, color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer', padding: '2px 4px' }}
+                  >
+                    Clear All
+                  </button>
+                )}
+              </div>
             </div>
             <div className="sf-card-body">
               {selected.length === 0 ? (
@@ -403,39 +413,38 @@ export default function AdminBarcodes() {
                 </div>
               ) : (
                 <>
-                  {selected.map(({ product, qty }) => (
-                    <div key={product.id} style={{
-                      display: 'flex', alignItems: 'center', gap: 8,
-                      padding: '8px 0', borderBottom: '1px solid #e2e8f0',
-                    }}>
-                      <div style={{ flex: 1, fontSize: 13, fontWeight: 600, minWidth: 0 }}>
-                        <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{product.name}</div>
-                        <div style={{ fontSize: 11, color: '#94a3b8' }}>#{product.product_code}</div>
+                  <div className="barcode-queue-list">
+                    {selected.map(({ product, qty }) => (
+                      <div key={product.id} className="barcode-queue-item">
+                        <div className="barcode-queue-item-name">
+                          <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 13, fontWeight: 600 }}>{product.name}</div>
+                          <div style={{ fontSize: 11, color: '#94a3b8' }}>#{product.product_code}</div>
+                        </div>
+                        <div className="barcode-queue-item-controls">
+                          <button className="bill-qty-btn" onClick={() => updateQty(product.id, qty - 1)}>
+                            <Minus style={{ width: 10, height: 10 }} />
+                          </button>
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            value={qty}
+                            onChange={(e) => { const v = e.target.value.replace(/\D/g,''); updateQty(product.id, v || '1'); }}
+                            style={{ width: 40, textAlign: 'center', padding: '3px 4px', border: '1px solid #e2e8f0', borderRadius: 6, fontSize: 13 }}
+                          />
+                          <button className="bill-qty-btn" onClick={() => updateQty(product.id, qty + 1)}>
+                            <Plus style={{ width: 10, height: 10 }} />
+                          </button>
+                          <button
+                            className="sf-btn sf-btn-ghost sf-btn-sm"
+                            onClick={() => removeFromSelection(product.id)}
+                          >
+                            <X style={{ width: 13, height: 13 }} />
+                          </button>
+                        </div>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                        <button className="bill-qty-btn" onClick={() => updateQty(product.id, qty - 1)}>
-                          <Minus style={{ width: 10, height: 10 }} />
-                        </button>
-                        <input
-                          type="text"
-                          inputMode="numeric"
-                          pattern="[0-9]*"
-                          value={qty}
-                          onChange={(e) => { const v = e.target.value.replace(/\D/g,''); updateQty(product.id, v || '1'); }}
-                          style={{ width: 44, textAlign: 'center', padding: '3px 4px', border: '1px solid #e2e8f0', borderRadius: 6, fontSize: 13 }}
-                        />
-                        <button className="bill-qty-btn" onClick={() => updateQty(product.id, qty + 1)}>
-                          <Plus style={{ width: 10, height: 10 }} />
-                        </button>
-                      </div>
-                      <button
-                        className="sf-btn sf-btn-ghost sf-btn-sm"
-                        onClick={() => removeFromSelection(product.id)}
-                      >
-                        <X style={{ width: 13, height: 13 }} />
-                      </button>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
 
                   <div style={{ marginTop: 16, paddingTop: 12, borderTop: '1px solid #e2e8f0' }}>
                     <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, marginBottom: 10, cursor: 'pointer' }}>
@@ -474,13 +483,6 @@ export default function AdminBarcodes() {
                     >
                       <Printer style={{ width: 15, height: 15 }} />
                       Print {totalLabels} Label{totalLabels !== 1 ? 's' : ''}
-                    </button>
-                    <button
-                      className="sf-btn sf-btn-ghost sf-btn-sm sf-btn-block"
-                      style={{ marginTop: 6 }}
-                      onClick={() => { if (window.confirm('Clear print queue?')) setSelected([]); }}
-                    >
-                      Clear Queue
                     </button>
                   </div>
                 </>
