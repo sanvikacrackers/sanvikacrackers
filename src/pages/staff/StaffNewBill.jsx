@@ -239,7 +239,7 @@ function FinalizeDialog({ items, totals, customerName, setCustomerName, customer
         </div>
         <div className="sf-modal-body">
           {/* Customer */}
-          <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
+          <div className="finalize-customer-row" style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
             <div className="sf-input-wrap" style={{ flex: 1 }}>
               <User className="sf-input-icon" style={{ width: 14, height: 14 }} />
               <input
