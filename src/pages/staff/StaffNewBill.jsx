@@ -586,15 +586,15 @@ export default function StaffNewBill() {
             <Camera style={{ width: 14, height: 14 }} />
             Camera Scan
           </button>
-          {lastBill && (
-            <button
-              className="sf-btn sf-btn-secondary sf-btn-sm"
-              onClick={() => printBill(lastBill.order, lastBill.items)}
-            >
-              <Printer style={{ width: 14, height: 14 }} />
-              Reprint Last
-            </button>
-          )}
+          <button
+            className="sf-btn sf-btn-secondary sf-btn-sm"
+            onClick={() => lastBill && printBill(lastBill.order, lastBill.items)}
+            disabled={!lastBill}
+            title={lastBill ? `Reprint Bill ${lastBill.order.bill_number}` : 'No bill to print yet'}
+          >
+            <Printer style={{ width: 14, height: 14 }} />
+            Print
+          </button>
         </div>
       </div>
 
@@ -624,21 +624,8 @@ export default function StaffNewBill() {
       )}
 
       <div className="bill-page">
-        {/* Left: Add products */}
-        <div>
-          <div className="sf-card">
-            <div className="sf-card-header">
-              <span className="sf-card-title">Search Products</span>
-              <span style={{ fontSize: 12, color: '#64748b' }}>{products.length} products</span>
-            </div>
-            <div className="sf-card-body">
-              <ProductSearch products={products} billItems={billItems} onAdd={addProduct} onDecrement={(key) => updateQty(key, -1)} onSetQty={setItemQty} />
-            </div>
-          </div>
-        </div>
-
-        {/* Right: Bill cart */}
-        <div className="bill-cart">
+        {/* Cart — first in DOM so it appears on top on mobile */}
+        <div className="bill-cart bill-cart-col">
           <div className="bill-cart-header">
             <span>Current Bill</span>
             <span style={{ fontSize: 12, color: '#64748b' }}>
@@ -724,6 +711,19 @@ export default function StaffNewBill() {
               </div>
             </>
           )}
+        </div>
+
+        {/* Product search — second in DOM, pushed to left on desktop via CSS order */}
+        <div className="bill-search-col">
+          <div className="sf-card">
+            <div className="sf-card-header">
+              <span className="sf-card-title">Search Products</span>
+              <span style={{ fontSize: 12, color: '#64748b' }}>{products.length} products</span>
+            </div>
+            <div className="sf-card-body">
+              <ProductSearch products={products} billItems={billItems} onAdd={addProduct} onDecrement={(key) => updateQty(key, -1)} onSetQty={setItemQty} />
+            </div>
+          </div>
         </div>
       </div>
 

@@ -492,6 +492,10 @@
   align-items: start;
 }
 
+/* On desktop: search col on left (order 1), cart on right (order 2) */
+.bill-search-col { order: 1; }
+.bill-cart-col   { order: 2; }
+
 .bill-scanner-section {
   background: var(--sf-card);
   border: 2px solid var(--sf-border);
@@ -1000,6 +1004,9 @@
   .sf-content { padding: 12px 14px 76px; }
   .bill-page { grid-template-columns: 1fr; }
   .bill-cart { position: static; max-height: none; }
+  /* On mobile: cart col first (top), search col below */
+  .bill-cart-col   { order: 1; }
+  .bill-search-col { order: 2; }
   .barcode-sheet { grid-template-columns: repeat(2, 1fr); }
 
   /* Reports page */
