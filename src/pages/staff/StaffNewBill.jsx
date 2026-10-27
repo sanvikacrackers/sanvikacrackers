@@ -593,7 +593,7 @@ export default function StaffNewBill() {
             title={lastBill ? `Reprint Bill ${lastBill.order.bill_number}` : 'No bill to print yet'}
           >
             <Printer style={{ width: 14, height: 14 }} />
-            Print
+            Save Bill
           </button>
         </div>
       </div>
