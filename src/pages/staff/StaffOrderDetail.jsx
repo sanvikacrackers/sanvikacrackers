@@ -114,19 +114,24 @@ function CameraScanner({ onBarcode, onClose }) {
 
 function ProductSearch({ products, billItems, onAdd, onDecrement, onSetQty }) {
   const [query, setQuery] = useState('');
-  const [category, setCategory] = useState('');
 
-  const categories = [...new Set(products.map((p) => p.category))].sort();
-  const filtered = products.filter((p) => {
-    if (!p.is_active) return false;
-    const q = query.toLowerCase();
-    const matchQ = !q
-      || p.name?.toLowerCase().includes(q)
-      || p.product_code?.toLowerCase().includes(q)
-      || p.category?.toLowerCase().includes(q);
-    const matchCat = !category || p.category === category;
-    return matchQ && matchCat;
-  });
+  const filtered = products
+    .filter((p) => {
+      if (!p.is_active) return false;
+      if (!query.trim()) return true;
+      const q = query.toLowerCase();
+      return (
+        p.name?.toLowerCase().includes(q)
+        || p.product_code?.toLowerCase().includes(q)
+        || p.barcode?.toLowerCase().includes(q)
+        || p.category?.toLowerCase().includes(q)
+      );
+    })
+    .sort((a, b) => {
+      const aIn = billItems?.some((i) => i.product_id === a.id) ? 1 : 0;
+      const bIn = billItems?.some((i) => i.product_id === b.id) ? 1 : 0;
+      return bIn - aIn;
+    });
 
   return (
     <div>
@@ -141,12 +146,6 @@ function ProductSearch({ products, billItems, onAdd, onDecrement, onSetQty }) {
             <X style={{ width: 14, height: 14 }} />
           </button>
         )}
-      </div>
-      <div className="sf-filter-chips">
-        <button className={`sf-chip${!category ? ' active' : ''}`} onClick={() => setCategory('')}>All</button>
-        {categories.map((c) => (
-          <button key={c} className={`sf-chip${category === c ? ' active' : ''}`} onClick={() => setCategory(category === c ? '' : c)}>{c}</button>
-        ))}
       </div>
       {filtered.length === 0 && query && (
         <div className="sf-empty" style={{ padding: '16px 0' }}>
@@ -270,14 +269,11 @@ export default function StaffOrderDetail() {
       const existing = prev.find((i) => i.product_id === product.id);
       if (existing) {
         const qty = existing.quantity + 1;
-        return prev.map((i) =>
-          i.product_id === product.id
-            ? { ...i, quantity: qty, line_total: calcLineTotal(qty, i.unit_price, i.discount_amount) }
-            : i
-        );
+        const rest = prev.filter((i) => i.product_id !== product.id);
+        return [{ ...existing, quantity: qty, line_total: calcLineTotal(qty, existing.unit_price, existing.discount_amount) }, ...rest];
       }
       const unit_price = Number(product.price) || 0;
-      return [...prev, {
+      return [{
         _key: crypto.randomUUID(),
         product_id: product.id,
         product_name: product.name,
@@ -287,9 +283,9 @@ export default function StaffOrderDetail() {
         quantity: 1,
         discount_amount: 0,
         line_total: calcLineTotal(1, unit_price, 0),
-      }];
+      }, ...prev];
     });
-    toast.success(`${product.name} added`, { duration: 1200 });
+    toast.success(`${product.name} added`, { duration: 1200, position: 'bottom-center' });
   }, []);
 
   const handleBarcode = useCallback(async (barcode) => {
@@ -413,41 +409,30 @@ export default function StaffOrderDetail() {
     return (
       <>
       <div>
-        <div style={{ marginBottom: 20, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+        <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
           <button className="sf-btn sf-btn-ghost sf-btn-sm" onClick={() => navigate(`/staff/orders/${id}`, { replace: true })}>
-            <X style={{ width: 14, height: 14 }} /> Cancel Edit
+            <X style={{ width: 14, height: 14 }} /> Cancel
           </button>
-          <h1 style={{ fontSize: 20, fontWeight: 800, color: '#1e293b', margin: 0, flex: 1 }}>
-            Edit — {order.bill_number}
-          </h1>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 11, color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Editing Bill</div>
+            <div style={{ fontSize: 15, fontWeight: 800, color: '#1e293b', lineHeight: 1.2 }}>{order.bill_number}</div>
+          </div>
           <button className="sf-btn sf-btn-secondary sf-btn-sm" onClick={() => setCameraOpen(true)}>
             <Camera style={{ width: 14, height: 14 }} /> Camera Scan
           </button>
         </div>
 
         <div className="bill-page">
-          {/* Left: product search */}
-          <div>
-            <div className="sf-card">
-              <div className="sf-card-header">
-                <span className="sf-card-title">Add Products</span>
-                <span style={{ fontSize: 12, color: '#64748b' }}>{products.length} products</span>
-              </div>
-              <div className="sf-card-body">
-                <ProductSearch products={products} billItems={editItems} onAdd={addProduct} onDecrement={(key) => updateQty(key, -1)} onSetQty={setItemQty} />
-              </div>
-            </div>
-          </div>
-
-          {/* Right: bill cart */}
-          <div className="bill-cart">
+          {/* Cart — first in DOM so it appears on top on mobile */}
+          <div className="bill-cart bill-cart-col">
             <div className="bill-cart-header">
               <span>Bill Items</span>
               <span style={{ fontSize: 12, color: '#64748b' }}>{editItems.length} item{editItems.length !== 1 ? 's' : ''}</span>
             </div>
 
             {/* Customer */}
-            <div style={{ padding: '10px 14px', borderBottom: '1px solid #e2e8f0', display: 'flex', gap: 8 }}>
+            <div style={{ padding: '10px 14px', borderBottom: '1px solid #e2e8f0' }}>
+            <div className="finalize-customer-row" style={{ display: 'flex', gap: 8 }}>
               <div className="sf-input-wrap" style={{ flex: 1 }}>
                 <User className="sf-input-icon" style={{ width: 14, height: 14 }} />
                 <input className="sf-input with-icon" placeholder="Customer name" value={editCustomerName}
@@ -458,6 +443,7 @@ export default function StaffOrderDetail() {
                 <input className="sf-input with-icon" placeholder="Phone" value={editCustomerPhone}
                   onChange={(e) => setEditCustomerPhone(e.target.value)} style={{ fontSize: 12, height: 34 }} maxLength={15} />
               </div>
+            </div>
             </div>
 
             <div className="bill-cart-items">
@@ -535,6 +521,19 @@ export default function StaffOrderDetail() {
               </div>
             </div>
           </div>
+
+          {/* Product search — second in DOM, pushed left on desktop */}
+          <div className="bill-search-col">
+            <div className="sf-card">
+              <div className="sf-card-header">
+                <span className="sf-card-title">Add Products</span>
+                <span style={{ fontSize: 12, color: '#64748b' }}>{products.length} products</span>
+              </div>
+              <div className="sf-card-body">
+                <ProductSearch products={products} billItems={editItems} onAdd={addProduct} onDecrement={(key) => updateQty(key, -1)} onSetQty={setItemQty} />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -551,24 +550,25 @@ export default function StaffOrderDetail() {
   // ── View Mode ──────────────────────────────────────────
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
         <Link to="/staff/orders" className="sf-btn sf-btn-ghost sf-btn-sm">
           <ArrowLeft style={{ width: 14, height: 14 }} /> Back
         </Link>
-        <h1 style={{ fontSize: 20, fontWeight: 800, color: '#1e293b', margin: 0, flex: 1 }}>
-          {order.bill_number}
-        </h1>
-        <span className={`sf-badge ${order.status}`} style={{ fontSize: 13 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 11, color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Bill Detail</div>
+          <div style={{ fontSize: 15, fontWeight: 800, color: '#1e293b', lineHeight: 1.2 }}>{order.bill_number}</div>
+        </div>
+        <span className={`sf-badge ${order.status}`}>
           {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
         </span>
         {order.status !== 'cancelled' && (
           <button className="sf-btn sf-btn-secondary sf-btn-sm" onClick={enterEditMode}>
-            <Pencil style={{ width: 13, height: 13 }} /> Edit Bill
+            <Pencil style={{ width: 13, height: 13 }} /> Edit
           </button>
         )}
         {order.status === 'finalized' && (
           <button className="sf-btn sf-btn-secondary sf-btn-sm" onClick={() => printBill(order, items)}>
-            <Printer style={{ width: 13, height: 13 }} /> Print Bill
+            <Printer style={{ width: 13, height: 13 }} /> Print
           </button>
         )}
       </div>
