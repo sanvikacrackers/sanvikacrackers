@@ -450,6 +450,7 @@
   align-items: center;
   justify-content: center;
   padding: 16px;
+  overflow: hidden;
 }
 
 .sf-modal {
@@ -470,6 +471,7 @@
   overflow-y: auto;
   flex: 1;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 @keyframes sf-modal-in {

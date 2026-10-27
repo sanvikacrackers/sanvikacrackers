@@ -31,6 +31,12 @@ function CameraScanner({ onBarcode, onClose }) {
     onBarcode(text);
   }, [onBarcode]);
 
+  // Lock body scroll while scanner is open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+
   useEffect(() => {
     let stopped = false;
     const start = async () => {
@@ -217,6 +223,12 @@ function ProductSearch({ products, billItems, onAdd, onDecrement, onSetQty }) {
 function FinalizeDialog({ items, totals, customerName, setCustomerName, customerPhone, setCustomerPhone, onConfirm, onClose, loading }) {
   const [discType, setDiscType] = useState('flat');
   const [discVal, setDiscVal] = useState('');
+
+  // Lock body scroll while modal is open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
 
   const extraDiscount = (() => {
     const v = parseFloat(discVal) || 0;
@@ -587,10 +599,10 @@ export default function StaffNewBill() {
             Camera Scan
           </button>
           <button
-            className="sf-btn sf-btn-secondary sf-btn-sm"
-            onClick={() => lastBill && printBill(lastBill.order, lastBill.items)}
-            disabled={!lastBill}
-            title={lastBill ? `Reprint Bill ${lastBill.order.bill_number}` : 'No bill to print yet'}
+            className={`sf-btn sf-btn-sm${billItems.length > 0 ? ' sf-btn-success' : ' sf-btn-secondary'}`}
+            onClick={() => billItems.length > 0 && setShowFinalize(true)}
+            disabled={billItems.length === 0}
+            title={billItems.length > 0 ? 'Finalize & save bill' : 'Add products to bill first'}
           >
             <Printer style={{ width: 14, height: 14 }} />
             Save Bill
