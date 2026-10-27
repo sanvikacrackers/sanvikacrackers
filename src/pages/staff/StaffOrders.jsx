@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, ClipboardList, Trash2, X, AlertTriangle } from 'lucide-react';
+import { Search, ClipboardList, Pencil, Trash2, X, AlertTriangle } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
 import { formatIST, fmtINR, istDayStart, istDayEnd } from '../../utils/billingUtils';
@@ -209,9 +209,7 @@ export default function StaffOrders() {
               <tbody>
                 {orders.map((o) => (
                   <tr key={o.id}>
-                    <td data-label="Bill No." style={{ fontWeight: 700 }}>
-                      <Link to={`/staff/orders/${o.id}`} style={{ color: '#1d4ed8', textDecoration: 'none', fontWeight: 700 }}>{o.bill_number}</Link>
-                    </td>
+                    <td data-label="Bill No." style={{ fontWeight: 700 }}>{o.bill_number}</td>
                     <td data-label="Date" style={{ fontSize: 12, color: '#64748b' }}>{formatIST(o.created_at)}</td>
                     <td data-label="Subtotal">{fmtINR(o.subtotal)}</td>
                     <td data-label="Discount" style={{ color: '#16a34a' }}>
@@ -224,13 +222,16 @@ export default function StaffOrders() {
                       </span>
                     </td>
                     <td className="sf-table-actions">
-                      <button
-                        className="sf-tbl-action-btn sf-tbl-delete"
-                        title="Delete bill"
-                        onClick={() => setDeleteTarget(o)}
-                      >
-                        <Trash2 style={{ width: 13, height: 13 }} />
-                        Delete
+                      <Link to={`/staff/orders/${o.id}`} className="sf-tbl-action-btn sf-tbl-view">
+                        View
+                      </Link>
+                      {o.status !== 'cancelled' && (
+                        <Link to={`/staff/orders/${o.id}?edit=true`} className="sf-tbl-action-btn sf-tbl-edit" title="Edit bill">
+                          <Pencil style={{ width: 13, height: 13 }} /> Edit
+                        </Link>
+                      )}
+                      <button className="sf-tbl-action-btn sf-tbl-delete" title="Delete bill" onClick={() => setDeleteTarget(o)}>
+                        <Trash2 style={{ width: 13, height: 13 }} /> Delete
                       </button>
                     </td>
                   </tr>
