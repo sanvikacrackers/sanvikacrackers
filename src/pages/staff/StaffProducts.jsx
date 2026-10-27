@@ -68,10 +68,10 @@ export default function StaffProducts() {
       {loading ? (
         <div style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>Loading…</div>
       ) : (
-        <div style={{
+        <div className="sf-products-grid" style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-          gap: 16,
+          gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
+          gap: 14,
         }}>
           {filtered.map((p) => (
             <div key={p.id} className="sf-card" style={{ overflow: 'hidden' }}>

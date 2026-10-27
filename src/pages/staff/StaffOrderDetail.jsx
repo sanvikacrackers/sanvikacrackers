@@ -607,7 +607,7 @@ export default function StaffOrderDetail() {
           <div className="sf-empty"><Package /><div className="sf-empty-desc">No items found</div></div>
         ) : (
           <div className="sf-table-wrap">
-            <table className="sf-table">
+            <table className="sf-table sf-table-card">
               <thead>
                 <tr>
                   <th>#</th><th>Product</th><th>Code</th><th>Unit Price</th><th>Qty</th><th>Discount</th><th>Total</th>
@@ -616,15 +616,15 @@ export default function StaffOrderDetail() {
               <tbody>
                 {items.map((item, idx) => (
                   <tr key={item.id}>
-                    <td style={{ color: '#94a3b8' }}>{idx + 1}</td>
-                    <td style={{ fontWeight: 600 }}>{item.product_name}</td>
-                    <td style={{ color: '#64748b' }}>{item.product_code}</td>
-                    <td>{fmtINR(item.unit_price)}</td>
-                    <td style={{ fontWeight: 700 }}>{item.quantity}</td>
-                    <td style={{ color: '#16a34a' }}>
+                    <td data-label="#" style={{ color: '#94a3b8' }}>{idx + 1}</td>
+                    <td data-label="Product" style={{ fontWeight: 600 }}>{item.product_name}</td>
+                    <td data-label="Code" style={{ color: '#64748b' }}>{item.product_code}</td>
+                    <td data-label="Price">{fmtINR(item.unit_price)}</td>
+                    <td data-label="Qty" style={{ fontWeight: 700 }}>{item.quantity}</td>
+                    <td data-label="Discount" style={{ color: '#16a34a' }}>
                       {Number(item.discount_amount) > 0 ? `−${fmtINR(item.discount_amount * item.quantity)}` : '—'}
                     </td>
-                    <td style={{ fontWeight: 700 }}>{fmtINR(item.line_total)}</td>
+                    <td data-label="Total" style={{ fontWeight: 700 }}>{fmtINR(item.line_total)}</td>
                   </tr>
                 ))}
               </tbody>

@@ -97,7 +97,7 @@ export default function StaffDashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div style={{ display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap' }}>
+      <div className="sf-quick-actions" style={{ display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap' }}>
         <Link to="/staff/new-bill" className="sf-btn sf-btn-primary sf-btn-lg">
           <Plus style={{ width: 18, height: 18 }} />
           New Bill
@@ -131,7 +131,7 @@ export default function StaffDashboard() {
           </div>
         ) : (
           <div className="sf-table-wrap">
-            <table className="sf-table">
+            <table className="sf-table sf-table-card">
               <thead>
                 <tr>
                   <th>Bill Number</th>
@@ -144,10 +144,10 @@ export default function StaffDashboard() {
               <tbody>
                 {recentOrders.map((o) => (
                   <tr key={o.id}>
-                    <td style={{ fontWeight: 700 }}>{o.bill_number}</td>
-                    <td style={{ color: '#64748b', fontSize: 12 }}>{formatIST(o.created_at)}</td>
-                    <td style={{ fontWeight: 700 }}>{fmtINR(o.grand_total)}</td>
-                    <td>
+                    <td data-label="Bill No." style={{ fontWeight: 700 }}>{o.bill_number}</td>
+                    <td data-label="Date" style={{ color: '#64748b', fontSize: 12 }}>{formatIST(o.created_at)}</td>
+                    <td data-label="Amount" style={{ fontWeight: 700 }}>{fmtINR(o.grand_total)}</td>
+                    <td data-label="Status">
                       <span className={`sf-badge ${o.status}`}>
                         {o.status.charAt(0).toUpperCase() + o.status.slice(1)}
                       </span>

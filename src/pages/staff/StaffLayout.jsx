@@ -109,6 +109,21 @@ export default function StaffLayout() {
             <Outlet />
           </div>
         </main>
+
+        {/* Mobile Bottom Navigation */}
+        <nav className="sf-bottom-nav">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) => `sf-bottom-nav-item${isActive ? ' active' : ''}`}
+              onClick={() => setSidebarOpen(false)}
+            >
+              <item.icon size={20} />
+              <span>{item.label}</span>
+            </NavLink>
+          ))}
+        </nav>
       </div>
     </div>
   );

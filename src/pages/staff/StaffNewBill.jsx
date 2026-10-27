@@ -14,7 +14,22 @@ const DRAFT_KEY = (uid) => `sanvika_staff_draft_${uid}`;
 function CameraScanner({ onBarcode, onClose }) {
   const videoRef = useRef(null);
   const readerRef = useRef(null);
+  const lastScanRef = useRef({ barcode: null, time: 0 });
   const [error, setError] = useState('');
+  const [lastScan, setLastScan] = useState('');
+  const [flash, setFlash] = useState(false);
+
+  const handleScan = useCallback((text) => {
+    const now = Date.now();
+    // Ignore same barcode within 500ms to prevent camera multi-frame duplicate reads
+    if (lastScanRef.current.barcode === text && now - lastScanRef.current.time < 500) return;
+    lastScanRef.current = { barcode: text, time: now };
+
+    setLastScan(text);
+    setFlash(true);
+    setTimeout(() => setFlash(false), 500);
+    onBarcode(text);
+  }, [onBarcode]);
 
   useEffect(() => {
     let stopped = false;
@@ -25,12 +40,9 @@ function CameraScanner({ onBarcode, onClose }) {
         readerRef.current = reader;
         const devices = await BrowserMultiFormatReader.listVideoInputDevices();
         const deviceId = devices[devices.length - 1]?.deviceId;
-        const controls = await reader.decodeFromVideoDevice(deviceId, videoRef.current, (result, err) => {
+        const controls = await reader.decodeFromVideoDevice(deviceId, videoRef.current, (result) => {
           if (stopped) return;
-          if (result) {
-            const text = result.getText();
-            onBarcode(text);
-          }
+          if (result) handleScan(result.getText());
         });
         readerRef.current = controls;
       } catch (e) {
@@ -42,7 +54,7 @@ function CameraScanner({ onBarcode, onClose }) {
       stopped = true;
       try { readerRef.current?.stop?.(); } catch {}
     };
-  }, [onBarcode]);
+  }, [handleScan]);
 
   return (
     <div className="sf-overlay">
@@ -51,20 +63,45 @@ function CameraScanner({ onBarcode, onClose }) {
           <span className="sf-modal-title">Camera Scanner</span>
           <button className="sf-close-btn" onClick={onClose}><X /></button>
         </div>
-        <div className="sf-modal-body">
+        <div className="sf-modal-body" style={{ paddingTop: 12, paddingBottom: 12 }}>
           {error ? (
             <div className="sf-err-box">{error}</div>
           ) : (
-            <div className="sf-camera-wrap">
+            <div
+              className="sf-camera-wrap"
+              style={{
+                border: flash ? '3px solid #22c55e' : '3px solid transparent',
+                borderRadius: 12,
+                transition: 'border-color 0.15s',
+                boxShadow: flash ? '0 0 0 4px rgba(34,197,94,0.2)' : 'none',
+              }}
+            >
               <video ref={videoRef} className="sf-camera-video" muted playsInline />
             </div>
           )}
-          <p style={{ fontSize: 12, color: '#64748b', marginTop: 10, textAlign: 'center' }}>
-            Point the camera at a barcode to scan it automatically
-          </p>
+
+          {/* Last scanned indicator */}
+          {lastScan ? (
+            <div style={{
+              marginTop: 10, padding: '8px 14px',
+              background: flash ? '#dcfce7' : '#f1f5f9',
+              border: `1px solid ${flash ? '#86efac' : '#e2e8f0'}`,
+              borderRadius: 8, transition: 'all 0.2s',
+              display: 'flex', alignItems: 'center', gap: 8,
+            }}>
+              <span style={{ fontSize: 11, fontWeight: 600, color: '#64748b', flexShrink: 0 }}>LAST SCAN</span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: flash ? '#15803d' : '#1e293b', fontFamily: 'monospace' }}>{lastScan}</span>
+            </div>
+          ) : (
+            <p style={{ fontSize: 12, color: '#64748b', marginTop: 10, textAlign: 'center' }}>
+              Point camera at a barcode — it scans automatically
+            </p>
+          )}
         </div>
-        <div className="sf-modal-footer">
-          <button className="sf-btn sf-btn-secondary" onClick={onClose}>Close Scanner</button>
+        <div className="sf-modal-footer" style={{ justifyContent: 'center' }}>
+          <button className="sf-btn sf-btn-danger" onClick={onClose}>
+            <X style={{ width: 14, height: 14 }} /> Close Scanner
+          </button>
         </div>
       </div>
     </div>
@@ -74,25 +111,22 @@ function CameraScanner({ onBarcode, onClose }) {
 // ── Product Search ─────────────────────────────────────
 function ProductSearch({ products, billItems, onAdd, onDecrement, onSetQty }) {
   const [query, setQuery] = useState('');
-  const [category, setCategory] = useState('');
-
-  const categories = [...new Set(products.map((p) => p.category))].sort();
 
   const filtered = products.filter((p) => {
     if (!p.is_active) return false;
+    if (!query.trim()) return true;
     const q = query.toLowerCase();
-    const matchQ = !q
-      || p.name?.toLowerCase().includes(q)
+    return (
+      p.name?.toLowerCase().includes(q)
       || p.product_code?.toLowerCase().includes(q)
       || p.barcode?.toLowerCase().includes(q)
-      || p.category?.toLowerCase().includes(q);
-    const matchCat = !category || p.category === category;
-    return matchQ && matchCat;
+      || p.category?.toLowerCase().includes(q)
+    );
   });
 
   return (
     <div>
-      <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
         <div className="sf-input-wrap" style={{ flex: 1 }}>
           <Search className="sf-input-icon" />
           <input
@@ -107,13 +141,6 @@ function ProductSearch({ products, billItems, onAdd, onDecrement, onSetQty }) {
             <X style={{ width: 14, height: 14 }} />
           </button>
         )}
-      </div>
-
-      <div className="sf-filter-chips">
-        <button className={`sf-chip${!category ? ' active' : ''}`} onClick={() => setCategory('')}>All</button>
-        {categories.map((c) => (
-          <button key={c} className={`sf-chip${category === c ? ' active' : ''}`} onClick={() => setCategory(category === c ? '' : c)}>{c}</button>
-        ))}
       </div>
 
       {filtered.length === 0 && query && (
@@ -181,7 +208,7 @@ function ProductSearch({ products, billItems, onAdd, onDecrement, onSetQty }) {
 
 // ── Finalize Dialog ────────────────────────────────────
 function FinalizeDialog({ items, totals, customerName, setCustomerName, customerPhone, setCustomerPhone, onConfirm, onClose, loading }) {
-  const [discType, setDiscType] = useState('flat'); // 'flat' | 'percent'
+  const [discType, setDiscType] = useState('flat');
   const [discVal, setDiscVal] = useState('');
 
   const extraDiscount = (() => {
@@ -382,7 +409,7 @@ export default function StaffNewBill() {
 
   const totals = calcBillTotals(billItems);
 
-  // ── Add product to bill ──────────────────────────────
+  // ── Add product to bill — new items & re-scanned items go to TOP ──
   const addProduct = useCallback((product) => {
     if (!product.is_active) {
       toast.error(`${product.name} is not available`);
@@ -392,16 +419,17 @@ export default function StaffNewBill() {
       const existing = prev.find((i) => i.product_id === product.id);
       if (existing) {
         const qty = existing.quantity + 1;
-        return prev.map((i) =>
-          i.product_id === product.id
-            ? { ...i, quantity: qty, line_total: calcLineTotal(qty, i.unit_price, i.discount_amount) }
-            : i
-        );
+        // Move updated item to top
+        const rest = prev.filter((i) => i.product_id !== product.id);
+        return [
+          { ...existing, quantity: qty, line_total: calcLineTotal(qty, existing.unit_price, existing.discount_amount) },
+          ...rest,
+        ];
       }
       const unit_price = Number(product.price) || 0;
       const discount_amount = 0;
+      // Prepend new item at top
       return [
-        ...prev,
         {
           _key: crypto.randomUUID(),
           product_id: product.id,
@@ -413,14 +441,14 @@ export default function StaffNewBill() {
           discount_amount,
           line_total: calcLineTotal(1, unit_price, discount_amount),
         },
+        ...prev,
       ];
     });
-    toast.success(`${product.name} added`, { duration: 1200 });
+    toast.success(`${product.name} added`, { duration: 1200, position: 'bottom-center' });
   }, []);
 
-  // ── Barcode lookup ───────────────────────────────────
+  // ── Barcode lookup — scanner stays open ──────────────
   const handleBarcode = useCallback(async (barcode) => {
-    // First check in-memory products
     const local = products.find(
       (p) => p.barcode === barcode || p.product_code === barcode
     );
@@ -428,7 +456,6 @@ export default function StaffNewBill() {
       addProduct(local);
       return;
     }
-    // Fallback: fresh DB query
     const { data, error } = await supabase
       .from('products')
       .select('*')
@@ -477,7 +504,6 @@ export default function StaffNewBill() {
     if (billItems.length === 0) return;
     setFinalizing(true);
     try {
-      // 1. Insert the draft order
       const { data: order, error: orderErr } = await supabase
         .from('billing_orders')
         .insert({
@@ -494,7 +520,6 @@ export default function StaffNewBill() {
 
       if (orderErr) throw new Error(orderErr.message);
 
-      // 2. Insert items
       const itemRows = billItems.map((i) => ({
         order_id: order.id,
         product_id: i.product_id,
@@ -513,7 +538,6 @@ export default function StaffNewBill() {
 
       if (itemsErr) throw new Error(itemsErr.message);
 
-      // 3. Finalize atomically via DB function
       const { data: finalOrder, error: finalErr } = await supabase
         .rpc('finalize_billing_order', {
           p_order_id: order.id,
@@ -696,10 +720,10 @@ export default function StaffNewBill() {
         </div>
       </div>
 
-      {/* Camera Scanner Modal */}
+      {/* Camera Scanner — stays open until manually closed */}
       {cameraOpen && (
         <CameraScanner
-          onBarcode={(b) => { handleBarcode(b); setCameraOpen(false); }}
+          onBarcode={handleBarcode}
           onClose={() => setCameraOpen(false)}
         />
       )}

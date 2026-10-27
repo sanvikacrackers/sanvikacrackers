@@ -129,7 +129,7 @@ export default function StaffOrders() {
           </div>
         ) : (
           <div className="sf-table-wrap">
-            <table className="sf-table">
+            <table className="sf-table sf-table-card">
               <thead>
                 <tr>
                   <th>Bill Number</th>
@@ -144,14 +144,14 @@ export default function StaffOrders() {
               <tbody>
                 {orders.map((o) => (
                   <tr key={o.id}>
-                    <td style={{ fontWeight: 700 }}>{o.bill_number}</td>
-                    <td style={{ fontSize: 12, color: '#64748b' }}>{formatIST(o.created_at)}</td>
-                    <td>{fmtINR(o.subtotal)}</td>
-                    <td style={{ color: '#16a34a' }}>
+                    <td data-label="Bill No." style={{ fontWeight: 700 }}>{o.bill_number}</td>
+                    <td data-label="Date" style={{ fontSize: 12, color: '#64748b' }}>{formatIST(o.created_at)}</td>
+                    <td data-label="Subtotal">{fmtINR(o.subtotal)}</td>
+                    <td data-label="Discount" style={{ color: '#16a34a' }}>
                       {o.discount_total > 0 ? `−${fmtINR(o.discount_total)}` : '—'}
                     </td>
-                    <td style={{ fontWeight: 700 }}>{fmtINR(o.grand_total)}</td>
-                    <td>
+                    <td data-label="Total" style={{ fontWeight: 700 }}>{fmtINR(o.grand_total)}</td>
+                    <td data-label="Status">
                       <span className={`sf-badge ${o.status}`}>
                         {o.status.charAt(0).toUpperCase() + o.status.slice(1)}
                       </span>
