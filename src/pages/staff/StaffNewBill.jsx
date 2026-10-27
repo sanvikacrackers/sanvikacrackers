@@ -112,17 +112,24 @@ function CameraScanner({ onBarcode, onClose }) {
 function ProductSearch({ products, billItems, onAdd, onDecrement, onSetQty }) {
   const [query, setQuery] = useState('');
 
-  const filtered = products.filter((p) => {
-    if (!p.is_active) return false;
-    if (!query.trim()) return true;
-    const q = query.toLowerCase();
-    return (
-      p.name?.toLowerCase().includes(q)
-      || p.product_code?.toLowerCase().includes(q)
-      || p.barcode?.toLowerCase().includes(q)
-      || p.category?.toLowerCase().includes(q)
-    );
-  });
+  const filtered = products
+    .filter((p) => {
+      if (!p.is_active) return false;
+      if (!query.trim()) return true;
+      const q = query.toLowerCase();
+      return (
+        p.name?.toLowerCase().includes(q)
+        || p.product_code?.toLowerCase().includes(q)
+        || p.barcode?.toLowerCase().includes(q)
+        || p.category?.toLowerCase().includes(q)
+      );
+    })
+    .sort((a, b) => {
+      // Products already in the bill float to the top
+      const aInBill = billItems?.some((i) => i.product_id === a.id) ? 1 : 0;
+      const bInBill = billItems?.some((i) => i.product_id === b.id) ? 1 : 0;
+      return bInBill - aInBill;
+    });
 
   return (
     <div>
