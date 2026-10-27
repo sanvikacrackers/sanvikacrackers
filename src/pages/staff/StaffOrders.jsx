@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, ClipboardList, Pencil } from 'lucide-react';
+import { Search, ClipboardList, Pencil, Trash2, X, AlertTriangle } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
 import { formatIST, fmtINR, istDayStart, istDayEnd } from '../../utils/billingUtils';
+import { toast } from 'react-hot-toast';
 
 const DATE_PRESETS = [
   { label: 'Today', value: 'today' },
@@ -28,6 +29,46 @@ function getDateRange(preset) {
   }
 }
 
+function DeleteModal({ order, onConfirm, onClose, deleting }) {
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+
+  return (
+    <div className="sf-overlay">
+      <div className="sf-modal" style={{ maxWidth: 400 }}>
+        <div className="sf-modal-header">
+          <span className="sf-modal-title">Delete Bill</span>
+          <button className="sf-close-btn" onClick={onClose}><X /></button>
+        </div>
+        <div className="sf-modal-body" style={{ textAlign: 'center', padding: '24px 24px 8px' }}>
+          <div style={{
+            width: 52, height: 52, borderRadius: '50%',
+            background: '#fee2e2', display: 'flex', alignItems: 'center',
+            justifyContent: 'center', margin: '0 auto 14px',
+          }}>
+            <AlertTriangle style={{ width: 26, height: 26, color: '#dc2626' }} />
+          </div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: '#1e293b', marginBottom: 6 }}>
+            Delete {order.bill_number}?
+          </div>
+          <div style={{ fontSize: 13, color: '#64748b', lineHeight: 1.5 }}>
+            This will permanently delete the bill and all its items. This action cannot be undone.
+          </div>
+        </div>
+        <div className="sf-modal-footer">
+          <button className="sf-btn sf-btn-secondary" onClick={onClose} disabled={deleting}>Cancel</button>
+          <button className="sf-btn sf-btn-danger" onClick={onConfirm} disabled={deleting}>
+            <Trash2 style={{ width: 14, height: 14 }} />
+            {deleting ? 'Deleting…' : 'Yes, Delete'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function StaffOrders() {
   const { user } = useAuth();
   const [orders, setOrders] = useState([]);
@@ -35,35 +76,59 @@ export default function StaffOrders() {
   const [search, setSearch] = useState('');
   const [datePreset, setDatePreset] = useState('all');
   const [statusFilter, setStatusFilter] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
-  useEffect(() => {
+  const load = async () => {
     if (!user) return;
-    const load = async () => {
-      setLoading(true);
-      let q = supabase
+    setLoading(true);
+    let q = supabase
+      .from('billing_orders')
+      .select('id, bill_number, grand_total, subtotal, discount_total, status, created_at, finalized_at')
+      .eq('staff_id', user.id)
+      .order('created_at', { ascending: false });
+
+    const range = getDateRange(datePreset);
+    if (range) q = q.gte('created_at', range.start).lte('created_at', range.end);
+    if (statusFilter) q = q.eq('status', statusFilter);
+
+    const { data } = await q;
+    let filtered = data || [];
+    if (search.trim()) {
+      const s = search.toLowerCase();
+      filtered = filtered.filter((o) => o.bill_number?.toLowerCase().includes(s));
+    }
+    setOrders(filtered);
+    setLoading(false);
+  };
+
+  useEffect(() => { load(); }, [user, datePreset, statusFilter, search]);
+
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      const { error: itemsErr } = await supabase
+        .from('billing_order_items')
+        .delete()
+        .eq('order_id', deleteTarget.id);
+      if (itemsErr) throw new Error(itemsErr.message);
+
+      const { error: orderErr } = await supabase
         .from('billing_orders')
-        .select('id, bill_number, grand_total, subtotal, discount_total, status, created_at, finalized_at')
-        .eq('staff_id', user.id)
-        .order('created_at', { ascending: false });
+        .delete()
+        .eq('id', deleteTarget.id);
+      if (orderErr) throw new Error(orderErr.message);
 
-      const range = getDateRange(datePreset);
-      if (range) {
-        q = q.gte('created_at', range.start).lte('created_at', range.end);
-      }
-      if (statusFilter) q = q.eq('status', statusFilter);
-
-      const { data } = await q;
-      let filtered = data || [];
-
-      if (search.trim()) {
-        const s = search.toLowerCase();
-        filtered = filtered.filter((o) => o.bill_number?.toLowerCase().includes(s));
-      }
-      setOrders(filtered);
-      setLoading(false);
-    };
-    load();
-  }, [user, datePreset, statusFilter, search]);
+      toast.success(`Bill ${deleteTarget.bill_number} deleted`);
+      setDeleteTarget(null);
+      load();
+    } catch (err) {
+      toast.error('Delete failed: ' + err.message);
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   return (
     <div>
@@ -156,24 +221,31 @@ export default function StaffOrders() {
                         {o.status.charAt(0).toUpperCase() + o.status.slice(1)}
                       </span>
                     </td>
-                    <td>
-                      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <td className="sf-table-actions">
+                      <Link
+                        to={`/staff/orders/${o.id}`}
+                        className="sf-tbl-action-btn sf-tbl-view"
+                      >
+                        View
+                      </Link>
+                      {o.status !== 'cancelled' && (
                         <Link
-                          to={`/staff/orders/${o.id}`}
-                          style={{ fontSize: 12, color: '#1d4ed8', fontWeight: 600, textDecoration: 'none' }}
+                          to={`/staff/orders/${o.id}?edit=true`}
+                          className="sf-tbl-action-btn sf-tbl-edit"
+                          title="Edit bill"
                         >
-                          View
+                          <Pencil style={{ width: 13, height: 13 }} />
+                          Edit
                         </Link>
-                        {o.status !== 'cancelled' && (
-                          <Link
-                            to={`/staff/orders/${o.id}?edit=true`}
-                            title="Edit bill"
-                            style={{ color: '#64748b', display: 'flex', alignItems: 'center' }}
-                          >
-                            <Pencil style={{ width: 14, height: 14 }} />
-                          </Link>
-                        )}
-                      </div>
+                      )}
+                      <button
+                        className="sf-tbl-action-btn sf-tbl-delete"
+                        title="Delete bill"
+                        onClick={() => setDeleteTarget(o)}
+                      >
+                        <Trash2 style={{ width: 13, height: 13 }} />
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -182,6 +254,15 @@ export default function StaffOrders() {
           </div>
         )}
       </div>
+
+      {deleteTarget && (
+        <DeleteModal
+          order={deleteTarget}
+          onConfirm={handleDelete}
+          onClose={() => setDeleteTarget(null)}
+          deleting={deleting}
+        />
+      )}
     </div>
   );
 }

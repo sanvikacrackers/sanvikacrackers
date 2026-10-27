@@ -373,6 +373,21 @@
 .sf-table tbody tr:hover { background: #f8fafc; }
 .sf-table tbody tr:last-child td { border-bottom: none; }
 
+/* ── Table action buttons ──────────────────────────── */
+.sf-table-actions { white-space: nowrap; }
+.sf-tbl-action-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 5px 10px; border-radius: 6px; font-size: 12px;
+  font-weight: 600; cursor: pointer; border: none;
+  text-decoration: none; margin-right: 4px; transition: background 0.15s;
+}
+.sf-tbl-view   { background: #eff6ff; color: #1d4ed8; }
+.sf-tbl-view:hover { background: #dbeafe; }
+.sf-tbl-edit   { background: #f0fdf4; color: #16a34a; }
+.sf-tbl-edit:hover { background: #dcfce7; }
+.sf-tbl-delete { background: #fff1f2; color: #dc2626; }
+.sf-tbl-delete:hover { background: #fee2e2; }
+
 /* ── Status Badges ─────────────────────────────────── */
 .sf-badge {
   display: inline-flex;
@@ -1052,6 +1067,14 @@
   }
   .sf-table-card tbody td:empty { display: none; }
   .sf-table-wrap { overflow-x: unset; }
+  .sf-table-card .sf-table-actions {
+    justify-content: flex-end;
+    gap: 6px;
+    padding: 10px 14px;
+    flex-wrap: wrap;
+  }
+  .sf-table-card .sf-table-actions::before { display: none; }
+  .sf-tbl-action-btn { flex: 1; justify-content: center; min-width: 0; margin-right: 0; }
 }
 
 /* ── Responsive (≤ 768px) ───────────────────────────── */
