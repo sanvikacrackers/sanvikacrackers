@@ -112,19 +112,35 @@ function CameraScanner({ onBarcode, onClose }) {
   );
 }
 
+function Highlight({ text, query }) {
+  if (!query || !text) return text;
+  const idx = text.toLowerCase().indexOf(query.toLowerCase());
+  if (idx === -1) return text;
+  return (
+    <>
+      {text.slice(0, idx)}
+      <mark style={{ background: '#fef08a', color: '#713f12', borderRadius: 2, padding: '0 1px' }}>
+        {text.slice(idx, idx + query.length)}
+      </mark>
+      {text.slice(idx + query.length)}
+    </>
+  );
+}
+
 function ProductSearch({ products, billItems, onAdd, onDecrement, onSetQty }) {
   const [query, setQuery] = useState('');
+  const q = query.trim();
 
   const filtered = products
     .filter((p) => {
       if (!p.is_active) return false;
-      if (!query.trim()) return true;
-      const q = query.toLowerCase();
+      if (!q) return true;
+      const ql = q.toLowerCase();
       return (
-        p.name?.toLowerCase().includes(q)
-        || p.product_code?.toLowerCase().includes(q)
-        || p.barcode?.toLowerCase().includes(q)
-        || p.category?.toLowerCase().includes(q)
+        p.name?.toLowerCase().includes(ql)
+        || p.product_code?.toLowerCase().includes(ql)
+        || p.barcode?.toLowerCase().includes(ql)
+        || p.category?.toLowerCase().includes(ql)
       );
     })
     .sort((a, b) => {
@@ -135,19 +151,29 @@ function ProductSearch({ products, billItems, onAdd, onDecrement, onSetQty }) {
 
   return (
     <div>
-      <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
         <div className="sf-input-wrap" style={{ flex: 1 }}>
           <Search className="sf-input-icon" />
           <input className="sf-input with-icon" placeholder="Search by name or code…"
             value={query} onChange={(e) => setQuery(e.target.value)} />
         </div>
-        {query && (
-          <button className="sf-btn sf-btn-ghost sf-btn-sm" onClick={() => setQuery('')}>
-            <X style={{ width: 14, height: 14 }} />
-          </button>
-        )}
       </div>
-      {filtered.length === 0 && query && (
+
+      {q && (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, padding: '6px 10px', background: '#fefce8', border: '1px solid #fde68a', borderRadius: 8 }}>
+          <span style={{ fontSize: 12, color: '#92400e' }}>
+            Showing <strong>{filtered.length}</strong> result{filtered.length !== 1 ? 's' : ''} for "<strong>{q}</strong>"
+          </span>
+          <button
+            onClick={() => setQuery('')}
+            style={{ fontSize: 12, fontWeight: 700, color: '#b45309', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, padding: '2px 6px', borderRadius: 6 }}
+          >
+            <X style={{ width: 12, height: 12 }} /> Clear
+          </button>
+        </div>
+      )}
+
+      {filtered.length === 0 && q && (
         <div className="sf-empty" style={{ padding: '16px 0' }}>
           <AlertCircle /><div className="sf-empty-desc">No products found</div>
         </div>
@@ -167,8 +193,8 @@ function ProductSearch({ products, billItems, onAdd, onDecrement, onSetQty }) {
                 ? <img src={p.image_url} alt={p.name} className="product-search-img" loading="lazy" />
                 : <div className="product-search-img-placeholder"><Package style={{ width: 28, height: 28 }} /></div>}
               <div className="product-search-body">
-                <div className="product-search-name">{p.name}</div>
-                <div className="product-search-code">#{p.product_code}</div>
+                <div className="product-search-name"><Highlight text={p.name} query={q} /></div>
+                <div className="product-search-code">#<Highlight text={p.product_code} query={q} /></div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 4 }}>
                   <div className="product-search-price">{fmtINR(p.price)}</div>
                   {qty > 0 ? (
