@@ -1025,8 +1025,8 @@ export default function AdminStaff() {
                       {(member.name || 'S').slice(0, 1).toUpperCase()}
                     </div>
                     <div style={{ minWidth: 0 }}>
-                      <div style={S.cardName}>{member.name}</div>
-                      <div style={S.cardEmail}>{member.email}</div>
+                      <div style={S.cardName} data-tooltip={member.name}>{member.name}</div>
+                      <div style={S.cardEmail} data-tooltip={member.email}>{member.email}</div>
                     </div>
                   </div>
                   <div style={{ ...S.badgeRow, flexShrink: 0, flexDirection: 'column', alignItems: 'flex-end' }}>

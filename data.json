@@ -1,0 +1,1217 @@
+{
+    "company": "Sunrise Crackers",
+    "price_list_year": 2025,
+    "discount_percentage": 80,
+    "currency": "INR",
+    "pricing_calculation": {
+        "mrp_formula": "price * 5",
+        "offer_discount_percentage": 80,
+        "note": "MRPs are calculated reference values based on the requested 80% pricing structure. They are not verified manufacturer MRPs."
+    },
+    "source_notes": [
+        "{'source': 'User-uploaded Sunrise Crackers 2025 price-list spreadsheet', 'available_product_count': 117, 'serial_numbers_present': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152], 'missing_serial_number_range': '105-139', 'missing_serial_note': 'Serial numbers 105-139 were not present in the uploaded source and have not been invented.', 'tamil_translation_note': 'Tamil product/category names were not included in the spreadsheet. Add verified Tamil translations where values are null.'}",
+        "Tamil product names for serial numbers 30–104 and 140–152 were transcribed from the supplied price-list photographs. Some low-resolution spellings are transliterations/readings and should be verified against the printed original."
+    ],
+    "categories": [
+        {
+            "category_id": 1,
+            "category_name": "Sparklers",
+            "category_name_tamil": "கம்பி மத்தாப்பு",
+            "products": [
+                {
+                    "id": 1,
+                    "product_name": "10 CM Electric Sparklers",
+                    "product_name_tamil": "10 செ.மீ சாதா கம்பி",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 55,
+                    "price": 11,
+                    "offer": 80
+                },
+                {
+                    "id": 2,
+                    "product_name": "10 CM Colour Sparklers",
+                    "product_name_tamil": "10 செ.மீ கலர் கம்பி",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 70,
+                    "price": 14,
+                    "offer": 80
+                },
+                {
+                    "id": 3,
+                    "product_name": "15 CM Electric Sparklers",
+                    "product_name_tamil": "15 செ.மீ எலக்ட்ரிக் கம்பி",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 165,
+                    "price": 33,
+                    "offer": 80
+                },
+                {
+                    "id": 4,
+                    "product_name": "15 CM Colour Sparklers",
+                    "product_name_tamil": "15 செ.மீ கலர் கம்பி",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 180,
+                    "price": 36,
+                    "offer": 80
+                },
+                {
+                    "id": 5,
+                    "product_name": "30 CM Electric Sparklers",
+                    "product_name_tamil": "30 செ.மீ எலக்ட்ரிக் கம்பி",
+                    "box_content": "5 Pcs/Box",
+                    "mrp": 165,
+                    "price": 33,
+                    "offer": 80
+                },
+                {
+                    "id": 6,
+                    "product_name": "30 CM Colour Sparklers",
+                    "product_name_tamil": "30 செ.மீ கலர் கம்பி",
+                    "box_content": "5 Pcs/Box",
+                    "mrp": 180,
+                    "price": 36,
+                    "offer": 80
+                },
+                {
+                    "id": 7,
+                    "product_name": "30 CM Red Sparklers",
+                    "product_name_tamil": "30 செ.மீ சிவப்பு கலர் கம்பி",
+                    "box_content": "5 Pcs/Box",
+                    "mrp": 180,
+                    "price": 36,
+                    "offer": 80
+                },
+                {
+                    "id": 8,
+                    "product_name": "30 CM Green Sparklers",
+                    "product_name_tamil": "30 செ.மீ பச்சை கலர் கம்பி",
+                    "box_content": "5 Pcs/Box",
+                    "mrp": 180,
+                    "price": 36,
+                    "offer": 80
+                },
+                {
+                    "id": 9,
+                    "product_name": "50 CM Electric Sparklers",
+                    "product_name_tamil": "50 செ.மீ எலக்ட்ரிக் கம்பி",
+                    "box_content": "5 Pcs/Box",
+                    "mrp": 775,
+                    "price": 155,
+                    "offer": 80
+                },
+                {
+                    "id": 10,
+                    "product_name": "50 CM Colour Sparklers",
+                    "product_name_tamil": "50 செ.மீ கலர் கம்பி",
+                    "box_content": "5 Pcs/Box",
+                    "mrp": 825,
+                    "price": 165,
+                    "offer": 80
+                }
+            ]
+        },
+        {
+            "category_id": 2,
+            "category_name": "Flower Pots",
+            "category_name_tamil": "பூச்சட்டி",
+            "products": [
+                {
+                    "id": 11,
+                    "product_name": "Flower Pots Big",
+                    "product_name_tamil": "பூச்சட்டி பிக்",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 300,
+                    "price": 60,
+                    "offer": 80
+                },
+                {
+                    "id": 12,
+                    "product_name": "Flower Pots Special",
+                    "product_name_tamil": "பூச்சட்டி ஸ்பெஷல்",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 450,
+                    "price": 90,
+                    "offer": 80
+                },
+                {
+                    "id": 13,
+                    "product_name": "Flower Pots Ashoka",
+                    "product_name_tamil": "பூச்சட்டி அசோகா",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 550,
+                    "price": 110,
+                    "offer": 80
+                },
+                {
+                    "id": 14,
+                    "product_name": "Colour Koti 3 Colour",
+                    "product_name_tamil": "பூச்சட்டி கலர் சாட்டை",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 825,
+                    "price": 165,
+                    "offer": 80
+                },
+                {
+                    "id": 15,
+                    "product_name": "Mega Colour Koti",
+                    "product_name_tamil": "மெகா கலர் கோட்டி",
+                    "box_content": "5 Pcs/Box",
+                    "mrp": 1500,
+                    "price": 300,
+                    "offer": 80
+                },
+                {
+                    "id": 16,
+                    "product_name": "Tri Colour Fountain",
+                    "product_name_tamil": "ட்ரை கலர் பவுண்டன்",
+                    "box_content": "5 Pcs/Box",
+                    "mrp": 725,
+                    "price": 145,
+                    "offer": 80
+                },
+                {
+                    "id": 17,
+                    "product_name": "Mega Tri Colour Fountain / Jolly Jumps",
+                    "product_name_tamil": "ஜாலி ஜம்ப்ஸ்",
+                    "box_content": "2 Pcs/Box",
+                    "mrp": 600,
+                    "price": 120,
+                    "offer": 80
+                },
+                {
+                    "id": 18,
+                    "product_name": "Mega Deluxe Pots",
+                    "product_name_tamil": "மெகா டீலக்ஸ் பூச்சட்டி",
+                    "box_content": "2 Pcs/Box",
+                    "mrp": 900,
+                    "price": 180,
+                    "offer": 80
+                }
+            ]
+        },
+        {
+            "category_id": 3,
+            "category_name": "Ground Chakkars",
+            "category_name_tamil": "தரைச்சக்கரம்",
+            "products": [
+                {
+                    "id": 19,
+                    "product_name": "Ground Chakkars Big",
+                    "product_name_tamil": "தரைச்சக்கரம் பிக்",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 150,
+                    "price": 30,
+                    "offer": 80
+                },
+                {
+                    "id": 20,
+                    "product_name": "Ground Chakkars Special",
+                    "product_name_tamil": "தரைச்சக்கரம் ஸ்பெஷல்",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 275,
+                    "price": 55,
+                    "offer": 80
+                },
+                {
+                    "id": 21,
+                    "product_name": "Ground Chakkars Deluxe",
+                    "product_name_tamil": "தரைச்சக்கரம் டீலக்ஸ்",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 500,
+                    "price": 100,
+                    "offer": 80
+                },
+                {
+                    "id": 22,
+                    "product_name": "Disco Wheel",
+                    "product_name_tamil": "டிஸ்கோ வீல்",
+                    "box_content": "5 Pcs/Box",
+                    "mrp": 300,
+                    "price": 60,
+                    "offer": 80
+                },
+                {
+                    "id": 23,
+                    "product_name": "Disco Wheel",
+                    "product_name_tamil": "டிஸ்கோ வீல்",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 600,
+                    "price": 120,
+                    "offer": 80
+                }
+            ]
+        },
+        {
+            "category_id": 4,
+            "category_name": "Twinkling Star",
+            "category_name_tamil": "மத்தாப்பு மற்றும் மெழுகுவர்த்தி வகைகள்",
+            "products": [
+                {
+                    "id": 24,
+                    "product_name": "1 1/2 Twinkling Star",
+                    "product_name_tamil": "1½ இன்ச் சாட்டை ஸ்டார்",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 100,
+                    "price": 20,
+                    "offer": 80
+                },
+                {
+                    "id": 25,
+                    "product_name": "4\" Twinkling Star Deluxe",
+                    "product_name_tamil": "4 இன்ச் சாட்டை ஸ்டார்",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 330,
+                    "price": 66,
+                    "offer": 80
+                },
+                {
+                    "id": 26,
+                    "product_name": "Selfie Stick",
+                    "product_name_tamil": "செல்ஃபி ஸ்டிக்",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 375,
+                    "price": 75,
+                    "offer": 80
+                },
+                {
+                    "id": 27,
+                    "product_name": "Water Falls Candle",
+                    "product_name_tamil": "வாட்டர் பால்ஸ் கேண்டில்",
+                    "box_content": "3 Pcs/Box",
+                    "mrp": 575,
+                    "price": 115,
+                    "offer": 80
+                },
+                {
+                    "id": 28,
+                    "product_name": "Popcorn Candle",
+                    "product_name_tamil": "பாப்கார்ன் கேண்டில்",
+                    "box_content": "3 Pcs/Box",
+                    "mrp": 575,
+                    "price": 115,
+                    "offer": 80
+                },
+                {
+                    "id": 29,
+                    "product_name": "Wonder Candle",
+                    "product_name_tamil": "வொண்டர் கேண்டில்",
+                    "box_content": "3 Pcs/Box",
+                    "mrp": 575,
+                    "price": 115,
+                    "offer": 80
+                }
+            ]
+        },
+        {
+            "category_id": 5,
+            "category_name": "One Sound Crackers",
+            "category_name_tamil": null,
+            "products": [
+                {
+                    "id": 30,
+                    "product_name": "2¾\" Kuruvi Crackers",
+                    "product_name_tamil": "குருவி வெடி",
+                    "box_content": "1 Pkt",
+                    "mrp": 35,
+                    "price": 7,
+                    "offer": 80
+                },
+                {
+                    "id": 31,
+                    "product_name": "3½\" Lakshmi Crackers",
+                    "product_name_tamil": "லட்சுமி வெடி",
+                    "box_content": "1 Pkt",
+                    "mrp": 80,
+                    "price": 16,
+                    "offer": 80
+                },
+                {
+                    "id": 32,
+                    "product_name": "4\" Lakshmi Crackers",
+                    "product_name_tamil": "லட்சுமி வெடி",
+                    "box_content": "1 Pkt",
+                    "mrp": 110,
+                    "price": 22,
+                    "offer": 80
+                },
+                {
+                    "id": 33,
+                    "product_name": "4\" Lakshmi Deluxe",
+                    "product_name_tamil": "லட்சுமி டீலக்ஸ்",
+                    "box_content": "1 Pkt",
+                    "mrp": 135,
+                    "price": 27,
+                    "offer": 80
+                },
+                {
+                    "id": 34,
+                    "product_name": "5\" Jallikattu",
+                    "product_name_tamil": "ஜல்லிக்கட்டு",
+                    "box_content": "1 Pkt",
+                    "mrp": 250,
+                    "price": 50,
+                    "offer": 80
+                }
+            ]
+        },
+        {
+            "category_id": 6,
+            "category_name": "Bijili",
+            "category_name_tamil": null,
+            "products": [
+                {
+                    "id": 35,
+                    "product_name": "Red Bijili (100 Pcs)",
+                    "product_name_tamil": "சிவப்பு பிஜிலி",
+                    "box_content": "1 Bag",
+                    "mrp": 140,
+                    "price": 28,
+                    "offer": 80
+                },
+                {
+                    "id": 36,
+                    "product_name": "Vari Bijili (100 Pcs)",
+                    "product_name_tamil": "வரி பிஜிலி",
+                    "box_content": "1 Bag",
+                    "mrp": 165,
+                    "price": 33,
+                    "offer": 80
+                }
+            ]
+        },
+        {
+            "category_id": 7,
+            "category_name": "Rocket",
+            "category_name_tamil": null,
+            "products": [
+                {
+                    "id": 37,
+                    "product_name": "Bomb / Colour Rocket",
+                    "product_name_tamil": "கலர் ராக்கெட்",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 285,
+                    "price": 57,
+                    "offer": 80
+                },
+                {
+                    "id": 38,
+                    "product_name": "Lunik Rocket",
+                    "product_name_tamil": "லூனிக் ராக்கெட்",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 550,
+                    "price": 110,
+                    "offer": 80
+                },
+                {
+                    "id": 39,
+                    "product_name": "Whistling / Musical Rocket",
+                    "product_name_tamil": "விசில் / மியூசிக்கல் ராக்கெட்",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 950,
+                    "price": 190,
+                    "offer": 80
+                }
+            ]
+        },
+        {
+            "category_id": 8,
+            "category_name": "Bombs",
+            "category_name_tamil": null,
+            "products": [
+                {
+                    "id": 40,
+                    "product_name": "Bullet Bomb",
+                    "product_name_tamil": "புல்லட் பாம்",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 250,
+                    "price": 50,
+                    "offer": 80
+                },
+                {
+                    "id": 41,
+                    "product_name": "Hydro Bomb Green",
+                    "product_name_tamil": "ஹைட்ரோ பாம்",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 300,
+                    "price": 60,
+                    "offer": 80
+                },
+                {
+                    "id": 42,
+                    "product_name": "King of King Bomb Green",
+                    "product_name_tamil": "கிங் ஆஃப் கிங் பாம் கிரீன்",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 500,
+                    "price": 100,
+                    "offer": 80
+                },
+                {
+                    "id": 43,
+                    "product_name": "Classic Bomb Green",
+                    "product_name_tamil": "கிளாசிக் பாம் கிரீன்",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 550,
+                    "price": 110,
+                    "offer": 80
+                },
+                {
+                    "id": 44,
+                    "product_name": "Agni Bomb / Digital Bomb / Mega Bomb",
+                    "product_name_tamil": "அக்னி பாம் / டிஜிட்டல் பாம் / மெகா பாம்",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 950,
+                    "price": 190,
+                    "offer": 80
+                }
+            ]
+        },
+        {
+            "category_id": 9,
+            "category_name": "Electric Lar Crackers",
+            "category_name_tamil": null,
+            "products": [
+                {
+                    "id": 45,
+                    "product_name": "28 Gaint Crackers",
+                    "product_name_tamil": "28 ஜெயண்ட் கிராக்கர்ஸ்",
+                    "box_content": "1 Pkt",
+                    "mrp": 150,
+                    "price": 30,
+                    "offer": 80
+                },
+                {
+                    "id": 46,
+                    "product_name": "56 Gaint Crackers",
+                    "product_name_tamil": "56 ஜெயண்ட் கிராக்கர்ஸ்",
+                    "box_content": "1 Pkt",
+                    "mrp": 300,
+                    "price": 60,
+                    "offer": 80
+                },
+                {
+                    "id": 47,
+                    "product_name": "24 Deluxe Crackers",
+                    "product_name_tamil": "24 டீலக்ஸ் கிராக்கர்ஸ்",
+                    "box_content": "1 Pkt",
+                    "mrp": 250,
+                    "price": 50,
+                    "offer": 80
+                },
+                {
+                    "id": 48,
+                    "product_name": "50 Deluxe Crackers",
+                    "product_name_tamil": "50 டீலக்ஸ் கிராக்கர்ஸ்",
+                    "box_content": "1 Pkt",
+                    "mrp": 500,
+                    "price": 100,
+                    "offer": 80
+                },
+                {
+                    "id": 49,
+                    "product_name": "100 Deluxe Crackers",
+                    "product_name_tamil": "100 டீலக்ஸ் கிராக்கர்ஸ்",
+                    "box_content": "1 Pkt",
+                    "mrp": 1000,
+                    "price": 200,
+                    "offer": 80
+                }
+            ]
+        },
+        {
+            "category_id": 10,
+            "category_name": "Garlands (Full Count)",
+            "category_name_tamil": null,
+            "products": [
+                {
+                    "id": 50,
+                    "product_name": "1 Star (PRIME)",
+                    "product_name_tamil": "1 ஸ்டார் (பிரைம்)",
+                    "box_content": "1 Box",
+                    "mrp": 1375,
+                    "price": 275,
+                    "offer": 80
+                },
+                {
+                    "id": 51,
+                    "product_name": "2 Star (PRIME)",
+                    "product_name_tamil": "2 ஸ்டார் (பிரைம்)",
+                    "box_content": "1 Box",
+                    "mrp": 2750,
+                    "price": 550,
+                    "offer": 80
+                },
+                {
+                    "id": 52,
+                    "product_name": "5 Star (PRIME)",
+                    "product_name_tamil": "5 ஸ்டார் (பிரைம்)",
+                    "box_content": "1 Box",
+                    "mrp": 6875,
+                    "price": 1375,
+                    "offer": 80
+                },
+                {
+                    "id": 53,
+                    "product_name": "10 Star (PRIME)",
+                    "product_name_tamil": "10 ஸ்டார் (பிரைம்)",
+                    "box_content": "1 Box",
+                    "mrp": 13750,
+                    "price": 2750,
+                    "offer": 80
+                }
+            ]
+        },
+        {
+            "category_id": 11,
+            "category_name": "Baby Fancy Novelties",
+            "category_name_tamil": null,
+            "products": [
+                {
+                    "id": 54,
+                    "product_name": "Electric Stone",
+                    "product_name_tamil": "எலக்ட்ரிக் ஸ்டோன்",
+                    "box_content": "1 Box",
+                    "mrp": 55,
+                    "price": 11,
+                    "offer": 80
+                },
+                {
+                    "id": 55,
+                    "product_name": "Magic Pop",
+                    "product_name_tamil": "மேஜிக் பாப்",
+                    "box_content": "1 Box",
+                    "mrp": 55,
+                    "price": 11,
+                    "offer": 80
+                },
+                {
+                    "id": 56,
+                    "product_name": "Kit Kat (Big)",
+                    "product_name_tamil": "கிட் கேட் பிக்",
+                    "box_content": "1 Box",
+                    "mrp": 220,
+                    "price": 44,
+                    "offer": 80
+                },
+                {
+                    "id": 57,
+                    "product_name": "Craazy Toons (Cartoon)",
+                    "product_name_tamil": "கிரேஸி டூன்ஸ்",
+                    "box_content": "1 Box",
+                    "mrp": 110,
+                    "price": 22,
+                    "offer": 80
+                },
+                {
+                    "id": 58,
+                    "product_name": "Snake Egg Big",
+                    "product_name_tamil": "ஸ்நேக் எக் பிக்",
+                    "box_content": "1 Box",
+                    "mrp": 220,
+                    "price": 44,
+                    "offer": 80
+                }
+            ]
+        },
+        {
+            "category_id": 12,
+            "category_name": "Cocktail Fancy",
+            "category_name_tamil": null,
+            "products": [
+                {
+                    "id": 59,
+                    "product_name": "7Up TIN",
+                    "product_name_tamil": "7 அப் டின்",
+                    "box_content": "1 Pc",
+                    "mrp": 400,
+                    "price": 80,
+                    "offer": 80
+                },
+                {
+                    "id": 60,
+                    "product_name": "Orange TIN",
+                    "product_name_tamil": "ஆரஞ்சு டின்",
+                    "box_content": "1 Pc",
+                    "mrp": 400,
+                    "price": 80,
+                    "offer": 80
+                },
+                {
+                    "id": 61,
+                    "product_name": "Chilli Pepper TIN",
+                    "product_name_tamil": "சில்லி பெப்பர் டின்",
+                    "box_content": "1 Pc",
+                    "mrp": 400,
+                    "price": 80,
+                    "offer": 80
+                },
+                {
+                    "id": 62,
+                    "product_name": "Apple Juice TIN",
+                    "product_name_tamil": "ஆப்பிள் ஜூஸ் டின்",
+                    "box_content": "1 Pc",
+                    "mrp": 400,
+                    "price": 80,
+                    "offer": 80
+                },
+                {
+                    "id": 63,
+                    "product_name": "Lemon Juice TIN",
+                    "product_name_tamil": "லெமன் ஜூஸ் டின்",
+                    "box_content": "1 Pc",
+                    "mrp": 400,
+                    "price": 80,
+                    "offer": 80
+                },
+                {
+                    "id": 64,
+                    "product_name": "Royal / Peacock Fountain",
+                    "product_name_tamil": "மயில் தொங்கல்",
+                    "box_content": "1 Pc",
+                    "mrp": 600,
+                    "price": 120,
+                    "offer": 80
+                },
+                {
+                    "id": 65,
+                    "product_name": "Bada Peacock Fountain",
+                    "product_name_tamil": "பெரிய மயில் தொங்கல்",
+                    "box_content": "1 Pc",
+                    "mrp": 1200,
+                    "price": 240,
+                    "offer": 80
+                },
+                {
+                    "id": 66,
+                    "product_name": "Colour Candy Star (Lolly pop)",
+                    "product_name_tamil": "கலர் கேண்டி ஸ்டார்",
+                    "box_content": "1 Pkt",
+                    "mrp": 1250,
+                    "price": 250,
+                    "offer": 80
+                },
+                {
+                    "id": 67,
+                    "product_name": "Black Money / White Money",
+                    "product_name_tamil": "பிளாக் மணி / ஒயிட் மணி",
+                    "box_content": "1 Pcs",
+                    "mrp": 225,
+                    "price": 45,
+                    "offer": 80
+                },
+                {
+                    "id": 68,
+                    "product_name": "4 x 4 Wheel",
+                    "product_name_tamil": "4x4 வீல்",
+                    "box_content": "1 Box",
+                    "mrp": 900,
+                    "price": 180,
+                    "offer": 80
+                },
+                {
+                    "id": 69,
+                    "product_name": "6\" Water Queen",
+                    "product_name_tamil": "6 இன்ச் வாட்டர் குயின்",
+                    "box_content": "1 Pcs",
+                    "mrp": 1200,
+                    "price": 240,
+                    "offer": 80
+                },
+                {
+                    "id": 70,
+                    "product_name": "Sharp Shooter",
+                    "product_name_tamil": "ஷார்ப் ஷூட்டர்",
+                    "box_content": "2 Pcs/Box",
+                    "mrp": 700,
+                    "price": 140,
+                    "offer": 80
+                },
+                {
+                    "id": 71,
+                    "product_name": "Gun Spark",
+                    "product_name_tamil": "கன் ஸ்பார்க்",
+                    "box_content": "5 Pcs/Box",
+                    "mrp": 900,
+                    "price": 180,
+                    "offer": 80
+                },
+                {
+                    "id": 72,
+                    "product_name": "Helicopter / Drone",
+                    "product_name_tamil": "ஹெலிகாப்டர் / ட்ரோன்",
+                    "box_content": "1 Pcs",
+                    "mrp": 850,
+                    "price": 170,
+                    "offer": 80
+                },
+                {
+                    "id": 73,
+                    "product_name": "Photo Flash",
+                    "product_name_tamil": "புகைப்பட பிளாஷ்",
+                    "box_content": "5 Pcs/Box",
+                    "mrp": 300,
+                    "price": 60,
+                    "offer": 80
+                },
+                {
+                    "id": 74,
+                    "product_name": "Butterfly (Colour Changing)",
+                    "product_name_tamil": "வண்ணத்துப்பூச்சி",
+                    "box_content": "1 Box",
+                    "mrp": 550,
+                    "price": 110,
+                    "offer": 80
+                },
+                {
+                    "id": 75,
+                    "product_name": "Mega Siren",
+                    "product_name_tamil": "மெகா சைரன்",
+                    "box_content": "3 Pcs/Box",
+                    "mrp": 725,
+                    "price": 145,
+                    "offer": 80
+                }
+            ]
+        },
+        {
+            "category_id": 13,
+            "category_name": "New Squad",
+            "category_name_tamil": null,
+            "products": [
+                {
+                    "id": 76,
+                    "product_name": "Old is Gold",
+                    "product_name_tamil": "ஓல்ட் இஸ் கோல்டு",
+                    "box_content": "1 Box",
+                    "mrp": 900,
+                    "price": 180,
+                    "offer": 80
+                },
+                {
+                    "id": 77,
+                    "product_name": "Comelcon",
+                    "product_name_tamil": "கோமெல்கான்",
+                    "box_content": "1 Box",
+                    "mrp": 1200,
+                    "price": 240,
+                    "offer": 80
+                },
+                {
+                    "id": 78,
+                    "product_name": "Jolly Jumps",
+                    "product_name_tamil": "ஜாலி ஜம்ப்ஸ்",
+                    "box_content": "1 Box",
+                    "mrp": 1100,
+                    "price": 220,
+                    "offer": 80
+                },
+                {
+                    "id": 79,
+                    "product_name": "Angry Birds",
+                    "product_name_tamil": "ஆங்கிரி பேர்ட்ஸ்",
+                    "box_content": "1 Box",
+                    "mrp": 1000,
+                    "price": 200,
+                    "offer": 80
+                }
+            ]
+        },
+        {
+            "category_id": 14,
+            "category_name": "Money Heist",
+            "category_name_tamil": null,
+            "products": [
+                {
+                    "id": 80,
+                    "product_name": "Black Money",
+                    "product_name_tamil": "பிளாக் மணி",
+                    "box_content": "5 Pcs/Box",
+                    "mrp": 225,
+                    "price": 45,
+                    "offer": 80
+                },
+                {
+                    "id": 81,
+                    "product_name": "White Money",
+                    "product_name_tamil": "ஒயிட் மணி",
+                    "box_content": "5 Pcs/Box",
+                    "mrp": 225,
+                    "price": 45,
+                    "offer": 80
+                }
+            ]
+        },
+        {
+            "category_id": 15,
+            "category_name": "Colour Rider Shots",
+            "category_name_tamil": null,
+            "products": [
+                {
+                    "id": 82,
+                    "product_name": "7 Shot (5Pcs)",
+                    "product_name_tamil": "7 ஷாட் கலர்",
+                    "box_content": "5 Pcs",
+                    "mrp": 400,
+                    "price": 80,
+                    "offer": 80
+                },
+                {
+                    "id": 83,
+                    "product_name": "12 Shot Colour Rider",
+                    "product_name_tamil": "12 ஷாட் கலர்",
+                    "box_content": "1 Pc",
+                    "mrp": 700,
+                    "price": 140,
+                    "offer": 80
+                },
+                {
+                    "id": 84,
+                    "product_name": "25 Shot Colour Rider",
+                    "product_name_tamil": "25 ஷாட் கலர்",
+                    "box_content": "1 Pc",
+                    "mrp": 1000,
+                    "price": 200,
+                    "offer": 80
+                }
+            ]
+        },
+        {
+            "category_id": 16,
+            "category_name": "Multi Colour Shot",
+            "category_name_tamil": null,
+            "products": [
+                {
+                    "id": 85,
+                    "product_name": "30 Shot Multi Colour",
+                    "product_name_tamil": "30 ஷாட் மல்டி கலர்",
+                    "box_content": "1 Pc",
+                    "mrp": 1250,
+                    "price": 250,
+                    "offer": 80
+                },
+                {
+                    "id": 86,
+                    "product_name": "60 Shot Multi Colour",
+                    "product_name_tamil": "60 ஷாட் மல்டி கலர்",
+                    "box_content": "1 Pc",
+                    "mrp": 2500,
+                    "price": 500,
+                    "offer": 80
+                },
+                {
+                    "id": 87,
+                    "product_name": "120 Shot Multi Colour",
+                    "product_name_tamil": "120 ஷாட் மல்டி கலர்",
+                    "box_content": "1 Pc",
+                    "mrp": 5000,
+                    "price": 1000,
+                    "offer": 80
+                },
+                {
+                    "id": 88,
+                    "product_name": "240 Shot Multi Colour",
+                    "product_name_tamil": "240 ஷாட் மல்டி கலர்",
+                    "box_content": "1 Pc",
+                    "mrp": 10000,
+                    "price": 2000,
+                    "offer": 80
+                },
+                {
+                    "id": 89,
+                    "product_name": "500 Shot Multi Colour",
+                    "product_name_tamil": "500 ஷாட் மல்டி கலர்",
+                    "box_content": "1 Pc",
+                    "mrp": 20000,
+                    "price": 4000,
+                    "offer": 80
+                },
+                {
+                    "id": 90,
+                    "product_name": "30 Shot Multi Colour (Brand)",
+                    "product_name_tamil": "30 ஷாட் மல்டி கலர்",
+                    "box_content": "1 Pc",
+                    "mrp": 2100,
+                    "price": 420,
+                    "offer": 80
+                },
+                {
+                    "id": 91,
+                    "product_name": "60 Shot Multi Colour (Brand)",
+                    "product_name_tamil": "60 ஷாட் மல்டி கலர்",
+                    "box_content": "1 Pc",
+                    "mrp": 4200,
+                    "price": 840,
+                    "offer": 80
+                },
+                {
+                    "id": 92,
+                    "product_name": "120 Shot Multi Colour (Brand)",
+                    "product_name_tamil": "120 ஷாட் மல்டி கலர்",
+                    "box_content": "1 Pc",
+                    "mrp": 8400,
+                    "price": 1680,
+                    "offer": 80
+                },
+                {
+                    "id": 93,
+                    "product_name": "240 Shot Multi Colour (Brand)",
+                    "product_name_tamil": "240 ஷாட் மல்டி கலர்",
+                    "box_content": "1 Pc",
+                    "mrp": 16800,
+                    "price": 3360,
+                    "offer": 80
+                }
+            ]
+        },
+        {
+            "category_id": 17,
+            "category_name": "Mega Display",
+            "category_name_tamil": null,
+            "products": [
+                {
+                    "id": 94,
+                    "product_name": "1\" Arial Fancy Pipe Dory (Yellow)",
+                    "product_name_tamil": "1 இன்ச் ஏரியல் பேன்சி பெப்பர்",
+                    "box_content": "1 Pc",
+                    "mrp": 115,
+                    "price": 23,
+                    "offer": 80
+                },
+                {
+                    "id": 95,
+                    "product_name": "1\" Arial Fancy Pipe Nemo (Red)",
+                    "product_name_tamil": "1 இன்ச் ஏரியல் பேன்சி பெப்பர்",
+                    "box_content": "1 Pc",
+                    "mrp": 115,
+                    "price": 23,
+                    "offer": 80
+                },
+                {
+                    "id": 96,
+                    "product_name": "1\" Arial Fancy Pipe Moama (Blue)",
+                    "product_name_tamil": "1 இன்ச் ஏரியல் பேன்சி பெப்பர்",
+                    "box_content": "1 Pc",
+                    "mrp": 115,
+                    "price": 23,
+                    "offer": 80
+                },
+                {
+                    "id": 97,
+                    "product_name": "1\" Arial Fancy Pipe Elena (Green)",
+                    "product_name_tamil": "1 இன்ச் ஏரியல் பேன்சி பெப்பர்",
+                    "box_content": "1 Pc",
+                    "mrp": 115,
+                    "price": 23,
+                    "offer": 80
+                },
+                {
+                    "id": 98,
+                    "product_name": "2\" Arial Fancy Pipe (Red) Sunshine",
+                    "product_name_tamil": "2 இன்ச் ஏரியல் பேன்சி பெப்பர்",
+                    "box_content": "1 Pc",
+                    "mrp": 400,
+                    "price": 80,
+                    "offer": 80
+                },
+                {
+                    "id": 99,
+                    "product_name": "2\" Arial Fancy Pipe (Green) Freefire",
+                    "product_name_tamil": "2 இன்ச் ஏரியல் பேன்சி பெப்பர்",
+                    "box_content": "1 Pc",
+                    "mrp": 400,
+                    "price": 80,
+                    "offer": 80
+                },
+                {
+                    "id": 100,
+                    "product_name": "2\" Arial Fancy Pipe (White) Pubg",
+                    "product_name_tamil": "2 இன்ச் ஏரியல் பேன்சி பெப்பர்",
+                    "box_content": "1 Pc",
+                    "mrp": 400,
+                    "price": 80,
+                    "offer": 80
+                },
+                {
+                    "id": 101,
+                    "product_name": "2\" Arial Fancy Pipe (Yellow) Candy Crush",
+                    "product_name_tamil": "2 இன்ச் ஏரியல் பேன்சி பெப்பர்",
+                    "box_content": "1 Pc",
+                    "mrp": 400,
+                    "price": 80,
+                    "offer": 80
+                },
+                {
+                    "id": 102,
+                    "product_name": "2\" Arial Fancy Pipe - 2\" Arial Fancy Pipe (3 Pcs)",
+                    "product_name_tamil": "2 இன்ச் ஏரியல் பேன்சி பெப்பர்",
+                    "box_content": "1 Box",
+                    "mrp": 1000,
+                    "price": 200,
+                    "offer": 80
+                },
+                {
+                    "id": 103,
+                    "product_name": "3½\" Arial Fancy Pipe (Green)",
+                    "product_name_tamil": "3½ இன்ச் ஏரியல் பேன்சி பெப்பர்",
+                    "box_content": "1 Pc",
+                    "mrp": 1250,
+                    "price": 250,
+                    "offer": 80
+                },
+                {
+                    "id": 104,
+                    "product_name": "3½\" Arial Fancy Pipe (White)",
+                    "product_name_tamil": "3½ இன்ச் ஏரியல் பேன்சி பெப்பர்",
+                    "box_content": "1 Pc",
+                    "mrp": 1250,
+                    "price": 250,
+                    "offer": 80
+                }
+            ]
+        },
+        {
+            "category_id": 18,
+            "category_name": "Matches",
+            "category_name_tamil": null,
+            "products": [
+                {
+                    "id": 140,
+                    "product_name": "5K Matches",
+                    "product_name_tamil": "5K மாட்ட்ஸ்",
+                    "box_content": "1 Box",
+                    "mrp": 550,
+                    "price": 110,
+                    "offer": 80
+                },
+                {
+                    "id": 141,
+                    "product_name": "Gem Tysker Matches",
+                    "product_name_tamil": "ஜெம் டைஸ்கர் மாட்ட்ஸ்",
+                    "box_content": "1 Box",
+                    "mrp": 725,
+                    "price": 145,
+                    "offer": 80
+                },
+                {
+                    "id": 142,
+                    "product_name": "Hola Matches / Laptop (10 Pcs)",
+                    "product_name_tamil": "ஹோலா மாட்ட்ஸ் / லேப்டாப்",
+                    "box_content": "10 Pcs/Box",
+                    "mrp": 950,
+                    "price": 190,
+                    "offer": 80
+                }
+            ]
+        },
+        {
+            "category_id": 19,
+            "category_name": "10 Pcs Gift Boxes",
+            "category_name_tamil": null,
+            "products": [
+                {
+                    "id": 143,
+                    "product_name": "25 Items Gift Box",
+                    "product_name_tamil": "25 ஐட்டம் கிப்ட் பாக்ஸ்",
+                    "box_content": "1 Box",
+                    "mrp": 1650,
+                    "price": 330,
+                    "offer": 80
+                },
+                {
+                    "id": 144,
+                    "product_name": "30 Items Gift Box",
+                    "product_name_tamil": "30 ஐட்டம் கிப்ட் பாக்ஸ்",
+                    "box_content": "1 Box",
+                    "mrp": 2050,
+                    "price": 410,
+                    "offer": 80
+                },
+                {
+                    "id": 145,
+                    "product_name": "40 Items Gift Box",
+                    "product_name_tamil": "40 ஐட்டம் கிப்ட் பாக்ஸ்",
+                    "box_content": "1 Box",
+                    "mrp": 3000,
+                    "price": 600,
+                    "offer": 80
+                },
+                {
+                    "id": 146,
+                    "product_name": "50 Items Gift Box",
+                    "product_name_tamil": "50 ஐட்டம் கிப்ட் பாக்ஸ்",
+                    "box_content": "1 Box",
+                    "mrp": 4200,
+                    "price": 840,
+                    "offer": 80
+                }
+            ]
+        },
+        {
+            "category_id": 20,
+            "category_name": "Ring Cap Gun",
+            "category_name_tamil": null,
+            "products": [
+                {
+                    "id": 147,
+                    "product_name": "Gun - 1 (Ring Cap)",
+                    "product_name_tamil": "ரிங் கேப் துப்பாக்கி - 1",
+                    "box_content": "1 Pc",
+                    "mrp": 150,
+                    "price": 30,
+                    "offer": 80
+                },
+                {
+                    "id": 148,
+                    "product_name": "Gun - 2 (Ring Cap)",
+                    "product_name_tamil": "ரிங் கேப் துப்பாக்கி - 2",
+                    "box_content": "1 Pc",
+                    "mrp": 250,
+                    "price": 50,
+                    "offer": 80
+                },
+                {
+                    "id": 149,
+                    "product_name": "Gun - 3 (Ring Cap)",
+                    "product_name_tamil": "ரிங் கேப் துப்பாக்கி - 3",
+                    "box_content": "1 Pc",
+                    "mrp": 500,
+                    "price": 100,
+                    "offer": 80
+                },
+                {
+                    "id": 150,
+                    "product_name": "Gun - 4 (Ring Cap)",
+                    "product_name_tamil": "ரிங் கேப் துப்பாக்கி - 4",
+                    "box_content": "1 Pc",
+                    "mrp": 1000,
+                    "price": 200,
+                    "offer": 80
+                },
+                {
+                    "id": 151,
+                    "product_name": "Ring Cap",
+                    "product_name_tamil": "ரிங் கேப்",
+                    "box_content": "1 Pc",
+                    "mrp": 50,
+                    "price": 10,
+                    "offer": 80
+                }
+            ]
+        },
+        {
+            "category_id": 21,
+            "category_name": "Paper Bomb",
+            "category_name_tamil": null,
+            "products": [
+                {
+                    "id": 152,
+                    "product_name": "Adiyal Paper Bomb (1/4 KG)",
+                    "product_name_tamil": "அடியாள் பேப்பர் பாம் (1/4 கிலோ)",
+                    "box_content": "1 Pc",
+                    "mrp": 225,
+                    "price": 45,
+                    "offer": 80
+                }
+            ]
+        }
+    ]
+}

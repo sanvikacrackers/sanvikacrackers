@@ -417,7 +417,7 @@ export default function AdminBarcodes() {
                     {selected.map(({ product, qty }) => (
                       <div key={product.id} className="barcode-queue-item">
                         <div className="barcode-queue-item-name">
-                          <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 13, fontWeight: 600 }}>{product.name}</div>
+                          <div data-tooltip={product.name} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 13, fontWeight: 600 }}>{product.name}</div>
                           <div style={{ fontSize: 11, color: '#94a3b8' }}>#{product.product_code}</div>
                         </div>
                         <div className="barcode-queue-item-controls">

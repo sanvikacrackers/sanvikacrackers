@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, createContext, useContext, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Outlet, NavLink, useNavigate, Navigate } from 'react-router-dom';
 import { downloadAdminOrderPDF } from '../utils/generateOrderPDF';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
@@ -204,7 +205,7 @@ export function CustomSelect({ value, options, onChange, placeholder = 'Select o
         className={`adm-custom-select-trigger ${open ? 'active' : ''}`}
         onClick={handleOpen}
       >
-        <span className="adm-select-val">{selectedLabel}</span>
+        <span className="adm-select-val" data-tooltip={selectedLabel}>{selectedLabel}</span>
         <ChevronDown className={`adm-select-chevron ${open ? 'open' : ''}`} />
       </button>
 
@@ -558,73 +559,76 @@ export function AdminLogin() {
    SHARED LAYOUT  →  /admin/*
    Provides sidebar + header + data context
 ══════════════════════════════════════════════════ */
-const DEFAULT_CATEGORIES_DATA = [
-  { id: 'cat-1', name: 'Single Sound Crackers', image_url: '', description: 'Loud single sound crackers & Lakshmi crackers' },
-  { id: 'cat-2', name: 'Chakkars', image_url: '', description: 'Ground spinning chakkars and wheels' },
-  { id: 'cat-3', name: 'Flower Pots & Fountains', image_url: '', description: 'Sparkling colorful fountains & flower pots' },
-  { id: 'cat-4', name: 'Sparklers', image_url: '', description: 'Handheld electric and colorful sparklers' },
-  { id: 'cat-5', name: 'Rockets & Sky Shots', image_url: '', description: 'High aerial sky shots and rockets' },
-  { id: 'cat-6', name: 'Fancy Novelties', image_url: '', description: 'Special light, sound and color novelties' },
-  { id: 'cat-7', name: 'Kids Special', image_url: '', description: 'Safe & fun soundless crackers for children' },
-  { id: 'cat-8', name: 'Gift Boxes & Combos', image_url: '', description: 'Assorted Diwali crackers gift boxes' },
-];
+/* ── Global Tooltip ────────────────────────────────────
+   Any element with data-tooltip="text" gets a styled tooltip.
+   Rendered via portal so it's never clipped by overflow:hidden.
+══════════════════════════════════════════════════════ */
+function GlobalTooltip() {
+  const [tip, setTip] = useState(null);
+  useEffect(() => {
+    let timer;
+    const show = (e) => {
+      const el = e.target.closest('[data-tooltip]');
+      if (!el) { setTip(null); return; }
+      const text = el.getAttribute('data-tooltip');
+      if (!text) { setTip(null); return; }
+      const rect = el.getBoundingClientRect();
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        setTip({ text, x: rect.left + rect.width / 2, y: rect.top + window.scrollY });
+      }, 300);
+    };
+    const hide = () => { clearTimeout(timer); setTip(null); };
+    document.addEventListener('mouseover', show);
+    document.addEventListener('mouseout', hide);
+    document.addEventListener('scroll', hide, true);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('mouseover', show);
+      document.removeEventListener('mouseout', hide);
+      document.removeEventListener('scroll', hide, true);
+    };
+  }, []);
+  if (!tip) return null;
+  return createPortal(
+    <div style={{
+      position: 'absolute', left: tip.x, top: tip.y - 8,
+      transform: 'translate(-50%, -100%)',
+      background: '#1e293b', color: '#fff',
+      padding: '5px 10px', borderRadius: 6,
+      fontSize: 12, fontWeight: 500, lineHeight: 1.5,
+      pointerEvents: 'none', zIndex: 99999,
+      maxWidth: 280, whiteSpace: 'pre-wrap', wordBreak: 'break-word',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+    }}>{tip.text}</div>,
+    document.body
+  );
+}
 
 export function AdminLayout() {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [products, setProducts] = useState([]);
+  const [categoryData, setCategoryData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const isLoggedIn = localStorage.getItem('sanvikacrackers_admin_logged_in') === 'true';
 
-  const [categoryData, setCategoryData] = useState(() => {
-    try {
-      const saved = localStorage.getItem('sanvikacrackers_admin_categories_v3');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        return parsed.filter(c => {
-          const name = typeof c === 'object' ? c?.name : String(c);
-          return name && !name.startsWith('__');
-        });
-      }
-    } catch (e) {}
-    return DEFAULT_CATEGORIES_DATA;
-  });
-  const [loading, setLoading] = useState(false);
-
-  // Auth guard — moved to useEffect to avoid hooks-after-return violation
   useEffect(() => {
     if (!isLoggedIn) navigate('/admin/login', { replace: true });
   }, [isLoggedIn, navigate]);
 
   const fetchAll = useCallback(async () => {
-    if (products.length === 0) {
-      setLoading(true);
-    }
+    if (products.length === 0) setLoading(true);
     try {
-      const [prods] = await Promise.all([
+      const [prods, cats] = await Promise.all([
         api('/products?order=product_code.asc'),
+        api('/categories?order=sort_order.asc'),
       ]);
       const ps = (prods || [])
         .filter(p => !p.category || !p.category.startsWith('__'))
         .sort((a, b) => (parseInt(a.product_code, 10) || 0) - (parseInt(b.product_code, 10) || 0));
       setProducts(ps);
-
-      // Merge any category names found in DB products into categoryData
-      const dbCatNames = [...new Set(ps.map(p => p.category).filter(n => n && !n.startsWith('__')))];
-      setCategoryData(prev => {
-        const existingNames = new Set(prev.map(c => c.name));
-        const missing = dbCatNames.filter(n => !existingNames.has(n)).map((name, idx) => ({
-          id: 'cat-db-' + idx + '-' + Date.now(),
-          name,
-          image_url: '',
-          description: ''
-        }));
-        if (missing.length > 0) {
-          const updated = [...prev, ...missing];
-          try { localStorage.setItem('sanvikacrackers_admin_categories_v3', JSON.stringify(updated)); } catch (e) {}
-          return updated;
-        }
-        return prev;
-      });
+      setCategoryData(cats || []);
     } catch (e) { console.error(e); }
     setLoading(false);
   }, [products.length]);
@@ -632,47 +636,36 @@ export function AdminLayout() {
   useEffect(() => { fetchAll(); }, [fetchAll]);
 
   const saveCategory = async (catObj) => {
-    let nextList = [...categoryData];
-    const isEdit = !!catObj.id;
-
-    if (isEdit) {
-      nextList = nextList.map(c => c.id === catObj.id ? { ...c, ...catObj } : c);
-      if (catObj.oldName && catObj.oldName !== catObj.name) {
-        try {
+    const isEdit = !!(catObj.id && !catObj.id.toString().startsWith('cat-'));
+    try {
+      if (isEdit) {
+        await api(`/categories?id=eq.${catObj.id}`, {
+          method: 'PATCH',
+          body: JSON.stringify({ name: catObj.name, image_url: catObj.image_url || null, description: catObj.description || null }),
+        });
+        if (catObj.oldName && catObj.oldName !== catObj.name) {
           await api(`/products?category=eq.${encodeURIComponent(catObj.oldName)}`, {
             method: 'PATCH',
-            body: JSON.stringify({ category: catObj.name })
+            body: JSON.stringify({ category: catObj.name }),
           });
-          await fetchAll();
-        } catch (e) {
-          console.error('Failed to update product categories:', e);
         }
+      } else {
+        const maxOrder = categoryData.reduce((m, c) => Math.max(m, c.sort_order || 0), 0);
+        await api('/categories', {
+          method: 'POST',
+          body: JSON.stringify({ name: catObj.name, image_url: catObj.image_url || null, description: catObj.description || null, sort_order: maxOrder + 1 }),
+        });
       }
-    } else {
-      const newCat = {
-        id: 'cat-' + Date.now(),
-        name: catObj.name,
-        image_url: catObj.image_url || '',
-        description: catObj.description || '',
-      };
-      nextList.push(newCat);
-    }
-
-    setCategoryData(nextList);
-    try {
-      localStorage.setItem('sanvikacrackers_admin_categories_v3', JSON.stringify(nextList));
-    } catch (e) {}
+      await fetchAll();
+    } catch (e) { console.error('saveCategory error:', e); }
   };
 
   const deleteCategory = async (catObj) => {
-    if (catObj.image_url) {
-      deleteFromCloudinary(catObj.image_url);
-    }
-    const nextList = categoryData.filter(c => c.id !== catObj.id && c.name !== catObj.name);
-    setCategoryData(nextList);
+    if (catObj.image_url) deleteFromCloudinary(catObj.image_url);
     try {
-      localStorage.setItem('sanvikacrackers_admin_categories_v3', JSON.stringify(nextList));
-    } catch (e) {}
+      await api(`/categories?id=eq.${catObj.id}`, { method: 'DELETE' });
+      await fetchAll();
+    } catch (e) { console.error('deleteCategory error:', e); }
   };
 
   if (!isLoggedIn) return null;
@@ -680,7 +673,7 @@ export function AdminLayout() {
   const categories = categoryData.map(c => c.name);
 
   const handleLogout = () => {
-    localStorage.removeItem('sanvikacrackers_admin_logged_in');
+    localStorage.clear();
     navigate('/admin/login', { replace: true });
   };
 
@@ -703,6 +696,7 @@ export function AdminLayout() {
   return (
     <AdminCtx.Provider value={{ products, setProducts, categories, categoryData, saveCategory, deleteCategory, loading, fetchAll }}>
       <div className="adm">
+        <GlobalTooltip />
         <div className="adm-layout">
           {sidebarOpen && <div className="sb-ov" onClick={()=>setSidebarOpen(false)} />}
 
@@ -1043,81 +1037,78 @@ export function AdminCategories() {
               className="cat-card"
               style={{
                 display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                padding: '18px',
-                minHeight: '140px',
+                alignItems: 'center',
+                gap: 12,
+                padding: '10px 14px',
                 background: '#ffffff',
-                borderRadius: '16px',
+                borderRadius: '10px',
                 border: '1px solid #e2e8f0',
-                boxShadow: '0 2px 6px rgba(0,0,0,0.03)',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
                 transition: 'all 0.2s ease',
-                position: 'relative',
               }}
             >
-              {/* Header row: Icon/Image on left + Edit/Delete action buttons on right */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-                <div
-                  style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 12,
-                    background: `${color}15`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    overflow: 'hidden',
-                    flexShrink: 0,
-                    border: `1px solid ${color}33`,
-                  }}
-                >
-                  {catImg ? (
-                    <img src={catImg} alt={catName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  ) : (
-                    <Icon style={{ width: 22, height: 22, color }} />
-                  )}
-                </div>
+              {/* Icon */}
+              <div
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 8,
+                  background: `${color}15`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  overflow: 'hidden',
+                  flexShrink: 0,
+                  border: `1px solid ${color}33`,
+                }}
+              >
+                {catImg ? (
+                  <img src={catImg} alt={catName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <Icon style={{ width: 18, height: 18, color }} />
+                )}
+              </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <button
-                    type="button"
-                    className="adm-btn adm-btn-secondary adm-btn-sm"
-                    title="Edit Category"
-                    style={{ padding: '5px 9px', fontSize: 12, borderRadius: 8 }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setModalCat(typeof cat === 'object' ? cat : { name: catName, image_url: '' });
-                    }}
-                  >
-                    <Edit2 style={{ width: 13, height: 13 }} />
-                  </button>
-                  <button
-                    type="button"
-                    className="adm-btn adm-btn-danger adm-btn-sm"
-                    title="Delete Category"
-                    style={{ padding: '5px 9px', fontSize: 12, borderRadius: 8 }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setConfirmDelete(typeof cat === 'object' ? cat : { name: catName, image_url: '' });
-                    }}
-                  >
-                    <Trash2 style={{ width: 13, height: 13 }} />
-                  </button>
+              {/* Name + count */}
+              <div
+                style={{ flex: 1, cursor: 'pointer', minWidth: 0 }}
+                onClick={() => navigate(`/admin/products?cat=${encodeURIComponent(catName)}`)}
+              >
+                <div data-tooltip={catName} style={{ fontSize: 14, fontWeight: 700, color: '#0f172a', lineHeight: 1.3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {catName}
+                </div>
+                <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 1 }}>
+                  {activeCount} active · {count} total
                 </div>
               </div>
 
-              {/* Body: Category Title + Product Counts */}
-              <div
-                style={{ cursor: 'pointer', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}
-                onClick={() => navigate(`/admin/products?cat=${encodeURIComponent(catName)}`)}
-              >
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#0f172a', lineHeight: 1.3, marginBottom: 4 }}>
-                  {catName}
-                </div>
-                <div style={{ fontSize: 12, fontWeight: 500, color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span>{activeCount} active · {count} total products</span>
-                  <ArrowUpRight style={{ width: 15, height: 15, color: '#ff6b35', flexShrink: 0, marginLeft: 4 }} />
-                </div>
+              {/* Arrow + actions */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                <ArrowUpRight style={{ width: 14, height: 14, color: '#ff6b35', cursor: 'pointer' }} onClick={() => navigate(`/admin/products?cat=${encodeURIComponent(catName)}`)} />
+                <button
+                  type="button"
+                  className="adm-btn adm-btn-secondary adm-btn-sm"
+                  title="Edit Category"
+                  style={{ padding: '4px 8px', fontSize: 11, borderRadius: 6 }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setModalCat(typeof cat === 'object' ? cat : { name: catName, image_url: '' });
+                  }}
+                >
+                  <Edit2 style={{ width: 12, height: 12 }} />
+                </button>
+                <button
+                  type="button"
+                  className="adm-btn adm-btn-danger adm-btn-sm"
+                  title="Delete Category"
+                  style={{ padding: '4px 8px', fontSize: 11, borderRadius: 6 }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setConfirmDelete(typeof cat === 'object' ? cat : { name: catName, image_url: '' });
+                  }}
+                >
+                  <Trash2 style={{ width: 12, height: 12 }} />
+                </button>
               </div>
             </div>
           );
@@ -1160,6 +1151,7 @@ function ProductModal({ product, categories, onClose, onSaved }) {
 
   const [form, setForm] = useState({
     name: product?.name || '',
+    name_tamil: product?.name_tamil || '',
     category: product?.category || categories[0] || '',
     mrp: product?.mrp || '',
     price: product?.price || '',
@@ -1376,6 +1368,7 @@ function ProductModal({ product, categories, onClose, onSaved }) {
       const body = {
         product_code: assignedCode,
         name: form.name,
+        name_tamil: form.name_tamil || null,
         category: form.category,
         mrp: form.mrp ? parseFloat(form.mrp) : null,
         price: form.price ? parseFloat(form.price) : null,
@@ -1434,6 +1427,15 @@ function ProductModal({ product, categories, onClose, onSaved }) {
                 ⚠️ Please fill out Product Name
               </div>
             )}
+          </div>
+          <div className="adm-form-group">
+            <label className="adm-form-lbl">Product Name (Tamil)</label>
+            <input
+              className="adm-form-input"
+              placeholder="e.g. கம்பி மத்தாப்பு"
+              value={form.name_tamil}
+              onChange={e=>set('name_tamil',e.target.value)}
+            />
           </div>
           <div className="adm-form-row-3">
             <div className="adm-form-group">
@@ -1859,12 +1861,12 @@ export function AdminProducts() {
         <div className="adm-card adm-scroll-card" style={{display: isMobile ? 'none' : ''}}>
           <div className="adm-table-wrap">
             <table className="adm-table">
-              <thead><tr><th style={{width:40}}></th><th>#</th><th>Product</th><th>Category</th><th>MRP</th><th>Discount</th><th>Price</th><th>Unit</th><th>Status</th><th style={{textAlign:'right'}}>Actions</th></tr></thead>
+              <thead><tr><th style={{width:40}}></th><th>#</th><th>Product</th><th>Tamil Name</th><th>Category</th><th>MRP</th><th>Discount</th><th>Price</th><th>Unit</th><th>Status</th><th style={{textAlign:'right'}}>Actions</th></tr></thead>
               <Droppable droppableId="admin-products-table-droppable">
                 {(provided) => (
                   <tbody ref={provided.innerRef} {...provided.droppableProps}>
                     {filtered.length===0 ? (
-                      <tr><td colSpan={10}><div className="adm-empty-state"><Package /><p>No products found</p></div></td></tr>
+                      <tr><td colSpan={11}><div className="adm-empty-state"><Package /><p>No products found</p></div></td></tr>
                     ) : filtered.map((p, idx) => (
                       <Draggable key={String(p.id)} draggableId={String(p.id)} index={idx}>
                         {(provided, snapshot) => (
@@ -1894,10 +1896,14 @@ export function AdminProducts() {
                                   }
                                   return thumb ? <img src={thumb} alt="" className="prod-thumb" onError={e=>{e.target.style.display='none'}} /> : <div className="prod-thumb-ph"><Box style={{width:18,height:18}} /></div>;
                                 })()}
-                                <div><div className="prod-name">{p.name}</div><div className="prod-code">Code: {p.product_code}</div></div>
+                                <div style={{minWidth:0}}>
+                                  <div data-tooltip={p.name} className="prod-name" style={{maxWidth:200,overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}}>{p.name}</div>
+                                  <div className="prod-code">Code: {p.product_code}</div>
+                                </div>
                               </div>
                             </td>
-                            <td style={{fontSize:12,color:'#94a3b8',maxWidth:180}}>{p.category}</td>
+                            <td style={{fontSize:12,color:'#6b7280',maxWidth:160,overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}} data-tooltip={p.name_tamil || undefined}>{p.name_tamil || '—'}</td>
+                            <td style={{fontSize:12,color:'#94a3b8',maxWidth:160,overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}} data-tooltip={p.category}>{p.category}</td>
                             <td style={{fontSize:13,color:'#64748b'}}>{p.mrp?`₹${p.mrp}`:'—'}</td>
                             <td style={{fontSize:13,color:'#f59e0b',fontWeight:600}}>
                               {(() => {
