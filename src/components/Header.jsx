@@ -14,7 +14,6 @@ const NAV = [
   { label: 'Contact',     to: '/contact' },
 ]
 
-const TRACKING_URL = 'https://www.metturtransports.com/tracking/'
 
 export default function Header() {
   const { cartCount, wishlistCount, siteSettings } = useShop()
@@ -65,15 +64,7 @@ export default function Header() {
                   {label}
                 </Link>
               ))}
-              <a
-                href={TRACKING_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="nav-link"
-                style={{ color: '#392B29' }}
-              >
-                Tracking
-              </a>
+
               <Link
                 to="/wishlist"
                 className="nav-link"
@@ -167,21 +158,7 @@ export default function Header() {
             </Link>
           ))}
 
-          {/* Tracking link */}
-          <a
-            href={TRACKING_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => setOpen(false)}
-            style={{
-              display: 'block', padding: '13px 20px',
-              fontSize: 15, fontWeight: 500, color: '#392B29',
-              textDecoration: 'none',
-              borderLeft: '3px solid transparent', background: 'transparent',
-            }}
-          >
-            Tracking
-          </a>
+
           <Link to="/wishlist" onClick={() => setOpen(false)} style={{ display: 'block', padding: '13px 20px', fontSize: 15, fontWeight: isActive('/wishlist') ? 700 : 500, color: isActive('/wishlist') ? '#843F43' : '#392B29', textDecoration: 'none', borderLeft: isActive('/wishlist') ? '3px solid #843F43' : '3px solid transparent', background: isActive('/wishlist') ? '#ffffff' : 'transparent' }}>
             Wishlist {wishlistCount > 0 && <span style={{ background: '#843F43', color: '#fff', borderRadius: '50%', width: 16, height: 16, fontSize: 9, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, verticalAlign: 'middle' }}>{wishlistCount}</span>}
           </Link>
