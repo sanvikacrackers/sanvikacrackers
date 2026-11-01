@@ -1582,6 +1582,7 @@ function ProductModal({ product, categories, onClose, onSaved }) {
 export function AdminProducts() {
   const { products, setProducts, categories, loading, fetchAll } = useAdmin();
   const [search, setSearch] = useState('');
+  const [codeOnly, setCodeOnly] = useState(true);
   const [catFilter, setCatFilter] = useState('');
   const [modalProd, setModalProd] = useState(null);
   const [confirm, setConfirm] = useState(null);
@@ -1601,8 +1602,10 @@ export function AdminProducts() {
 
   const filtered = products.filter(p => {
     const q = search.toLowerCase();
-    return (!q || ((p.product_code||'').toLowerCase().includes(q) || (p.name||'').toLowerCase().includes(q)))
-        && (!catFilter || p.category === catFilter);
+    const matchQ = !q || (codeOnly
+      ? (p.product_code||'').toLowerCase() === q
+      : ((p.product_code||'').toLowerCase().includes(q) || (p.name||'').toLowerCase().includes(q)));
+    return matchQ && (!catFilter || p.category === catFilter);
   });
 
   const toggleActive = async (prod) => {
@@ -1716,8 +1719,14 @@ export function AdminProducts() {
           <div className="adm-search-bar">
             <div className="adm-search-wrap">
               <Search className="si" />
-              <input className="adm-form-input" placeholder="Search by name or order code..." value={search} onChange={e=>setSearch(e.target.value)} />
+              <input className="adm-form-input" placeholder={codeOnly ? 'Type product code…' : 'Search by name or order code...'} value={search} onChange={e=>setSearch(e.target.value)} />
             </div>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', flexShrink: 0 }}>
+              <span style={{ fontSize: 11, fontWeight: 600, color: '#64748b', whiteSpace: 'nowrap' }}># Code</span>
+              <div onClick={() => setCodeOnly(v => !v)} style={{ width: 36, height: 20, borderRadius: 10, background: codeOnly ? '#1d4ed8' : '#cbd5e1', position: 'relative', transition: 'background 0.2s', cursor: 'pointer', flexShrink: 0 }}>
+                <div style={{ position: 'absolute', top: 2, left: codeOnly ? 18 : 2, width: 16, height: 16, borderRadius: '50%', background: '#fff', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', transition: 'left 0.2s' }} />
+              </div>
+            </label>
             <div style={{minWidth:220}}>
               <CustomSelect
                 value={catFilter}

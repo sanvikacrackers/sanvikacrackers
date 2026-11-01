@@ -9,16 +9,16 @@ export default function StaffProducts() {
   const products = allProducts.filter(p => p.is_active === true);
 
   const [search, setSearch] = useState('');
+  const [codeOnly, setCodeOnly] = useState(true);
   const [category, setCategory] = useState('');
 
   const categories = [...new Set(products.map((p) => p.category))].sort();
 
   const filtered = products.filter((p) => {
     const q = search.toLowerCase();
-    const matchQ = !q
-      || p.name?.toLowerCase().includes(q)
-      || p.product_code?.toLowerCase().includes(q)
-      || p.barcode?.toLowerCase().includes(q);
+    const matchQ = !q || (codeOnly
+      ? p.product_code?.toLowerCase() === q
+      : (p.name?.toLowerCase().includes(q) || p.product_code?.toLowerCase().includes(q) || p.barcode?.toLowerCase().includes(q)));
     const matchC = !category || p.category === category;
     return matchQ && matchC;
   });
@@ -39,11 +39,17 @@ export default function StaffProducts() {
               <Search className="sf-input-icon" />
               <input
                 className="sf-input with-icon"
-                placeholder="Search by name, code, or barcode…"
+                placeholder={codeOnly ? 'Type product code…' : 'Search by name, code, or barcode…'}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', flexShrink: 0 }}>
+              <span style={{ fontSize: 11, fontWeight: 600, color: '#64748b', whiteSpace: 'nowrap' }}># Code</span>
+              <div onClick={() => setCodeOnly(v => !v)} style={{ width: 36, height: 20, borderRadius: 10, background: codeOnly ? '#1d4ed8' : '#cbd5e1', position: 'relative', transition: 'background 0.2s', cursor: 'pointer', flexShrink: 0 }}>
+                <div style={{ position: 'absolute', top: 2, left: codeOnly ? 18 : 2, width: 16, height: 16, borderRadius: '50%', background: '#fff', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', transition: 'left 0.2s' }} />
+              </div>
+            </label>
             <select
               className="sf-input"
               style={{ width: 'auto' }}

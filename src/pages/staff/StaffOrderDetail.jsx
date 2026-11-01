@@ -129,12 +129,14 @@ function Highlight({ text, query }) {
 
 function ProductSearch({ products, billItems, onAdd, onDecrement, onSetQty }) {
   const [query, setQuery] = useState('');
+  const [codeOnly, setCodeOnly] = useState(true);
   const q = query.trim();
 
   const filtered = products
     .filter((p) => {
       if (!p.is_active) return false;
       if (!q) return true;
+      if (codeOnly) return p.product_code?.toLowerCase() === q.toLowerCase();
       const ql = q.toLowerCase();
       return (
         p.name?.toLowerCase().includes(ql)
@@ -151,12 +153,18 @@ function ProductSearch({ products, billItems, onAdd, onDecrement, onSetQty }) {
 
   return (
     <div>
-      <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'center' }}>
         <div className="sf-input-wrap" style={{ flex: 1 }}>
           <Search className="sf-input-icon" />
-          <input className="sf-input with-icon" placeholder="Search by name or code…"
+          <input className="sf-input with-icon" placeholder={codeOnly ? 'Type product code…' : 'Search by name or code…'}
             value={query} onChange={(e) => setQuery(e.target.value)} />
         </div>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', flexShrink: 0 }}>
+          <span style={{ fontSize: 11, fontWeight: 600, color: '#64748b', whiteSpace: 'nowrap' }}># Code</span>
+          <div onClick={() => setCodeOnly(v => !v)} style={{ width: 36, height: 20, borderRadius: 10, background: codeOnly ? '#1d4ed8' : '#cbd5e1', position: 'relative', transition: 'background 0.2s', cursor: 'pointer', flexShrink: 0 }}>
+            <div style={{ position: 'absolute', top: 2, left: codeOnly ? 18 : 2, width: 16, height: 16, borderRadius: '50%', background: '#fff', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', transition: 'left 0.2s' }} />
+          </div>
+        </label>
       </div>
 
       {q && (
@@ -284,6 +292,9 @@ export default function StaffOrderDetail() {
   const [editItems, setEditItems] = useState([]);
   const [editCustomerName, setEditCustomerName] = useState('');
   const [editCustomerPhone, setEditCustomerPhone] = useState('');
+  const [extraDiscount, setExtraDiscount] = useState(0);
+  const [discType, setDiscType] = useState('flat');
+  const [discVal, setDiscVal] = useState('');
   const [saving, setSaving] = useState(false);
   const [cameraOpen, setCameraOpen] = useState(false);
   const editInitRef = useRef(false);
@@ -307,6 +318,13 @@ export default function StaffOrderDetail() {
     })));
     setEditCustomerName(data.order.customer_name || '');
     setEditCustomerPhone(data.order.customer_phone || '');
+    // Restore any extra discount (e.g. admin-applied flat discount)
+    const itemsDiscount = data.items.reduce((s, i) => s + Number(i.discount_amount || 0) * i.quantity, 0);
+    const savedExtra = Math.round((Number(data.order.discount_total || 0) - itemsDiscount) * 100) / 100;
+    const extra = savedExtra > 0 ? savedExtra : 0;
+    setExtraDiscount(extra);
+    setDiscType('flat');
+    setDiscVal(extra > 0 ? String(extra) : '');
   }, [editMode, data, isPlaceholderData]);
 
   const enterEditMode = () => navigate(`/staff/orders/${id}?edit=true`);
@@ -371,7 +389,17 @@ export default function StaffOrderDetail() {
 
   const removeItem = (key) => setEditItems((prev) => prev.filter((i) => i._key !== key));
 
-  const editTotals = calcBillTotals(editItems);
+  const editBaseTotals = calcBillTotals(editItems);
+  const computedExtra = (() => {
+    const v = parseFloat(discVal) || 0;
+    if (discType === 'percent') return Math.min(Math.round(editBaseTotals.grand_total * v) / 100, editBaseTotals.grand_total);
+    return Math.min(v, editBaseTotals.grand_total);
+  })();
+  const editTotals = {
+    subtotal: editBaseTotals.subtotal,
+    discount_total: Math.round((editBaseTotals.discount_total + computedExtra) * 100) / 100,
+    grand_total: Math.max(0, Math.round((editBaseTotals.grand_total - computedExtra) * 100) / 100),
+  };
 
   const handleSave = async () => {
     if (editItems.length === 0) { toast.error('Bill must have at least one item'); return; }
@@ -522,7 +550,29 @@ export default function StaffOrderDetail() {
 
             {/* Totals */}
             <div style={{ padding: '10px 14px', borderTop: '1px solid #e2e8f0' }}>
+              {/* Discount input */}
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 10 }}>
+                <div style={{ fontSize: 12, color: '#64748b', whiteSpace: 'nowrap' }}>Discount:</div>
+                <div style={{ display: 'flex', borderRadius: 6, overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                  <button className={`sf-btn sf-btn-sm${discType === 'flat' ? ' sf-btn-primary' : ' sf-btn-secondary'}`} style={{ borderRadius: 0, padding: '0 8px', height: 28, fontSize: 11 }} onClick={() => setDiscType('flat')}>₹ Flat</button>
+                  <button className={`sf-btn sf-btn-sm${discType === 'percent' ? ' sf-btn-primary' : ' sf-btn-secondary'}`} style={{ borderRadius: 0, padding: '0 8px', height: 28, fontSize: 11 }} onClick={() => setDiscType('percent')}>% Off</button>
+                </div>
+                <input className="sf-input" style={{ width: 80, height: 28, fontSize: 12 }} type="text" inputMode="numeric"
+                  value={discVal} onChange={(e) => setDiscVal(e.target.value.replace(/[^\d.]/g, ''))}
+                  placeholder={discType === 'flat' ? '₹ 0' : '0 %'} />
+              </div>
+
               <div className="bill-cart-totals" style={{ marginTop: 0 }}>
+                <div className="bill-total-row">
+                  <span style={{ color: '#64748b' }}>Subtotal</span>
+                  <span style={{ color: '#64748b' }}>{fmtINR(editTotals.subtotal)}</span>
+                </div>
+                {editTotals.discount_total > 0 && (
+                  <div className="bill-total-row" style={{ color: '#16a34a' }}>
+                    <span>Discount</span>
+                    <span>−{fmtINR(editTotals.discount_total)}</span>
+                  </div>
+                )}
                 <div className="bill-total-row grand">
                   <span>Grand Total</span>
                   <span className="bill-grand-amt">{fmtINR(editTotals.grand_total)}</span>

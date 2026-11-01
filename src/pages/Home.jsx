@@ -153,7 +153,20 @@ function ProductCard({ product }) {
           <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid #d1d5db', borderRadius: 20, overflow: 'hidden', flexShrink: 0 }}>
             <button type="button" onClick={() => setQty(product.id, qty - 1)}
               style={{ width: 32, height: 36, border: 'none', background: 'transparent', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', color: '#1a1a1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
-            <span style={{ minWidth: 28, textAlign: 'center', fontSize: 13, fontWeight: 800, color: '#1a1a1a' }}>{qty}</span>
+            <input
+              type="number"
+              min="1"
+              value={qty}
+              onClick={e => e.stopPropagation()}
+              onKeyDown={e => { if (e.key === 'ArrowUp' || e.key === 'ArrowDown') e.preventDefault() }}
+              onChange={e => {
+                e.stopPropagation()
+                const v = parseInt(e.target.value, 10)
+                if (!isNaN(v) && v >= 1) setQty(product.id, v)
+              }}
+              className="qty-input"
+              style={{ width: 40, textAlign: 'center', fontSize: 13, fontWeight: 800, color: '#1a1a1a', border: 'none', outline: 'none', background: 'transparent' }}
+            />
             <button type="button" onClick={() => setQty(product.id, qty + 1)}
               style={{ width: 32, height: 36, border: 'none', background: 'transparent', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', color: '#1a1a1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
           </div>

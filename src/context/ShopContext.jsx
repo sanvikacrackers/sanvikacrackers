@@ -11,14 +11,12 @@ const API_HEADERS = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KE
 const ShopContext = createContext(null)
 
 export function ShopProvider({ children }) {
-  const [cartQtys,    setCartQtys]    = useState({})
-  const [wishlistIds, setWishlistIds] = useState([])
-
-  // ── Load cart & wishlist from localStorage ──────────
-  useEffect(() => {
-    try { const s = localStorage.getItem(CART_KEY);     if (s) setCartQtys(JSON.parse(s)) }     catch {}
-    try { const s = localStorage.getItem(WISHLIST_KEY); if (s) setWishlistIds(JSON.parse(s)) } catch {}
-  }, [])
+  const [cartQtys,    setCartQtys]    = useState(() => {
+    try { const s = localStorage.getItem(CART_KEY);     return s ? JSON.parse(s) : {} }     catch { return {} }
+  })
+  const [wishlistIds, setWishlistIds] = useState(() => {
+    try { const s = localStorage.getItem(WISHLIST_KEY); return s ? JSON.parse(s) : [] } catch { return [] }
+  })
 
   // ── Persist cart & wishlist to localStorage ─────────
   useEffect(() => { localStorage.setItem(CART_KEY,     JSON.stringify(cartQtys)) },    [cartQtys])
@@ -65,7 +63,7 @@ export function ShopProvider({ children }) {
     queryKey: ['banners'],
     queryFn: async () => {
       const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/hero_banners?select=id,image_url,alt_text,link_url,sort_order&order=sort_order.asc,created_at.asc`,
+        `${SUPABASE_URL}/rest/v1/hero_banners?select=id,image_url,title,target_url,sort_order&order=sort_order.asc,created_at.asc`,
         { headers: API_HEADERS }
       )
       if (!res.ok) return []

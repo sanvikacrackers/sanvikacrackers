@@ -30,7 +30,7 @@ export default function Cart() {
     noIndex: true,
   })
 
-  const { cartItems, cartTotal, cartCount, setQty, removeFromCart, clearCart, clearWishlist, siteSettings } = useShop()
+  const { cartItems, cartTotal, cartCount, setQty, removeFromCart, clearCart, clearWishlist, siteSettings, loading } = useShop()
   const labelTN    = siteSettings.state_label_tn
   const labelOther = siteSettings.state_label_other
   const [form, setForm]       = useState({ name: '', phone: '', address: '', isTN: true })
@@ -155,6 +155,10 @@ export default function Cart() {
               Continue Shopping
             </Link>
           </div>
+        ) : loading ? (
+          <div className="bg-white rounded-2xl shadow-sm p-16 text-center">
+            <p className="text-gray-500">Loading cart...</p>
+          </div>
         ) : cartItems.length === 0 ? (
           <div className="bg-white rounded-2xl shadow-sm p-16 text-center">
             <div className="flex justify-center mb-4"><ShoppingBag size={64} color="#d1d5db" /></div>
@@ -206,6 +210,7 @@ export default function Cart() {
                           value={qty}
                           min={1}
                           inputMode="numeric"
+                          onKeyDown={e => { if (e.key === 'ArrowUp' || e.key === 'ArrowDown') e.preventDefault() }}
                           onChange={e => {
                             const v = parseInt(e.target.value)
                             if (!isNaN(v) && v > 0) setQty(p.id, v)

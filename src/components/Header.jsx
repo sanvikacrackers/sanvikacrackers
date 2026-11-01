@@ -70,14 +70,14 @@ export default function Header() {
                 className="nav-link"
                 style={isActive('/wishlist') ? { color: '#843F43', fontWeight: 700 } : { color: '#392B29' }}
               >
-                Wishlist {wishlistCount > 0 && <span style={{ background: '#843F43', color: '#fff', borderRadius: '50%', width: 16, height: 16, fontSize: 9, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, verticalAlign: 'middle' }}>{wishlistCount}</span>}
+                Wishlist {wishlistCount > 0 && <span style={{ background: '#843F43', color: '#fff', borderRadius: 999, minWidth: 16, height: 16, padding: '0 4px', fontSize: 9, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, verticalAlign: 'middle' }}>{wishlistCount}</span>}
               </Link>
               <Link
                 to="/cart"
                 className="nav-link"
                 style={isActive('/cart') ? { color: '#843F43', fontWeight: 700 } : { color: '#392B29' }}
               >
-                Cart {cartCount > 0 && <span style={{ background: '#843F43', color: '#fff', borderRadius: '50%', width: 16, height: 16, fontSize: 9, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, verticalAlign: 'middle' }}>{cartCount}</span>}
+                Cart {cartCount > 0 && <span style={{ background: '#843F43', color: '#fff', borderRadius: 999, minWidth: 16, height: 16, padding: '0 4px', fontSize: 9, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, verticalAlign: 'middle' }}>{cartCount}</span>}
               </Link>
             </nav>
 
@@ -160,10 +160,10 @@ export default function Header() {
 
 
           <Link to="/wishlist" onClick={() => setOpen(false)} style={{ display: 'block', padding: '13px 20px', fontSize: 15, fontWeight: isActive('/wishlist') ? 700 : 500, color: isActive('/wishlist') ? '#843F43' : '#392B29', textDecoration: 'none', borderLeft: isActive('/wishlist') ? '3px solid #843F43' : '3px solid transparent', background: isActive('/wishlist') ? '#ffffff' : 'transparent' }}>
-            Wishlist {wishlistCount > 0 && <span style={{ background: '#843F43', color: '#fff', borderRadius: '50%', width: 16, height: 16, fontSize: 9, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, verticalAlign: 'middle' }}>{wishlistCount}</span>}
+            Wishlist {wishlistCount > 0 && <span style={{ background: '#843F43', color: '#fff', borderRadius: 999, minWidth: 16, height: 16, padding: '0 4px', fontSize: 9, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, verticalAlign: 'middle' }}>{wishlistCount}</span>}
           </Link>
           <Link to="/cart" onClick={() => setOpen(false)} style={{ display: 'block', padding: '13px 20px', fontSize: 15, fontWeight: isActive('/cart') ? 700 : 500, color: isActive('/cart') ? '#843F43' : '#392B29', textDecoration: 'none', borderLeft: isActive('/cart') ? '3px solid #843F43' : '3px solid transparent', background: isActive('/cart') ? '#ffffff' : 'transparent' }}>
-            Cart {cartCount > 0 && <span style={{ background: '#843F43', color: '#fff', borderRadius: '50%', width: 16, height: 16, fontSize: 9, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, verticalAlign: 'middle' }}>{cartCount}</span>}
+            Cart {cartCount > 0 && <span style={{ background: '#843F43', color: '#fff', borderRadius: 999, minWidth: 16, height: 16, padding: '0 4px', fontSize: 9, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, verticalAlign: 'middle' }}>{cartCount}</span>}
           </Link>
 
           {/* Download Price List — below Contact */}

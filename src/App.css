@@ -93,11 +93,14 @@ html, body {
 
 /* hide spinner arrows on number inputs */
 .products-grid input[type=number]::-webkit-outer-spin-button,
-.products-grid input[type=number]::-webkit-inner-spin-button {
+.products-grid input[type=number]::-webkit-inner-spin-button,
+input[type=number].qty-input::-webkit-outer-spin-button,
+input[type=number].qty-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-.products-grid input[type=number] {
+.products-grid input[type=number],
+input[type=number].qty-input {
   -moz-appearance: textfield;
 }
 

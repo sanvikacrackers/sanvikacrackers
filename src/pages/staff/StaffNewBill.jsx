@@ -143,34 +143,40 @@ function Highlight({ text, query }) {
 // ── Product Search ─────────────────────────────────────
 function ProductSearch({ products, billItems, onAdd, onDecrement, onSetQty }) {
   const [query, setQuery] = useState('');
+  const [codeOnly, setCodeOnly] = useState(true);
   const q = query.trim();
 
-  const filtered = products
-    .filter((p) => {
-      if (!p.is_active) return false;
-      if (!q) return true;
-      const ql = q.toLowerCase();
-      return (
-        p.name?.toLowerCase().includes(ql)
-        || p.product_code?.toLowerCase().includes(ql)
-        || p.barcode?.toLowerCase().includes(ql)
-        || p.category?.toLowerCase().includes(ql)
-      );
-    })
-;
+  const filtered = products.filter((p) => {
+    if (!p.is_active) return false;
+    if (!q) return true;
+    if (codeOnly) return p.product_code?.toLowerCase() === q.toLowerCase();
+    const ql = q.toLowerCase();
+    return (
+      p.name?.toLowerCase().includes(ql)
+      || p.product_code?.toLowerCase().includes(ql)
+      || p.barcode?.toLowerCase().includes(ql)
+      || p.category?.toLowerCase().includes(ql)
+    );
+  });
 
   return (
     <div>
-      <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'center' }}>
         <div className="sf-input-wrap" style={{ flex: 1 }}>
           <Search className="sf-input-icon" />
           <input
             className="sf-input with-icon"
-            placeholder="Search by name, code, or barcode…"
+            placeholder={codeOnly ? 'Type product code…' : 'Search by name, code, or barcode…'}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
         </div>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', flexShrink: 0 }}>
+          <span style={{ fontSize: 11, fontWeight: 600, color: '#64748b', whiteSpace: 'nowrap' }}># Code</span>
+          <div onClick={() => setCodeOnly(v => !v)} style={{ width: 36, height: 20, borderRadius: 10, background: codeOnly ? '#1d4ed8' : '#cbd5e1', position: 'relative', transition: 'background 0.2s', cursor: 'pointer', flexShrink: 0 }}>
+            <div style={{ position: 'absolute', top: 2, left: codeOnly ? 18 : 2, width: 16, height: 16, borderRadius: '50%', background: '#fff', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', transition: 'left 0.2s' }} />
+          </div>
+        </label>
       </div>
 
       {q && (
