@@ -2,9 +2,14 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "sanvikacrackers-1",
   "compatibility_date": "2026-10-09",
-  "pages_build_output_dir": "./dist",
+  "observability": {
+    "enabled": true
+  },
   "assets": {
     "directory": "./dist",
-    "binding": "ASSETS"
-  }
+    "not_found_handling": "single-page-application"
+  },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ]
 }
