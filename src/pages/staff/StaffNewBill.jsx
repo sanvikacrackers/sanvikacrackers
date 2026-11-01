@@ -644,26 +644,6 @@ export default function StaffNewBill() {
         </div>
       </div>
 
-      {lastBill && (
-        <div style={{
-          background: '#dcfce7', borderRadius: 10, padding: '12px 14px',
-          marginBottom: 16, display: 'flex', alignItems: 'center',
-          justifyContent: 'space-between', gap: 10, flexWrap: 'wrap',
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#166534' }}>
-            <CheckCircle style={{ width: 16, height: 16, color: '#16a34a', flexShrink: 0 }} />
-            <span><strong>{lastBill.order.bill_number}</strong> finalized &nbsp;—&nbsp; {fmtINR(lastBill.order.grand_total)}</span>
-          </div>
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <button className="sf-btn sf-btn-success sf-btn-sm" onClick={() => printBill(lastBill.order, lastBill.items)}>
-              <Printer style={{ width: 13, height: 13 }} /> Print
-            </button>
-            <button onClick={() => setLastBill(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#15803d', lineHeight: 1, padding: 4 }}>
-              <X style={{ width: 15, height: 15 }} />
-            </button>
-          </div>
-        </div>
-      )}
 
       <div className="bill-page">
         {/* Cart — first in DOM so it appears on top on mobile */}
@@ -790,6 +770,45 @@ export default function StaffNewBill() {
           onClose={() => setShowFinalize(false)}
           loading={finalizing}
         />
+      )}
+
+      {/* Sticky Print Bar — appears at bottom after bill is finalized */}
+      {lastBill && (
+        <div
+          className="sf-print-bar"
+          style={{
+            position: 'fixed',
+            left: 0, right: 0,
+            bottom: 'calc(60px + env(safe-area-inset-bottom, 0px))',
+            zIndex: 400,
+            padding: '10px 16px',
+            background: '#15803d',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 10,
+            boxShadow: '0 -4px 16px rgba(0,0,0,0.18)',
+          }}
+        >
+          <div style={{ color: '#fff', fontSize: 13, fontWeight: 600, lineHeight: 1.3 }}>
+            <div style={{ fontSize: 11, opacity: 0.8 }}>{lastBill.order.bill_number} finalized</div>
+            <div style={{ fontSize: 16, fontWeight: 800 }}>{fmtINR(lastBill.order.grand_total)}</div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <button
+              onClick={() => printBill(lastBill.order, lastBill.items)}
+              style={{ background: '#fff', color: '#15803d', fontWeight: 700, fontSize: 14, padding: '10px 24px', borderRadius: 8, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
+            >
+              <Printer style={{ width: 16, height: 16 }} /> Print
+            </button>
+            <button
+              onClick={() => setLastBill(null)}
+              style={{ background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: 8, padding: 10, cursor: 'pointer', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+              <X style={{ width: 18, height: 18 }} />
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

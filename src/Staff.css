@@ -1031,6 +1031,11 @@
 .sf-bottom-nav-item.active { color: #60a5fa; }
 .sf-bottom-nav-item.active svg { color: #60a5fa; }
 
+/* ── Sticky Print Bar — desktop: no bottom nav so sit at bottom:0 ── */
+@media (min-width: 769px) {
+  .sf-print-bar { bottom: 0 !important; }
+}
+
 /* ── Mobile Order Cards (table → card on small screens) ── */
 @media (max-width: 640px) {
   .sf-table-card thead { display: none; }
