@@ -360,7 +360,7 @@ function EditOrderModal({ orderId, onClose }) {
               </div>
               <div>
                 <label className="sf-form-lbl">Phone</label>
-                <input className="sf-input" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} placeholder="Phone number" inputMode="numeric" />
+                <input className="sf-input" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value.replace(/\D/g, '').slice(0, 10))} placeholder="Phone number" inputMode="numeric" maxLength={10} />
               </div>
             </div>
 

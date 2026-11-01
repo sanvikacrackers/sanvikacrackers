@@ -35,7 +35,7 @@ export default function Wishlist() {
             <div className="flex justify-center mb-4"><Heart size={64} color="#d1d5db" /></div>
             <h2 className="text-2xl font-extrabold text-gray-900 mb-3">Your wishlist is empty</h2>
             <p className="text-gray-500 mb-6">Tap the heart icon on any product to save it here.</p>
-            <Link to="/" className="inline-block bg-[#843F43] text-white rounded-lg px-8 py-3 font-semibold hover:bg-[#70363A] transition-colors no-underline">
+            <Link to="/products" className="inline-block bg-[#843F43] text-white rounded-lg px-8 py-3 font-semibold hover:bg-[#70363A] transition-colors no-underline">
               Browse Products
             </Link>
           </div>

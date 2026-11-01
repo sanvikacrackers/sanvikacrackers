@@ -467,7 +467,7 @@ export default function StaffOrderDetail() {
               <div className="sf-input-wrap" style={{ flex: 1 }}>
                 <Phone className="sf-input-icon" style={{ width: 14, height: 14 }} />
                 <input className="sf-input with-icon" placeholder="Phone" value={editCustomerPhone}
-                  onChange={(e) => setEditCustomerPhone(e.target.value)} style={{ fontSize: 12, height: 34 }} maxLength={15} />
+                  onChange={(e) => setEditCustomerPhone(e.target.value.replace(/\D/g, '').slice(0, 10))} inputMode="numeric" style={{ fontSize: 12, height: 34 }} maxLength={10} />
               </div>
             </div>
             </div>

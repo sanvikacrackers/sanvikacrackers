@@ -105,6 +105,7 @@ export function ShopProvider({ children }) {
   }
 
   const clearCart = () => setCartQtys({})
+  const clearWishlist = () => setWishlistIds([])
 
   // ── Wishlist helpers ──────────────────────────────
   const toggleWishlist = (productId) => {
@@ -128,7 +129,7 @@ export function ShopProvider({ children }) {
       products, loading, fetchProducts,
       siteSettings,
       cartItems, cartTotal, cartCount, cartQtys,
-      addToCart, removeFromCart, setQty, clearCart,
+      addToCart, removeFromCart, setQty, clearCart, clearWishlist,
       wishlistIds, wishlistItems, wishlistCount, toggleWishlist, isWishlisted,
     }}>
       {children}

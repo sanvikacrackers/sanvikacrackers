@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { X, CheckCircle2, MessageCircle, ShoppingBag } from 'lucide-react'
 import { useShop } from '../context/ShopContext'
 import Footer from '../components/Footer'
+import TopBar from '../components/TopBar'
 import Header from '../components/Header'
 import OrderToast from '../components/OrderToast'
 import { generateOrderPDF } from '../utils/generateOrderPDF'
@@ -29,7 +30,7 @@ export default function Cart() {
     noIndex: true,
   })
 
-  const { cartItems, cartTotal, cartCount, setQty, removeFromCart, clearCart, siteSettings } = useShop()
+  const { cartItems, cartTotal, cartCount, setQty, removeFromCart, clearCart, clearWishlist, siteSettings } = useShop()
   const labelTN    = siteSettings.state_label_tn
   const labelOther = siteSettings.state_label_other
   const [form, setForm]       = useState({ name: '', phone: '', address: '', isTN: true })
@@ -79,16 +80,16 @@ export default function Cart() {
     const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
     const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-    // Save order first to get the order ID for the PDF
-    let orderNo = null
+    // Save order then fetch total count for sequential estimate number
+    let estimateNo = null
     try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/orders`, {
+      await fetch(`${SUPABASE_URL}/rest/v1/orders`, {
         method: 'POST',
         headers: {
           apikey: SUPABASE_KEY,
           Authorization: `Bearer ${SUPABASE_KEY}`,
           'Content-Type': 'application/json',
-          Prefer: 'return=representation',
+          Prefer: 'return=minimal',
         },
         body: JSON.stringify({
           customer_name: form.name,
@@ -107,12 +108,23 @@ export default function Cart() {
           status: 'Payment Pending',
         }),
       })
-      const saved = await res.json()
-      orderNo = Array.isArray(saved) ? saved[0]?.id : saved?.id
+      // Fetch total order count for sequential estimate number
+      const countRes = await fetch(`${SUPABASE_URL}/rest/v1/orders?select=id&limit=1`, {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`,
+          Prefer: 'count=exact',
+          'Range-Unit': 'items',
+          Range: '0-0',
+        },
+      })
+      const contentRange = countRes.headers.get('Content-Range') // e.g. "0-0/42"
+      const total = parseInt(contentRange?.split('/')[1] || '0')
+      if (total > 0) estimateNo = total
     } catch {}
 
-    // Generate and download PDF with the order ID
-    await generateOrderPDF({ form, cartItems, cartTotal, estimateNo: orderNo })
+    // Generate and download PDF with sequential estimate number
+    await generateOrderPDF({ form, cartItems, cartTotal, estimateNo })
 
     const wa = siteSettings.whatsapp || '919047778475'
     setTimeout(() => {
@@ -120,6 +132,7 @@ export default function Cart() {
     }, 600)
 
     clearCart()
+    clearWishlist()
     setSubmitted(true)
     setShowToast(true)
   }
@@ -127,6 +140,7 @@ export default function Cart() {
   return (
     <div className="theme-color4 light ltr" style={{ minHeight: '100vh', background: '#ffffff' }}>
 
+      <TopBar />
       <Header />
 
 
@@ -146,7 +160,7 @@ export default function Cart() {
             <div className="flex justify-center mb-4"><ShoppingBag size={64} color="#d1d5db" /></div>
             <h2 className="text-2xl font-extrabold text-gray-900 mb-3">Your cart is empty</h2>
             <p className="text-gray-500 mb-6">Add some crackers to get started!</p>
-            <Link to="/" className="inline-block bg-[#843F43] text-white rounded-lg px-8 py-3 font-semibold hover:bg-[#70363A] transition-colors no-underline">
+            <Link to="/products" className="inline-block bg-[#843F43] text-white rounded-lg px-8 py-3 font-semibold hover:bg-[#70363A] transition-colors no-underline">
               Shop Products
             </Link>
           </div>
@@ -187,7 +201,17 @@ export default function Cart() {
                           onClick={() => setQty(p.id, qty - 1)}
                           style={{ background: '#843F43', color: '#fff', border: 'none', borderRadius: 6, width: 34, height: 34, fontSize: 20, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
                         >−</button>
-                        <span style={{ minWidth: 40, textAlign: 'center', fontWeight: 700, fontSize: 15 }}>{qty}</span>
+                        <input
+                          type="number"
+                          value={qty}
+                          min={1}
+                          inputMode="numeric"
+                          onChange={e => {
+                            const v = parseInt(e.target.value)
+                            if (!isNaN(v) && v > 0) setQty(p.id, v)
+                          }}
+                          style={{ minWidth: 40, width: 40, textAlign: 'center', fontWeight: 700, fontSize: 15, border: 'none', background: 'transparent', outline: 'none', MozAppearance: 'textfield' }}
+                        />
                         <button
                           onClick={() => setQty(p.id, qty + 1)}
                           style={{ background: '#843F43', color: '#fff', border: 'none', borderRadius: 6, width: 34, height: 34, fontSize: 20, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
@@ -208,11 +232,7 @@ export default function Cart() {
                   <span>Subtotal ({cartCount} items)</span>
                   <span>{fmtPrice(cartTotal)}</span>
                 </div>
-                <div className="flex justify-between text-sm text-gray-600 mb-4">
-                  <span>Freight</span>
-                  <span className="text-orange-500 font-medium">Extra</span>
-                </div>
-                <div className="border-t border-gray-100 pt-4 flex justify-between font-extrabold text-gray-900 text-base">
+<div className="border-t border-gray-100 pt-4 flex justify-between font-extrabold text-gray-900 text-base">
                   <span>Total</span>
                   <span className="text-[#843F43]">{fmtPrice(cartTotal)}</span>
                 </div>
@@ -231,7 +251,7 @@ export default function Cart() {
                   <input className={`cart-input ${formErr.name ? 'input-err' : ''}`} type="text" placeholder="Your Name *"
                     value={form.name} onChange={e => setF('name', e.target.value)} />
                   <input className={`cart-input ${formErr.phone ? 'input-err' : ''}`} type="tel" placeholder="10-digit Phone *"
-                    value={form.phone} onChange={e => setF('phone', e.target.value)} maxLength={10} />
+                    value={form.phone} onChange={e => setF('phone', e.target.value.replace(/\D/g, '').slice(0, 10))} maxLength={10} inputMode="numeric" />
                   <textarea className={`cart-input ${formErr.address ? 'input-err' : ''}`} placeholder="Full Address *" rows={3}
                     value={form.address} onChange={e => setF('address', e.target.value)} />
                   <button type="submit" className="btn-wha flex items-center justify-center gap-2">

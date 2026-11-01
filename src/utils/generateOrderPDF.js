@@ -61,7 +61,7 @@ export async function generateOrderPDF({ form, cartItems, cartTotal, estimateNo 
     phone:      form.phone,
     state:      form.isTN ? 'Tamil Nadu' : 'Other State',
     address:    form.address || '',
-    estimateNo: estimateNo ? 2000 + estimateNo : null,
+    estimateNo: estimateNo ?? null,
     items:      cartItems.map(({ product, qty }) => ({
       code:     product.product_code || '',
       name:     product.name,
@@ -95,7 +95,7 @@ export async function downloadAdminOrderPDF(order, serialNo) {
     phone:      order.phone,
     state,
     address,
-    estimateNo: serialNo ? 2000 + serialNo : null,
+    estimateNo: serialNo ?? null,
     items:      items.map(i => ({
       code:     i.product_code || '',
       name:     i.name,

@@ -171,7 +171,15 @@ function ProductCard({ product }) {
           <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid #d1d5db', borderRadius: 20, overflow: 'hidden', flexShrink: 0 }}>
             <button type="button" onClick={e => { e.preventDefault(); setQty(product.id, qty - 1) }}
               style={{ width: 32, height: 36, border: 'none', background: 'transparent', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', color: '#1a1a1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
-            <span style={{ minWidth: 28, textAlign: 'center', fontSize: 13, fontWeight: 800, color: '#1a1a1a' }}>{qty}</span>
+            <input
+              type="number"
+              value={qty}
+              min={1}
+              inputMode="numeric"
+              onClick={e => e.preventDefault()}
+              onChange={e => { e.preventDefault(); const v = parseInt(e.target.value); if (!isNaN(v) && v > 0) setQty(product.id, v) }}
+              style={{ minWidth: 28, width: 36, textAlign: 'center', fontSize: 13, fontWeight: 800, color: '#1a1a1a', border: 'none', background: 'transparent', outline: 'none', MozAppearance: 'textfield' }}
+            />
             <button type="button" onClick={e => { e.preventDefault(); setQty(product.id, qty + 1) }}
               style={{ width: 32, height: 36, border: 'none', background: 'transparent', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', color: '#1a1a1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
           </div>

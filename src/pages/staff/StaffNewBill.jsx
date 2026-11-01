@@ -294,9 +294,10 @@ function FinalizeDialog({ items, totals, customerName, setCustomerName, customer
                 className="sf-input with-icon"
                 placeholder="Phone (optional)"
                 value={customerPhone}
-                onChange={(e) => setCustomerPhone(e.target.value)}
+                onChange={(e) => setCustomerPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                inputMode="numeric"
                 style={{ fontSize: 13 }}
-                maxLength={15}
+                maxLength={10}
               />
             </div>
           </div>
