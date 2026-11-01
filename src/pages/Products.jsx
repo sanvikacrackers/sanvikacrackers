@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import {
   Heart, Search, SlidersHorizontal,
   ChevronUp, ChevronDown, X, SlidersVertical,
@@ -27,7 +27,6 @@ function fmtPrice(v) {
 // ─── Premium Product Card ──────────────────────────────────────────────────────
 function ProductCard({ product }) {
   const { addToCart, cartQtys, setQty, toggleWishlist, isWishlisted } = useShop()
-  const navigate   = useNavigate()
   const imgs       = parseImages(product.image_url)
   const qty        = cartQtys[product.id] || 0
   const wishlisted = isWishlisted(product.id)
@@ -40,8 +39,9 @@ function ProductCard({ product }) {
   const hasMrp = mrp > price
 
   return (
-    <div
-      onClick={() => navigate(`/products/${product.id}`)}
+    <Link
+      to={`/products/${product.id}`}
+      style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', height: '100%' }}
       onMouseEnter={e => {
         e.currentTarget.style.transform = 'translateY(-4px)'
         e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.12)'
@@ -183,7 +183,7 @@ function ProductCard({ product }) {
           />
         )}
       </div>
-    </div>
+    </Link>
   )
 }
 
