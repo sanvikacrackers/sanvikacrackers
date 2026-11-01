@@ -1,50 +1,18 @@
-import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
+import { useQuery } from '@tanstack/react-query'
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
 const CART_KEY     = 'sanvikacrackers_cart_qtys'
 const WISHLIST_KEY = 'sanvikacrackers_wishlist'
-const CATALOG_KEY  = 'sanvikacrackers_catalog'
-const BANNERS_KEY  = 'sanvikacrackers_banners'
-const CACHE_TTL    = 5 * 60 * 1000 // 5 minutes
 
 const API_HEADERS = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
-
-function readCache(key) {
-  try {
-    const raw = sessionStorage.getItem(key)
-    if (!raw) return null
-    const { data, ts } = JSON.parse(raw)
-    if (Date.now() - ts > CACHE_TTL) { sessionStorage.removeItem(key); return null }
-    return data
-  } catch { return null }
-}
-
-function writeCache(key, data) {
-  try { sessionStorage.setItem(key, JSON.stringify({ data, ts: Date.now() })) } catch {}
-}
 
 const ShopContext = createContext(null)
 
 export function ShopProvider({ children }) {
-  // Serve from cache immediately so loading flicker is minimal
-  const cachedCatalog = readCache(CATALOG_KEY)
-  const cachedBanners = readCache(BANNERS_KEY)
-
-  const [products, setProducts]           = useState(cachedCatalog?.products || [])
-  const [siteSettings, setSiteSettings]   = useState(cachedCatalog?.siteSettings || {
-    min_order_tn: 0, min_order_other: 0, pricelist_url: '',
-    whatsapp: '', state_label_tn: '', state_label_other: '', announcement: '',
-  })
-  const [loading, setLoading]             = useState(!cachedCatalog)
-  const [heroBanners, setHeroBanners]     = useState(cachedBanners || [])
-  const [heroBannersLoading, setHeroBannersLoading] = useState(!cachedBanners)
-
-  const [cartQtys, setCartQtys]           = useState({})
-  const [wishlistIds, setWishlistIds]     = useState([])
-
-  const fetchedRef = useRef(false)
-  const bannerFetchedRef = useRef(!!cachedBanners)
+  const [cartQtys,    setCartQtys]    = useState({})
+  const [wishlistIds, setWishlistIds] = useState([])
 
   // ── Load cart & wishlist from localStorage ──────────
   useEffect(() => {
@@ -56,56 +24,60 @@ export function ShopProvider({ children }) {
   useEffect(() => { localStorage.setItem(CART_KEY,     JSON.stringify(cartQtys)) },    [cartQtys])
   useEffect(() => { localStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlistIds)) }, [wishlistIds])
 
-  // ── Fetch products + settings (stale-while-revalidate) ──
-  const fetchProducts = useCallback(async (force = false) => {
-    if (!force && fetchedRef.current) return
-    fetchedRef.current = true
-    if (!cachedCatalog) setLoading(true)
-    try {
+  // ── Products + site settings ─────────────────────────
+  // staleTime: 5 min — cached in memory, no loading flicker on revisit
+  const { data: catalogData, isLoading: loading } = useQuery({
+    queryKey: ['catalog'],
+    queryFn: async () => {
       const [productsRes, settingsRes] = await Promise.all([
-        fetch(`${SUPABASE_URL}/rest/v1/products?select=id,product_code,name,description,category,price,mrp,discount_percentage,image_url,order_unit,barcode,is_active&order=product_code.asc`, { headers: API_HEADERS }),
-        fetch(`${SUPABASE_URL}/rest/v1/site_settings?id=eq.1&limit=1`,                                                                                                                   { headers: API_HEADERS }),
+        fetch(
+          `${SUPABASE_URL}/rest/v1/products?select=id,product_code,name,description,category,price,mrp,discount_percentage,image_url,order_unit,barcode,is_active&order=product_code.asc`,
+          { headers: API_HEADERS }
+        ),
+        fetch(
+          `${SUPABASE_URL}/rest/v1/site_settings?id=eq.1&limit=1`,
+          { headers: API_HEADERS }
+        ),
       ])
+
+      let products = []
+      let siteSettings = { min_order_tn: 0, min_order_other: 0, pricelist_url: '', whatsapp: '', state_label_tn: '', state_label_other: '', announcement: '' }
+
       if (productsRes.ok) {
         const data = await productsRes.json()
-        const clean = data
+        products = data
           .filter(p => p.category && p.is_active !== undefined)
           .sort((a, b) => (parseInt(a.product_code) || 0) - (parseInt(b.product_code) || 0))
-        setProducts(clean)
-        if (settingsRes.ok) {
-          const settingsData = await settingsRes.json()
-          const settings = settingsData?.[0] || {}
-          setSiteSettings(s => ({ ...s, ...settings }))
-          writeCache(CATALOG_KEY, { products: clean, siteSettings: settings })
-        }
       }
-    } catch (e) {
-      console.error('ShopContext fetch error:', e)
-    } finally {
-      setLoading(false)
-    }
-  }, []) // eslint-disable-line
+      if (settingsRes.ok) {
+        const data = await settingsRes.json()
+        siteSettings = { ...siteSettings, ...(data?.[0] || {}) }
+      }
 
-  useEffect(() => { fetchProducts() }, [fetchProducts])
+      return { products, siteSettings }
+    },
+    staleTime: 5 * 60 * 1000,
+    gcTime:    10 * 60 * 1000,
+  })
 
-  // ── Fetch hero banners once per session ─────────────
-  useEffect(() => {
-    if (bannerFetchedRef.current) return
-    bannerFetchedRef.current = true
-    fetch(
-      `${SUPABASE_URL}/rest/v1/hero_banners?select=id,image_url,alt_text,link_url,sort_order&order=sort_order.asc,created_at.asc`,
-      { headers: API_HEADERS }
-    )
-      .then(r => r.ok ? r.json() : [])
-      .then(data => {
-        if (Array.isArray(data) && data.length) {
-          setHeroBanners(data)
-          writeCache(BANNERS_KEY, data)
-        }
-      })
-      .catch(() => {})
-      .finally(() => setHeroBannersLoading(false))
-  }, [])
+  // ── Hero banners ────────────────────────────────────
+  const { data: heroBanners = [], isLoading: heroBannersLoading } = useQuery({
+    queryKey: ['banners'],
+    queryFn: async () => {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/hero_banners?select=id,image_url,alt_text,link_url,sort_order&order=sort_order.asc,created_at.asc`,
+        { headers: API_HEADERS }
+      )
+      if (!res.ok) return []
+      const data = await res.json()
+      return Array.isArray(data) ? data : []
+    },
+    staleTime: 5 * 60 * 1000,
+    gcTime:    10 * 60 * 1000,
+  })
+
+  const products     = catalogData?.products     || []
+  const siteSettings = catalogData?.siteSettings || { min_order_tn: 0, min_order_other: 0, pricelist_url: '', whatsapp: '', state_label_tn: '', state_label_other: '', announcement: '' }
 
   // ── Cart helpers ────────────────────────────────────
   const setQty = (productId, qty) => {
@@ -134,7 +106,7 @@ export function ShopProvider({ children }) {
 
   return (
     <ShopContext.Provider value={{
-      products, loading, fetchProducts,
+      products, loading,
       siteSettings,
       heroBanners, heroBannersLoading,
       cartItems, cartTotal, cartCount, cartQtys,

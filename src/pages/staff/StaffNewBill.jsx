@@ -4,6 +4,7 @@ import {
   X, Camera, Package, AlertCircle, Printer, User, Phone,
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
 import { useShop } from '../../context/ShopContext';
@@ -15,16 +16,24 @@ const DRAFT_KEY = (uid) => `sanvika_staff_draft_${uid}`;
 function CameraScanner({ onBarcode, onClose }) {
   const videoRef = useRef(null);
   const readerRef = useRef(null);
-  const lastScanRef = useRef({ barcode: null, time: 0 });
-  const [error, setError] = useState('');
+  const lastScanRef    = useRef({ barcode: null, time: 0 });
+  const blockedRef     = useRef(null); // last successfully processed barcode
+  const [error, setError]     = useState('');
   const [lastScan, setLastScan] = useState('');
-  const [flash, setFlash] = useState(false);
+  const [flash, setFlash]     = useState(false);
 
   const handleScan = useCallback((text) => {
     const now = Date.now();
-    // Ignore same barcode within 500ms to prevent camera multi-frame duplicate reads
+
+    // 1. Rapid debounce — ignore camera multi-frame reads of same code within 500ms
     if (lastScanRef.current.barcode === text && now - lastScanRef.current.time < 500) return;
     lastScanRef.current = { barcode: text, time: now };
+
+    // 2. Consecutive same-barcode block:
+    //    Same item held in front of camera → blocked until a DIFFERENT barcode is scanned.
+    //    Scanning a different item unblocks the previous one automatically.
+    if (text === blockedRef.current) return;
+    blockedRef.current = text;
 
     setLastScan(text);
     setFlash(true);
@@ -148,12 +157,7 @@ function ProductSearch({ products, billItems, onAdd, onDecrement, onSetQty }) {
         || p.category?.toLowerCase().includes(ql)
       );
     })
-    .sort((a, b) => {
-      // Products already in the bill float to the top
-      const aInBill = billItems?.some((i) => i.product_id === a.id) ? 1 : 0;
-      const bInBill = billItems?.some((i) => i.product_id === b.id) ? 1 : 0;
-      return bInBill - aInBill;
-    });
+;
 
   return (
     <div>
@@ -413,6 +417,7 @@ ${order.customer_name || order.customer_phone ? `<div class="cust">Customer: <b>
 // ── Main Component ─────────────────────────────────────
 export default function StaffNewBill() {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const { products: allProducts } = useShop();
   const products = allProducts.filter(p => p.is_active === true);
 
@@ -594,6 +599,10 @@ export default function StaffNewBill() {
       localStorage.removeItem(DRAFT_KEY(user.id));
       setShowFinalize(false);
       toast.success(`Bill ${finalOrder.bill_number} finalized!`, { duration: 4000 });
+      queryClient.invalidateQueries({ queryKey: ['staff-orders'] });
+      queryClient.invalidateQueries({ queryKey: ['staff-dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-billing-orders'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-dashboard'] });
     } catch (err) {
       toast.error('Failed to finalize bill: ' + err.message);
     } finally {
@@ -631,24 +640,20 @@ export default function StaffNewBill() {
 
       {lastBill && (
         <div style={{
-          background: '#dcfce7', border: '1px solid #86efac',
-          borderRadius: 10, padding: '12px 16px', marginBottom: 16,
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          fontSize: 13,
+          background: '#dcfce7', borderRadius: 10, padding: '12px 14px',
+          marginBottom: 16, display: 'flex', alignItems: 'center',
+          justifyContent: 'space-between', gap: 10, flexWrap: 'wrap',
         }}>
-          <div>
-            <strong style={{ color: '#15803d' }}>✓ Bill {lastBill.order.bill_number} finalized!</strong>
-            {' '}<span style={{ color: '#166534' }}>Total: {fmtINR(lastBill.order.grand_total)}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#166534' }}>
+            <CheckCircle style={{ width: 16, height: 16, color: '#16a34a', flexShrink: 0 }} />
+            <span><strong>{lastBill.order.bill_number}</strong> finalized &nbsp;—&nbsp; {fmtINR(lastBill.order.grand_total)}</span>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button
-              className="sf-btn sf-btn-success sf-btn-sm"
-              onClick={() => printBill(lastBill.order, lastBill.items)}
-            >
-              <Printer style={{ width: 13, height: 13 }} />Print Bill
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <button className="sf-btn sf-btn-success sf-btn-sm" onClick={() => printBill(lastBill.order, lastBill.items)}>
+              <Printer style={{ width: 13, height: 13 }} /> Print
             </button>
-            <button className="sf-btn sf-btn-ghost sf-btn-sm" onClick={() => setLastBill(null)}>
-              <X style={{ width: 13, height: 13 }} />
+            <button onClick={() => setLastBill(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#15803d', lineHeight: 1, padding: 4 }}>
+              <X style={{ width: 15, height: 15 }} />
             </button>
           </div>
         </div>

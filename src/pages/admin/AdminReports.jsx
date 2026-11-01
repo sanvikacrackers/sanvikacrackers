@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { TrendingUp, Users, Receipt, BarChart2, RefreshCw } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { formatISTDate, fmtINR, istDayStart, istDayEnd } from '../../utils/billingUtils';
@@ -19,7 +20,6 @@ const PRESETS = [
   { label: 'Last 30 days',value: '30d' },
 ];
 
-/* ── Year list: BUSINESS_START_YEAR → max(currentYear, maxDataYear) ── */
 function getYearOptions(maxYear) {
   const top = Math.max(maxYear, new Date().getFullYear());
   const opts = [];
@@ -29,7 +29,6 @@ function getYearOptions(maxYear) {
   return opts;
 }
 
-/* ── Month list for a year (no future months if current year) ── */
 function getMonthOptions(year) {
   const now = new Date();
   const limit = Number(year) === now.getFullYear() ? now.getMonth() : 11;
@@ -39,7 +38,6 @@ function getMonthOptions(year) {
   }));
 }
 
-/* ── IST full-month range ── */
 function istMonthRange(year, month) {
   const IST = 330 * 60 * 1000;
   const y = Number(year), m = Number(month);
@@ -64,14 +62,9 @@ export default function AdminReports() {
   const currentYear  = now.getFullYear();
   const currentMonth = now.getMonth();
 
-  const [mode,        setMode]       = useState('today');
-  const [selYear,     setSelYear]    = useState(String(currentYear));
-  const [selMonth,    setSelMonth]   = useState(String(currentMonth));
-  const [maxDataYear, setMaxDataYear] = useState(currentYear);
-  const [loading,  setLoading]  = useState(true);
-  const [stats,    setStats]    = useState({ totalSales: 0, billCount: 0, avgBill: 0, activeStaff: 0, activeProducts: 0 });
-  const [byStaff,  setByStaff]  = useState([]);
-  const [byDay,    setByDay]    = useState([]);
+  const [mode,     setMode]     = useState('today');
+  const [selYear,  setSelYear]  = useState(String(currentYear));
+  const [selMonth, setSelMonth] = useState(String(currentMonth));
 
   const handleYearChange = (y) => {
     setSelYear(y);
@@ -79,68 +72,75 @@ export default function AdminReports() {
     if (Number(selMonth) > maxMonth) setSelMonth(String(maxMonth));
   };
 
-  const loadData = useCallback(async () => {
-    setLoading(true);
-    const { start, end } = mode === 'monthly'
-      ? istMonthRange(selYear, selMonth)
-      : getPresetRange(mode);
-
-    const [ordersRes, staffRes, productsRes] = await Promise.all([
-      supabase
+  // Max data year — fetched once, cached for 5 min
+  const { data: maxDataYear = currentYear } = useQuery({
+    queryKey: ['admin-reports-max-year'],
+    queryFn: async () => {
+      const { data } = await supabase
         .from('billing_orders')
-        .select('id, grand_total, staff_id, finalized_at, staff_users(name)')
-        .eq('status', 'finalized')
-        .gte('finalized_at', start)
-        .lte('finalized_at', end),
-      supabase.from('staff_users').select('id', { count: 'exact', head: true }).eq('role', 'staff').eq('is_active', true),
-      supabase.from('products').select('id', { count: 'exact', head: true }).eq('is_active', true),
-    ]);
+        .select('finalized_at')
+        .order('finalized_at', { ascending: false })
+        .limit(1);
+      return data?.[0] ? new Date(data[0].finalized_at).getFullYear() : currentYear;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
 
-    const orders     = ordersRes.data || [];
-    const totalSales = orders.reduce((s, o) => s + Number(o.grand_total || 0), 0);
-    const billCount  = orders.length;
-    const avgBill    = billCount > 0 ? totalSales / billCount : 0;
+  // Main report data — re-fetches when mode/year/month changes
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ['admin-reports', mode, mode === 'monthly' ? selYear : null, mode === 'monthly' ? selMonth : null],
+    queryFn: async () => {
+      const { start, end } = mode === 'monthly'
+        ? istMonthRange(selYear, selMonth)
+        : getPresetRange(mode);
 
-    const staffMap = {};
-    for (const o of orders) {
-      const name = o.staff_users?.name || 'Unknown';
-      if (!staffMap[o.staff_id]) staffMap[o.staff_id] = { name, count: 0, total: 0 };
-      staffMap[o.staff_id].count++;
-      staffMap[o.staff_id].total += Number(o.grand_total || 0);
-    }
+      const [ordersRes, staffRes, productsRes] = await Promise.all([
+        supabase
+          .from('billing_orders')
+          .select('id, grand_total, staff_id, finalized_at, staff_users(name)')
+          .eq('status', 'finalized')
+          .gte('finalized_at', start)
+          .lte('finalized_at', end),
+        supabase.from('staff_users').select('id', { count: 'exact', head: true }).eq('role', 'staff').eq('is_active', true),
+        supabase.from('products').select('id', { count: 'exact', head: true }).eq('is_active', true),
+      ]);
 
-    const dayMap = {};
-    for (const o of orders) {
-      if (!o.finalized_at) continue;
-      const day = formatISTDate(o.finalized_at);
-      if (!dayMap[day]) dayMap[day] = { day, count: 0, total: 0 };
-      dayMap[day].count++;
-      dayMap[day].total += Number(o.grand_total || 0);
-    }
+      const orders     = ordersRes.data || [];
+      const totalSales = orders.reduce((s, o) => s + Number(o.grand_total || 0), 0);
+      const billCount  = orders.length;
+      const avgBill    = billCount > 0 ? totalSales / billCount : 0;
 
-    setStats({ totalSales, billCount, avgBill, activeStaff: staffRes.count || 0, activeProducts: productsRes.count || 0 });
-    setByStaff(Object.values(staffMap).sort((a, b) => b.total - a.total));
-    setByDay(Object.values(dayMap).sort((a, b) => a.day < b.day ? -1 : 1));
-    setLoading(false);
-  }, [mode, selYear, selMonth]);
+      const staffMap = {};
+      for (const o of orders) {
+        const name = o.staff_users?.name || 'Unknown';
+        if (!staffMap[o.staff_id]) staffMap[o.staff_id] = { name, count: 0, total: 0 };
+        staffMap[o.staff_id].count++;
+        staffMap[o.staff_id].total += Number(o.grand_total || 0);
+      }
 
-  useEffect(() => { loadData(); }, [loadData]);
+      const dayMap = {};
+      for (const o of orders) {
+        if (!o.finalized_at) continue;
+        const day = formatISTDate(o.finalized_at);
+        if (!dayMap[day]) dayMap[day] = { day, count: 0, total: 0 };
+        dayMap[day].count++;
+        dayMap[day].total += Number(o.grand_total || 0);
+      }
 
-  // Fetch max year from DB once on mount so future-dated data appears in dropdown
-  useEffect(() => {
-    supabase.from('billing_orders')
-      .select('finalized_at')
-      .order('finalized_at', { ascending: false })
-      .limit(1)
-      .then(({ data }) => {
-        if (data?.[0]) {
-          const y = new Date(data[0].finalized_at).getFullYear();
-          setMaxDataYear((prev) => Math.max(prev, y));
-        }
-      });
-  }, []);
+      return {
+        stats:   { totalSales, billCount, avgBill, activeStaff: staffRes.count || 0, activeProducts: productsRes.count || 0 },
+        byStaff: Object.values(staffMap).sort((a, b) => b.total - a.total),
+        byDay:   Object.values(dayMap).sort((a, b) => a.day < b.day ? -1 : 1),
+      };
+    },
+    staleTime: 30 * 1000,
+  });
 
-  const maxDayTotal  = Math.max(...byDay.map((d) => d.total), 1);
+  const stats   = data?.stats   || { totalSales: 0, billCount: 0, avgBill: 0, activeStaff: 0, activeProducts: 0 };
+  const byStaff = data?.byStaff || [];
+  const byDay   = data?.byDay   || [];
+  const maxDayTotal = Math.max(...byDay.map((d) => d.total), 1);
+
   const yearOptions  = getYearOptions(maxDataYear);
   const monthOptions = getMonthOptions(selYear);
 
@@ -155,47 +155,28 @@ export default function AdminReports() {
       <div style={{ marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
         <h1 style={{ fontSize: 20, fontWeight: 800, color: '#1e293b', margin: 0 }}>Reports &amp; Analytics</h1>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          {/* Year always visible at top */}
-          <CustomSelect
-            value={selYear}
-            onChange={handleYearChange}
-            options={yearOptions}
-            minWidth={90}
-          />
-          <button className="sf-btn sf-btn-secondary sf-btn-sm" onClick={loadData} disabled={loading}>
-            <RefreshCw style={{ width: 13, height: 13 }} className={loading ? 'spinning' : ''} />
+          <CustomSelect value={selYear} onChange={handleYearChange} options={yearOptions} minWidth={90} />
+          <button className="sf-btn sf-btn-secondary sf-btn-sm" onClick={() => refetch()} disabled={isLoading}>
+            <RefreshCw style={{ width: 13, height: 13 }} className={isLoading ? 'spinning' : ''} />
             Refresh
           </button>
         </div>
       </div>
 
-      {/* ── Filter chips + month (only when monthly mode) ── */}
+      {/* ── Filter chips + month ── */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center', marginBottom: 20 }}>
         <div className="sf-filter-chips" style={{ marginBottom: 0 }}>
           {PRESETS.map((p) => (
-            <button
-              key={p.value}
-              className={`sf-chip${mode === p.value ? ' active' : ''}`}
-              onClick={() => setMode(p.value)}
-            >
+            <button key={p.value} className={`sf-chip${mode === p.value ? ' active' : ''}`} onClick={() => setMode(p.value)}>
               {p.label}
             </button>
           ))}
-          <button
-            className={`sf-chip${mode === 'monthly' ? ' active' : ''}`}
-            onClick={() => setMode('monthly')}
-          >
+          <button className={`sf-chip${mode === 'monthly' ? ' active' : ''}`} onClick={() => setMode('monthly')}>
             Monthly
           </button>
         </div>
-
         {mode === 'monthly' && (
-          <CustomSelect
-            value={selMonth}
-            onChange={setSelMonth}
-            options={monthOptions}
-            minWidth={130}
-          />
+          <CustomSelect value={selMonth} onChange={setSelMonth} options={monthOptions} minWidth={130} />
         )}
       </div>
 
@@ -204,54 +185,49 @@ export default function AdminReports() {
         <div className="sf-stat">
           <div className="sf-stat-icon green"><TrendingUp /></div>
           <div>
-            <div className="sf-stat-val" style={{ fontSize: 18 }}>{loading ? '—' : fmtINR(stats.totalSales)}</div>
+            <div className="sf-stat-val" style={{ fontSize: 18 }}>{isLoading ? '—' : fmtINR(stats.totalSales)}</div>
             <div className="sf-stat-lbl">Total Sales</div>
           </div>
         </div>
         <div className="sf-stat">
           <div className="sf-stat-icon blue"><Receipt /></div>
           <div>
-            <div className="sf-stat-val">{loading ? '—' : stats.billCount}</div>
+            <div className="sf-stat-val">{isLoading ? '—' : stats.billCount}</div>
             <div className="sf-stat-lbl">Bills Finalized</div>
           </div>
         </div>
         <div className="sf-stat">
           <div className="sf-stat-icon orange"><BarChart2 /></div>
           <div>
-            <div className="sf-stat-val" style={{ fontSize: 18 }}>{loading ? '—' : fmtINR(stats.avgBill)}</div>
+            <div className="sf-stat-val" style={{ fontSize: 18 }}>{isLoading ? '—' : fmtINR(stats.avgBill)}</div>
             <div className="sf-stat-lbl">Average Bill</div>
           </div>
         </div>
         <div className="sf-stat">
           <div className="sf-stat-icon purple"><Users /></div>
           <div>
-            <div className="sf-stat-val">{loading ? '—' : stats.activeStaff}</div>
+            <div className="sf-stat-val">{isLoading ? '—' : stats.activeStaff}</div>
             <div className="sf-stat-lbl">Active Staff</div>
           </div>
         </div>
       </div>
 
-      {/* ── Two cards — stacks on mobile via reports-grid ── */}
+      {/* ── Two cards ── */}
       <div className="reports-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
 
-        {/* Sales by staff */}
         <div className="sf-card">
           <div className="sf-card-header">
             <span className="sf-card-title">Sales by Staff</span>
             <span style={{ fontSize: 12, color: '#64748b' }}>{periodLabel}</span>
           </div>
-          {loading ? (
+          {isLoading ? (
             <div style={{ padding: 30, textAlign: 'center', color: '#64748b' }}>Loading…</div>
           ) : byStaff.length === 0 ? (
             <div className="sf-empty"><div className="sf-empty-desc">No finalized orders in this period</div></div>
           ) : (
             <div className="sf-table-wrap">
               <table className="sf-table">
-                <thead>
-                  <tr>
-                    <th>Staff</th><th>Bills</th><th>Total Sales</th><th>% Share</th>
-                  </tr>
-                </thead>
+                <thead><tr><th>Staff</th><th>Bills</th><th>Total Sales</th><th>% Share</th></tr></thead>
                 <tbody>
                   {byStaff.map((row) => {
                     const pct = stats.totalSales > 0 ? ((row.total / stats.totalSales) * 100).toFixed(1) : '0';
@@ -275,13 +251,12 @@ export default function AdminReports() {
           )}
         </div>
 
-        {/* Daily sales trend */}
         <div className="sf-card">
           <div className="sf-card-header">
             <span className="sf-card-title">Daily Sales Trend</span>
             <span style={{ fontSize: 12, color: '#64748b' }}>{periodLabel}</span>
           </div>
-          {loading ? (
+          {isLoading ? (
             <div style={{ padding: 30, textAlign: 'center', color: '#64748b' }}>Loading…</div>
           ) : byDay.length === 0 ? (
             <div className="sf-empty"><div className="sf-empty-desc">No data in this period</div></div>

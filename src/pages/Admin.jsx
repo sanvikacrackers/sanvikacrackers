@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, createContext, useContext, useRef } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { createPortal } from 'react-dom';
 import { Outlet, NavLink, useNavigate, Navigate } from 'react-router-dom';
 import { downloadAdminOrderPDF } from '../utils/generateOrderPDF';
@@ -527,18 +528,16 @@ function GlobalTooltip() {
 export function AdminLayout() {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [products, setProducts] = useState([]);
-  const [categoryData, setCategoryData] = useState([]);
-  const [loading, setLoading] = useState(false);
   const isLoggedIn = localStorage.getItem('sanvikacrackers_admin_logged_in') === 'true';
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (!isLoggedIn) navigate('/admin/login', { replace: true });
   }, [isLoggedIn, navigate]);
 
-  const fetchAll = useCallback(async () => {
-    if (products.length === 0) setLoading(true);
-    try {
+  const { data: layoutData, isLoading: loading, refetch } = useQuery({
+    queryKey: ['admin-layout-data'],
+    queryFn: async () => {
       const [prods, cats] = await Promise.all([
         api('/products?order=product_code.asc'),
         api('/categories?order=sort_order.asc'),
@@ -546,13 +545,28 @@ export function AdminLayout() {
       const ps = (prods || [])
         .filter(p => !p.category || !p.category.startsWith('__'))
         .sort((a, b) => (parseInt(a.product_code, 10) || 0) - (parseInt(b.product_code, 10) || 0));
-      setProducts(ps);
-      setCategoryData(cats || []);
-    } catch (e) { console.error(e); }
-    setLoading(false);
-  }, [products.length]);
+      return { products: ps, categoryData: cats || [] };
+    },
+    staleTime: 30 * 1000,
+    enabled: isLoggedIn,
+  });
 
-  useEffect(() => { fetchAll(); }, [fetchAll]);
+  const products = layoutData?.products || [];
+  const categoryData = layoutData?.categoryData || [];
+
+  const setProducts = useCallback((updater) => {
+    queryClient.setQueryData(['admin-layout-data'], (old) => {
+      if (!old) return old;
+      const nextProducts = typeof updater === 'function' ? updater(old.products) : updater;
+      return { ...old, products: nextProducts };
+    });
+  }, [queryClient]);
+
+  const fetchAll = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ['admin-layout-data'] });
+    queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+    queryClient.invalidateQueries({ queryKey: ['admin-categories'] });
+  }, [queryClient]);
 
   const saveCategory = async (catObj) => {
     const isEdit = !!(catObj.id && !catObj.id.toString().startsWith('cat-'));
@@ -1933,17 +1947,24 @@ export function AdminAnnouncement() {
   const [message, setMessage] = useState('');
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [initialized, setInitialized] = useState(false);
+  const queryClient = useQueryClient();
 
-  const fetchFromDB = useCallback(async () => {
-    try {
+  const { data: announcementData } = useQuery({
+    queryKey: ['admin-announcement'],
+    queryFn: async () => {
       const s = await fetchSiteSettings();
-      if (s.announcement) setMessage(s.announcement);
-    } catch(e) {}
-  }, []);
+      return s.announcement || '';
+    },
+    staleTime: 5 * 60 * 1000,
+  });
 
   useEffect(() => {
-    fetchFromDB();
-  }, [fetchFromDB]);
+    if (announcementData !== undefined && !initialized) {
+      setMessage(announcementData);
+      setInitialized(true);
+    }
+  }, [announcementData, initialized]);
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -1960,6 +1981,8 @@ export function AdminAnnouncement() {
         });
       }
       window.dispatchEvent(new CustomEvent('marquee_updated', { detail: message }));
+      queryClient.invalidateQueries({ queryKey: ['admin-announcement'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-settings'] });
       setSuccess(true);
       setTimeout(() => setSuccess(false), 4000);
     } catch (err) {
@@ -1981,6 +2004,8 @@ export function AdminAnnouncement() {
         });
       }
       window.dispatchEvent(new CustomEvent('marquee_updated', { detail: '' }));
+      queryClient.invalidateQueries({ queryKey: ['admin-announcement'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-settings'] });
     } catch(e) {}
   };
 
@@ -2080,36 +2105,40 @@ export function AdminAnnouncement() {
    HERO BANNERS MANAGEMENT
 ══════════════════════════════════════════════════ */
 export function AdminHeroBanners() {
-  const [banners, setBanners] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const queryClient = useQueryClient();
 
   // Modal State
   const [showModal, setShowModal] = useState(false);
   const [editingBanner, setEditingBanner] = useState(null);
   const [imageUrl, setImageUrl] = useState('');
 
-  const fetchBanners = useCallback(async () => {
-    setLoading(true);
-    try {
+  const { data: bannersData, isLoading: loading } = useQuery({
+    queryKey: ['admin-banners'],
+    queryFn: async () => {
       let res;
       try {
         res = await api('/hero_banners?order=sort_order.asc,created_at.asc');
       } catch (err) {
         res = await api('/products?category=eq.__HERO_BANNER__&order=created_at.asc');
       }
-      setBanners(res || []);
-    } catch (e) {
-      console.error('Failed to fetch hero banners:', e);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+      return res || [];
+    },
+    staleTime: 30 * 1000,
+  });
+
+  const [localBanners, setLocalBanners] = useState(null);
+  const banners = localBanners !== null ? localBanners : (bannersData || []);
 
   useEffect(() => {
-    fetchBanners();
-  }, [fetchBanners]);
+    if (bannersData) setLocalBanners(null);
+  }, [bannersData]);
+
+  const fetchBanners = useCallback(async () => {
+    setLocalBanners(null);
+    queryClient.invalidateQueries({ queryKey: ['admin-banners'] });
+  }, [queryClient]);
 
   const [isDragging, setIsDragging] = useState(false);
   const [dragIndex, setDragIndex] = useState(null);
@@ -2240,7 +2269,7 @@ export function AdminHeroBanners() {
     dragIndexRef.current = index;
     setDragIndex(index);
     setDragOverIndex(index);
-    setBanners(newBanners);
+    setLocalBanners(newBanners);
   };
 
   const handleDrop = async () => {
@@ -2571,22 +2600,28 @@ export function AdminSettings() {
   const [pricelistUrlState, setPricelistUrlState] = useState('');
   const [uploadingPdf, setUploadingPdf] = useState(false);
   const [saving,   setSaving]   = useState(false);
-  const [loading,  setLoading]  = useState(true);
   const [success,  setSuccess]  = useState(false);
+  const [initialized, setInitialized] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { data: settingsData, isLoading: loading } = useQuery({
+    queryKey: ['admin-settings'],
+    queryFn: fetchSiteSettings,
+    staleTime: 5 * 60 * 1000,
+  });
 
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-      const s = await fetchSiteSettings();
+    if (settingsData && !initialized) {
+      const s = settingsData;
       setMinTN   (s.min_order_tn    != null ? String(s.min_order_tn)    : '');
       setMinOther(s.min_order_other != null ? String(s.min_order_other) : '');
       setLabelTN   (s.state_label_tn    || 'Tamil Nadu');
       setLabelOther(s.state_label_other || 'Other State');
       setAnnouncement(s.announcement ?? '');
       setPricelistUrlState(s.pricelist_url || '');
-      setLoading(false);
-    })();
-  }, []);
+      setInitialized(true);
+    }
+  }, [settingsData, initialized]);
 
   const handlePdfUpload = async (e) => {
     const file = e.target.files[0];
@@ -2627,6 +2662,7 @@ export function AdminSettings() {
         method: 'PATCH',
         body: JSON.stringify({ pricelist_url: publicUrl, updated_at: new Date().toISOString() }),
       });
+      queryClient.invalidateQueries({ queryKey: ['admin-settings'] });
       toast.success('PDF uploaded and saved!');
     } catch (err) {
       toast.error('Upload failed: ' + err.message);
@@ -2654,6 +2690,8 @@ export function AdminSettings() {
         method: 'PATCH',
         body: JSON.stringify({ ...settingsObj, updated_at: new Date().toISOString() }),
       });
+      queryClient.invalidateQueries({ queryKey: ['admin-settings'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-announcement'] });
       setSuccess(true);
       setTimeout(() => setSuccess(false), 4000);
     } catch (err) { console.error('Failed to save settings:', err); }
@@ -2861,28 +2899,26 @@ export default AdminLayout;
 // downloadOrderPDF is now handled by downloadAdminOrderPDF from utils/generateOrderPDF
 
 export function AdminOrders() {
-  const [orders, setOrders]           = useState([]);
-  const [loading, setLoading]         = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterYear, setFilterYear]   = useState(String(new Date().getFullYear()));
   const [filterMonth, setFilterMonth] = useState('all');
+  const queryClient = useQueryClient();
 
-  const fetchOrders = useCallback(async () => {
-    setLoading(true);
-    try {
+  const { data: ordersData, isLoading: loading } = useQuery({
+    queryKey: ['admin-orders'],
+    queryFn: async () => {
       const res = await api('/orders?order=created_at.desc');
-      const data = res || [];
-      setOrders(data);
-    } catch (e) { console.error(e); }
-    finally { setLoading(false); }
-  }, []);
+      return res || [];
+    },
+    staleTime: 30 * 1000,
+  });
 
-  useEffect(() => { fetchOrders(); }, [fetchOrders]);
+  const orders = ordersData || [];
 
   const handleUpdateStatus = async (orderId, newStatus) => {
     try {
       await api(`/orders?id=eq.${orderId}`, { method: 'PATCH', body: JSON.stringify({ status: newStatus }) });
-      setOrders(orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+      queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
     } catch (err) { console.error(err); }
   };
 
@@ -2890,7 +2926,7 @@ export function AdminOrders() {
     if (!window.confirm('Delete this order?')) return;
     try {
       await api(`/orders?id=eq.${orderId}`, { method: 'DELETE' });
-      setOrders(orders.filter(o => o.id !== orderId));
+      queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
     } catch (err) { console.error(err); }
   };
 
@@ -3062,19 +3098,18 @@ export function AdminOrders() {
    DASHBOARD  →  /admin/dashboard
 ══════════════════════════════════════════════════ */
 export function AdminDashboard() {
-  const [orders, setOrders]   = useState([]);
-  const [loading, setLoading] = useState(true);
   const [filterYear, setFilterYear] = useState(String(new Date().getFullYear()));
 
-  useEffect(() => {
-    api('/orders?order=created_at.desc')
-      .then(res => {
-        const data = res || [];
-        setOrders(data);
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
+  const { data: ordersData, isLoading: loading } = useQuery({
+    queryKey: ['admin-dashboard'],
+    queryFn: async () => {
+      const res = await api('/orders?order=created_at.desc');
+      return res || [];
+    },
+    staleTime: 30 * 1000,
+  });
+
+  const orders = ordersData || [];
 
   const getOrderTotal = (order) => {
     try {

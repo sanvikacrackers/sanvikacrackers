@@ -1,31 +1,28 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Search, ClipboardList, Pencil, Trash2, X, AlertTriangle } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
 import { formatIST, fmtINR, istDayStart, istDayEnd } from '../../utils/billingUtils';
 import { toast } from 'react-hot-toast';
+import { useEffect } from 'react';
 
 const DATE_PRESETS = [
-  { label: 'Today', value: 'today' },
-  { label: 'Yesterday', value: 'yesterday' },
+  { label: 'Today',       value: 'today' },
+  { label: 'Yesterday',   value: 'yesterday' },
   { label: 'Last 7 days', value: '7d' },
-  { label: 'Last 30 days', value: '30d' },
-  { label: 'All time', value: 'all' },
+  { label: 'Last 30 days',value: '30d' },
+  { label: 'All time',    value: 'all' },
 ];
 
 function getDateRange(preset) {
   switch (preset) {
-    case 'today':
-      return { start: istDayStart(0), end: istDayEnd(0) };
-    case 'yesterday':
-      return { start: istDayStart(1), end: istDayEnd(1) };
-    case '7d':
-      return { start: istDayStart(6), end: istDayEnd(0) };
-    case '30d':
-      return { start: istDayStart(29), end: istDayEnd(0) };
-    default:
-      return null;
+    case 'today':     return { start: istDayStart(0), end: istDayEnd(0) };
+    case 'yesterday': return { start: istDayStart(1), end: istDayEnd(1) };
+    case '7d':        return { start: istDayStart(6), end: istDayEnd(0) };
+    case '30d':       return { start: istDayStart(29), end: istDayEnd(0) };
+    default:          return null;
   }
 }
 
@@ -70,59 +67,55 @@ function DeleteModal({ order, onConfirm, onClose, deleting }) {
 }
 
 export default function StaffOrders() {
-  const { user } = useAuth();
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [datePreset, setDatePreset] = useState('all');
+  const { user }        = useAuth();
+  const queryClient     = useQueryClient();
+  const [search, setSearch]           = useState('');
+  const [datePreset, setDatePreset]   = useState('all');
   const [statusFilter, setStatusFilter] = useState('');
   const [deleteTarget, setDeleteTarget] = useState(null);
-  const [deleting, setDeleting] = useState(false);
+  const [deleting, setDeleting]       = useState(false);
 
-  const load = async () => {
-    if (!user) return;
-    setLoading(true);
-    let q = supabase
-      .from('billing_orders')
-      .select('id, bill_number, grand_total, subtotal, discount_total, status, created_at, finalized_at')
-      .eq('staff_id', user.id)
-      .order('created_at', { ascending: false });
+  const { data: orders = [], isLoading } = useQuery({
+    queryKey: ['staff-orders', user?.id, datePreset, statusFilter],
+    queryFn: async () => {
+      let q = supabase
+        .from('billing_orders')
+        .select('id, bill_number, grand_total, subtotal, discount_total, status, created_at, finalized_at, edited_by')
+        .eq('staff_id', user.id)
+        .order('created_at', { ascending: false });
 
-    const range = getDateRange(datePreset);
-    if (range) q = q.gte('created_at', range.start).lte('created_at', range.end);
-    if (statusFilter) q = q.eq('status', statusFilter);
+      const range = getDateRange(datePreset);
+      if (range) q = q.gte('created_at', range.start).lte('created_at', range.end);
+      if (statusFilter) q = q.eq('status', statusFilter);
 
-    const { data } = await q;
-    let filtered = data || [];
-    if (search.trim()) {
-      const s = search.toLowerCase();
-      filtered = filtered.filter((o) => o.bill_number?.toLowerCase().includes(s));
-    }
-    setOrders(filtered);
-    setLoading(false);
-  };
+      const { data, error } = await q;
+      if (error) throw new Error(error.message);
+      return data || [];
+    },
+    enabled: !!user,
+  });
 
-  useEffect(() => { load(); }, [user, datePreset, statusFilter, search]);
+  // Search is filtered client-side — no extra API calls
+  const filtered = search.trim()
+    ? orders.filter(o => o.bill_number?.toLowerCase().includes(search.toLowerCase()))
+    : orders;
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
     setDeleting(true);
     try {
       const { error: itemsErr } = await supabase
-        .from('billing_order_items')
-        .delete()
-        .eq('order_id', deleteTarget.id);
+        .from('billing_order_items').delete().eq('order_id', deleteTarget.id);
       if (itemsErr) throw new Error(itemsErr.message);
 
       const { error: orderErr } = await supabase
-        .from('billing_orders')
-        .delete()
-        .eq('id', deleteTarget.id);
+        .from('billing_orders').delete().eq('id', deleteTarget.id);
       if (orderErr) throw new Error(orderErr.message);
 
       toast.success(`Bill ${deleteTarget.bill_number} deleted`);
       setDeleteTarget(null);
-      load();
+      queryClient.invalidateQueries({ queryKey: ['staff-orders'] });
+      queryClient.invalidateQueries({ queryKey: ['staff-dashboard'] });
     } catch (err) {
       toast.error('Delete failed: ' + err.message);
     } finally {
@@ -180,9 +173,9 @@ export default function StaffOrders() {
       </div>
 
       <div className="sf-card">
-        {loading ? (
+        {isLoading ? (
           <div style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>Loading…</div>
-        ) : orders.length === 0 ? (
+        ) : filtered.length === 0 ? (
           <div className="sf-empty">
             <ClipboardList />
             <div className="sf-empty-title">No orders found</div>
@@ -199,27 +192,26 @@ export default function StaffOrders() {
                 <tr>
                   <th>Bill Number</th>
                   <th>Date &amp; Time</th>
-                  <th>Subtotal</th>
-                  <th>Discount</th>
                   <th>Grand Total</th>
                   <th>Status</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
-                {orders.map((o) => (
+                {filtered.map((o) => (
                   <tr key={o.id}>
                     <td data-label="Bill No." style={{ fontWeight: 700 }}>{o.bill_number}</td>
                     <td data-label="Date" style={{ fontSize: 12, color: '#64748b' }}>{formatIST(o.created_at)}</td>
-                    <td data-label="Subtotal">{fmtINR(o.subtotal)}</td>
-                    <td data-label="Discount" style={{ color: '#16a34a' }}>
-                      {o.discount_total > 0 ? `−${fmtINR(o.discount_total)}` : '—'}
-                    </td>
                     <td data-label="Total" style={{ fontWeight: 700 }}>{fmtINR(o.grand_total)}</td>
                     <td data-label="Status">
                       <span className={`sf-badge ${o.status}`}>
                         {o.status.charAt(0).toUpperCase() + o.status.slice(1)}
                       </span>
+                      {o.edited_by && (
+                        <span title={`Edited by ${o.edited_by}`} style={{ marginLeft: 6, display: 'inline-flex', alignItems: 'center', padding: '1px 7px', borderRadius: 9999, fontSize: 10, fontWeight: 700, background: '#fef3c7', color: '#92400e', border: '1px solid #fde68a' }}>
+                          Edited
+                        </span>
+                      )}
                     </td>
                     <td className="sf-table-actions">
                       <Link to={`/staff/orders/${o.id}`} className="sf-tbl-action-btn sf-tbl-view">

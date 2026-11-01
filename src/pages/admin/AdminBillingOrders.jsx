@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { Search, X, Printer, Eye, ClipboardList, Edit2, Trash2, Plus, Minus, Package, AlertCircle, Save } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { supabase } from '../../lib/supabase';
@@ -86,26 +88,26 @@ function printBill(order, items) {
 }
 
 function OrderDetailModal({ orderId, onClose }) {
-  const [order, setOrder] = useState(null);
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const load = async () => {
+  const { data, isLoading } = useQuery({
+    queryKey: ['billing-order-detail', orderId],
+    queryFn: async () => {
       const [oRes, iRes] = await Promise.all([
         supabase.from('billing_orders').select('*, staff_users(name, email)').eq('id', orderId).single(),
         supabase.from('billing_order_items').select('*').eq('order_id', orderId).order('created_at'),
       ]);
-      if (oRes.data) {
-        setOrder({ ...oRes.data, staff_name: oRes.data.staff_users?.name });
-      }
-      setItems(iRes.data || []);
-      setLoading(false);
-    };
-    load();
-  }, [orderId]);
+      const order = oRes.data ? { ...oRes.data, staff_name: oRes.data.staff_users?.name } : null;
+      const items = iRes.data || [];
+      return { order, items };
+    },
+    staleTime: 30 * 1000,
+  });
+
+  const order = data?.order ?? null;
+  const items = data?.items ?? [];
 
   const handleCancel = async () => {
     if (!cancelReason.trim()) { toast.error('Please provide a reason for cancellation.'); return; }
@@ -116,7 +118,11 @@ function OrderDetailModal({ orderId, onClose }) {
       p_reason: cancelReason,
     });
     if (error) { toast.error(error.message); }
-    else { toast.success(`Bill ${order.bill_number} cancelled.`); onClose(true); }
+    else {
+      toast.success(`Bill ${order.bill_number} cancelled.`);
+      queryClient.invalidateQueries({ queryKey: ['admin-billing-orders'] });
+      onClose(true);
+    }
     setCancelling(false);
   };
 
@@ -125,13 +131,13 @@ function OrderDetailModal({ orderId, onClose }) {
       <div className="sf-modal" style={{ maxWidth: 700, maxHeight: '90vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
         <div className="sf-modal-header">
           <span className="sf-modal-title">
-            {loading ? 'Loading…' : order?.bill_number}
+            {isLoading ? 'Loading…' : order?.bill_number}
             {order && <span className={`sf-badge ${order.status}`} style={{ marginLeft: 8 }}>{order.status}</span>}
           </span>
           <button className="sf-close-btn" onClick={() => onClose(false)}><X /></button>
         </div>
 
-        {loading ? (
+        {isLoading ? (
           <div style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>Loading…</div>
         ) : order ? (
           <>
@@ -144,6 +150,7 @@ function OrderDetailModal({ orderId, onClose }) {
                   ['Created', formatIST(order.created_at)],
                   ['Finalized', order.finalized_at ? formatIST(order.finalized_at) : '—'],
                   ['Grand Total', fmtINR(order.grand_total)],
+                  ...(order.edited_by ? [['Edited By', order.edited_by]] : []),
                 ].map(([label, val]) => (
                   <div key={label} style={{ background: '#f8fafc', borderRadius: 8, padding: '10px 14px' }}>
                     <div style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', color: '#94a3b8', marginBottom: 2 }}>{label}</div>
@@ -152,27 +159,27 @@ function OrderDetailModal({ orderId, onClose }) {
                 ))}
               </div>
 
-              <div className="sf-table-wrap">
-                <table className="sf-table">
-                  <thead>
-                    <tr>
-                      <th>#</th><th>Product</th><th>Code</th><th>Qty</th><th>Price</th><th>Discount</th><th>Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {items.map((it, idx) => (
-                      <tr key={it.id}>
-                        <td style={{ color: '#94a3b8' }}>{idx + 1}</td>
-                        <td style={{ fontWeight: 600 }}>{it.product_name}</td>
-                        <td style={{ color: '#64748b' }}>{it.product_code}</td>
-                        <td style={{ fontWeight: 700 }}>{it.quantity}</td>
-                        <td>{fmtINR(it.unit_price)}</td>
-                        <td style={{ color: '#16a34a' }}>{Number(it.discount_amount) > 0 ? `−${fmtINR(it.discount_amount * it.quantity)}` : '—'}</td>
-                        <td style={{ fontWeight: 700 }}>{fmtINR(it.line_total)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div style={{ border: '1px solid #e2e8f0', borderRadius: 8, overflow: 'hidden' }}>
+                {/* column header */}
+                <div style={{ display: 'flex', padding: '7px 12px', background: '#f8fafc', borderBottom: '1px solid #e2e8f0', fontSize: 11, fontWeight: 700, color: '#94a3b8', letterSpacing: '0.04em' }}>
+                  <span style={{ width: 22, flexShrink: 0 }}>#</span>
+                  <span style={{ flex: 1, minWidth: 0 }}>PRODUCT</span>
+                  <span style={{ width: 28, textAlign: 'center', flexShrink: 0 }}>QTY</span>
+                  <span style={{ width: 58, textAlign: 'right', flexShrink: 0 }}>PRICE</span>
+                  <span style={{ width: 66, textAlign: 'right', flexShrink: 0 }}>TOTAL</span>
+                </div>
+                {items.map((it, idx) => (
+                  <div key={it.id} style={{ display: 'flex', alignItems: 'center', padding: '9px 12px', borderBottom: idx < items.length - 1 ? '1px solid #f1f5f9' : 'none' }}>
+                    <span style={{ width: 22, flexShrink: 0, fontSize: 12, color: '#94a3b8' }}>{idx + 1}</span>
+                    <div style={{ flex: 1, minWidth: 0, paddingRight: 6 }}>
+                      <div title={it.product_name} style={{ fontSize: 13, fontWeight: 600, color: '#1e293b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{it.product_name}</div>
+                      <div style={{ fontSize: 11, color: '#94a3b8' }}>#{it.product_code}</div>
+                    </div>
+                    <span style={{ width: 28, textAlign: 'center', flexShrink: 0, fontSize: 13, fontWeight: 700 }}>{it.quantity}</span>
+                    <span style={{ width: 58, textAlign: 'right', flexShrink: 0, fontSize: 11, color: '#64748b' }}>{fmtINR(it.unit_price)}</span>
+                    <span style={{ width: 66, textAlign: 'right', flexShrink: 0, fontSize: 13, fontWeight: 700, color: '#1e293b' }}>{fmtINR(it.line_total)}</span>
+                  </div>
+                ))}
               </div>
 
               <div style={{ marginTop: 12, textAlign: 'right', display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-end' }}>
@@ -228,42 +235,64 @@ function OrderDetailModal({ orderId, onClose }) {
 function EditOrderModal({ orderId, onClose }) {
   const [order, setOrder] = useState(null);
   const [editItems, setEditItems] = useState([]);
-  const [products, setProducts] = useState([]);
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [discType, setDiscType] = useState('flat');
   const [discVal, setDiscVal] = useState('');
   const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [dataLoaded, setDataLoaded] = useState(false);
   const [saving, setSaving] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { data: orderEditData, isLoading: loadingOrder } = useQuery({
+    queryKey: ['billing-order-edit', orderId],
+    queryFn: async () => {
+      const [oRes, iRes] = await Promise.all([
+        supabase.from('billing_orders').select('*, edited_by, staff_users(name)').eq('id', orderId).single(),
+        supabase.from('billing_order_items').select('*').eq('order_id', orderId).order('created_at'),
+      ]);
+      return { order: oRes.data, items: iRes.data || [] };
+    },
+    staleTime: 30 * 1000,
+  });
 
   useEffect(() => {
-    const load = async () => {
-      const [oRes, iRes, pRes] = await Promise.all([
-        supabase.from('billing_orders').select('*, staff_users(name)').eq('id', orderId).single(),
-        supabase.from('billing_order_items').select('*').eq('order_id', orderId).order('created_at'),
-        supabase.from('products').select('id,product_code,name,category,price,discount_percentage,barcode,image_url,is_active').eq('is_active', true).order('product_code'),
-      ]);
-      if (oRes.data) {
-        setOrder({ ...oRes.data, staff_name: oRes.data.staff_users?.name });
-        setCustomerName(oRes.data.customer_name || '');
-        setCustomerPhone(oRes.data.customer_phone || '');
+    if (orderEditData && !dataLoaded) {
+      const { order: rawOrder, items } = orderEditData;
+      if (rawOrder) {
+        setOrder({ ...rawOrder, staff_name: rawOrder.staff_users?.name });
+        setCustomerName(rawOrder.customer_name || '');
+        setCustomerPhone(rawOrder.customer_phone || '');
+        setEditItems((items || []).map((i) => ({
+          _key: i.id,
+          product_id: i.product_id,
+          product_name: i.product_name,
+          product_code: i.product_code,
+          unit_price: Number(i.unit_price),
+          quantity: i.quantity,
+          discount_amount: Number(i.discount_amount || 0),
+          line_total: Number(i.line_total),
+        })));
+        setDataLoaded(true);
       }
-      setEditItems((iRes.data || []).map((i) => ({
-        _key: i.id,
-        product_id: i.product_id,
-        product_name: i.product_name,
-        product_code: i.product_code,
-        unit_price: Number(i.unit_price),
-        quantity: i.quantity,
-        discount_amount: Number(i.discount_amount || 0),
-        line_total: Number(i.line_total),
-      })));
-      setProducts(pRes.data || []);
-      setLoading(false);
-    };
-    load();
-  }, [orderId]);
+    }
+  }, [orderEditData, dataLoaded]);
+
+  const { data: productsData, isLoading: loadingProducts } = useQuery({
+    queryKey: ['admin-products-active'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('products')
+        .select('id,product_code,name,category,price,discount_percentage,barcode,image_url,is_active')
+        .eq('is_active', true)
+        .order('product_code');
+      return data || [];
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const products = productsData || [];
+  const isLoading = loadingOrder || loadingProducts;
 
   const addProduct = useCallback((p) => {
     setEditItems((prev) => {
@@ -328,6 +357,7 @@ function EditOrderModal({ orderId, onClose }) {
       );
       if (iErr) throw new Error(iErr.message);
       toast.success('Bill updated');
+      queryClient.invalidateQueries({ queryKey: ['admin-billing-orders'] });
       onClose(true);
     } catch (err) {
       toast.error('Save failed: ' + err.message);
@@ -347,7 +377,7 @@ function EditOrderModal({ orderId, onClose }) {
           <button className="sf-close-btn" onClick={() => onClose(false)}><X /></button>
         </div>
 
-        {loading ? (
+        {isLoading ? (
           <div style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>Loading…</div>
         ) : (
           <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -366,41 +396,41 @@ function EditOrderModal({ orderId, onClose }) {
 
             {/* Current items */}
             <div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>Bill Items</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>
+                Bill Items <span style={{ color: '#94a3b8', fontWeight: 400 }}>({editItems.length})</span>
+              </div>
               {editItems.length === 0 ? (
                 <div className="sf-empty" style={{ padding: '16px 0' }}><AlertCircle /><div className="sf-empty-desc">No items — add products below</div></div>
               ) : (
-                <div className="sf-table-wrap">
-                  <table className="sf-table">
-                    <thead><tr><th>Product</th><th>Code</th><th>Price</th><th>Qty</th><th>Total</th><th></th></tr></thead>
-                    <tbody>
-                      {editItems.map((item) => (
-                        <tr key={item._key}>
-                          <td style={{ fontWeight: 600 }}>{item.product_name}</td>
-                          <td style={{ fontSize: 12, color: '#64748b' }}>{item.product_code}</td>
-                          <td>{fmtINR(item.unit_price)}</td>
-                          <td>
-                            <div className="psc-qty-ctrl" style={{ width: 90 }}>
-                              <button className="psc-qty-btn" onClick={() => setItemQty(item._key, item.quantity - 1)}><Minus style={{ width: 10, height: 10 }} /></button>
-                              <input
-                                className="psc-qty-input" type="text" inputMode="numeric"
-                                value={item.quantity}
-                                onChange={(e) => setItemQty(item._key, e.target.value.replace(/\D/g, '') || '0')}
-                              />
-                              <button className="psc-qty-btn" onClick={() => setItemQty(item._key, item.quantity + 1)}><Plus style={{ width: 10, height: 10 }} /></button>
-                            </div>
-                          </td>
-                          <td style={{ fontWeight: 700 }}>{fmtINR(item.line_total)}</td>
-                          <td>
-                            <button className="sf-btn sf-btn-sm" style={{ color: '#dc2626', background: '#fee2e2', border: '1px solid #fca5a5' }}
-                              onClick={() => setEditItems((prev) => prev.filter((i) => i._key !== item._key))}>
-                              <Trash2 style={{ width: 13, height: 13 }} />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <div style={{ border: '1px solid #e2e8f0', borderRadius: 8, overflow: 'hidden' }}>
+                  {editItems.map((item, idx) => (
+                    <div key={item._key} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderBottom: idx < editItems.length - 1 ? '1px solid #f1f5f9' : 'none', background: '#fff' }}>
+                      {/* Name + code */}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div title={item.product_name} style={{ fontSize: 13, fontWeight: 600, color: '#1e293b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.product_name}</div>
+                        <div style={{ fontSize: 11, color: '#94a3b8' }}>#{item.product_code} · {fmtINR(item.unit_price)} ea.</div>
+                      </div>
+                      {/* Qty controls */}
+                      <div className="psc-qty-ctrl" style={{ width: 86, flexShrink: 0 }}>
+                        <button className="psc-qty-btn" onClick={() => setItemQty(item._key, item.quantity - 1)}><Minus style={{ width: 10, height: 10 }} /></button>
+                        <input
+                          className="psc-qty-input" type="text" inputMode="numeric"
+                          value={item.quantity}
+                          onChange={(e) => setItemQty(item._key, e.target.value.replace(/\D/g, '') || '0')}
+                        />
+                        <button className="psc-qty-btn" onClick={() => setItemQty(item._key, item.quantity + 1)}><Plus style={{ width: 10, height: 10 }} /></button>
+                      </div>
+                      {/* Total */}
+                      <div style={{ fontSize: 13, fontWeight: 700, color: '#1e293b', width: 70, textAlign: 'right', flexShrink: 0 }}>{fmtINR(item.line_total)}</div>
+                      {/* Delete */}
+                      <button
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#cbd5e1', padding: 4, borderRadius: 6, display: 'flex', flexShrink: 0 }}
+                        onClick={() => setEditItems((prev) => prev.filter((i) => i._key !== item._key))}
+                      >
+                        <Trash2 style={{ width: 15, height: 15 }} />
+                      </button>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
@@ -470,7 +500,7 @@ function EditOrderModal({ orderId, onClose }) {
 
         <div className="sf-modal-footer">
           <button className="sf-btn sf-btn-secondary" onClick={() => onClose(false)} disabled={saving}>Cancel</button>
-          <button className="sf-btn sf-btn-primary" onClick={handleSave} disabled={saving || loading}>
+          <button className="sf-btn sf-btn-primary" onClick={handleSave} disabled={saving || isLoading}>
             <Save style={{ width: 14, height: 14 }} />
             {saving ? 'Saving…' : 'Save Changes'}
           </button>
@@ -481,69 +511,74 @@ function EditOrderModal({ orderId, onClose }) {
 }
 
 export default function AdminBillingOrders() {
-  const [orders, setOrders] = useState([]);
-  const [staffList, setStaffList] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [staffFilter, setStaffFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [datePreset, setDatePreset] = useState('today');
   const [selYear, setSelYear] = useState(String(new Date().getFullYear()));
-  const [maxDataYear, setMaxDataYear] = useState(new Date().getFullYear());
   const [detailId, setDetailId] = useState(null);
-  const [editId, setEditId] = useState(null);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const { data: staffMeta } = useQuery({
+    queryKey: ['admin-billing-staff-meta'],
+    queryFn: async () => {
+      const [staffRes, maxYearRes] = await Promise.all([
+        supabase.from('staff_users').select('id, name').eq('role', 'staff').order('name'),
+        supabase.from('billing_orders').select('created_at').order('created_at', { ascending: false }).limit(1),
+      ]);
+      const staffList = staffRes.data || [];
+      let maxDataYear = new Date().getFullYear();
+      if (maxYearRes.data?.[0]) {
+        maxDataYear = new Date(maxYearRes.data[0].created_at).getFullYear();
+      }
+      return { staffList, maxDataYear };
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const staffList = staffMeta?.staffList || [];
+  const maxDataYear = staffMeta?.maxDataYear || new Date().getFullYear();
+
+  const { data: ordersRaw, isLoading } = useQuery({
+    queryKey: ['admin-billing-orders', datePreset, selYear, staffFilter, statusFilter, search],
+    queryFn: async () => {
+      let q = supabase
+        .from('billing_orders')
+        .select('id, bill_number, staff_id, grand_total, subtotal, discount_total, status, created_at, finalized_at, edited_by, staff_users(name)')
+        .order('created_at', { ascending: false });
+
+      const range = getDateRange(datePreset);
+      if (range) {
+        q = q.gte('created_at', range.start).lte('created_at', range.end);
+      } else {
+        const { start, end } = istYearRange(selYear);
+        q = q.gte('created_at', start).lte('created_at', end);
+      }
+      if (staffFilter) q = q.eq('staff_id', staffFilter);
+      if (statusFilter) q = q.eq('status', statusFilter);
+
+      const { data } = await q;
+      let rows = (data || []).map((o) => ({ ...o, staff_name: o.staff_users?.name || '—' }));
+
+      if (search.trim()) {
+        const s = search.toLowerCase();
+        rows = rows.filter((o) => o.bill_number?.toLowerCase().includes(s) || o.staff_name?.toLowerCase().includes(s));
+      }
+      return rows;
+    },
+    staleTime: 30 * 1000,
+  });
+
+  const orders = ordersRaw || [];
 
   const handleDelete = async (order) => {
     if (!window.confirm(`Delete bill ${order.bill_number}? This cannot be undone.`)) return;
     const { error } = await supabase.from('billing_orders').delete().eq('id', order.id);
     if (error) { toast.error(error.message); return; }
     toast.success(`Bill ${order.bill_number} deleted`);
-    setOrders((prev) => prev.filter((o) => o.id !== order.id));
+    queryClient.invalidateQueries({ queryKey: ['admin-billing-orders'] });
   };
-
-  const loadStaff = useCallback(async () => {
-    const [staffRes, maxYearRes] = await Promise.all([
-      supabase.from('staff_users').select('id, name').eq('role', 'staff').order('name'),
-      supabase.from('billing_orders').select('created_at').order('created_at', { ascending: false }).limit(1),
-    ]);
-    setStaffList(staffRes.data || []);
-    if (maxYearRes.data?.[0]) {
-      const y = new Date(maxYearRes.data[0].created_at).getFullYear();
-      setMaxDataYear(y);
-    }
-  }, []);
-
-  const loadOrders = useCallback(async () => {
-    setLoading(true);
-    let q = supabase
-      .from('billing_orders')
-      .select('id, bill_number, staff_id, grand_total, subtotal, discount_total, status, created_at, finalized_at, staff_users(name)')
-      .order('created_at', { ascending: false });
-
-    const range = getDateRange(datePreset);
-    if (range) {
-      q = q.gte('created_at', range.start).lte('created_at', range.end);
-    } else {
-      // 'all time' — apply year filter
-      const { start, end } = istYearRange(selYear);
-      q = q.gte('created_at', start).lte('created_at', end);
-    }
-    if (staffFilter) q = q.eq('staff_id', staffFilter);
-    if (statusFilter) q = q.eq('status', statusFilter);
-
-    const { data } = await q;
-    let rows = (data || []).map((o) => ({ ...o, staff_name: o.staff_users?.name || '—' }));
-
-    if (search.trim()) {
-      const s = search.toLowerCase();
-      rows = rows.filter((o) => o.bill_number?.toLowerCase().includes(s) || o.staff_name?.toLowerCase().includes(s));
-    }
-    setOrders(rows);
-    setLoading(false);
-  }, [datePreset, selYear, staffFilter, statusFilter, search]);
-
-  useEffect(() => { loadStaff(); }, [loadStaff]);
-  useEffect(() => { loadOrders(); }, [loadOrders]);
 
   const totalSales = orders
     .filter((o) => o.status === 'finalized')
@@ -607,7 +642,7 @@ export default function AdminBillingOrders() {
         </div>
       </div>
 
-      {loading ? (
+      {isLoading ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
           {[1,2,3,4,5,6].map(i => (
             <div key={i} className="sf-card" style={{ padding: '16px 18px' }}>
@@ -644,7 +679,14 @@ export default function AdminBillingOrders() {
               {/* Top: bill number + status */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                 <div style={{ fontWeight: 800, fontSize: 15, color: '#1e293b' }}>{o.bill_number}</div>
-                <span className={`sf-badge ${o.status}`}>{o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span>
+                <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                  {o.edited_by && (
+                    <span title={`Edited by ${o.edited_by}`} style={{ display: 'inline-flex', alignItems: 'center', padding: '2px 8px', borderRadius: 9999, fontSize: 10, fontWeight: 700, background: '#fef3c7', color: '#92400e', border: '1px solid #fde68a' }}>
+                      Edited · {o.edited_by}
+                    </span>
+                  )}
+                  <span className={`sf-badge ${o.status}`}>{o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span>
+                </div>
               </div>
 
               {/* Staff + date */}
@@ -675,7 +717,7 @@ export default function AdminBillingOrders() {
                   <Eye style={{ width: 13, height: 13 }} /> View
                 </button>
                 {o.status !== 'cancelled' && (
-                  <button className="sf-btn sf-btn-sm" style={{ flex: 1, justifyContent: 'center', background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe' }} onClick={() => setEditId(o.id)}>
+                  <button className="sf-btn sf-btn-sm" style={{ flex: 1, justifyContent: 'center', background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe' }} onClick={() => navigate(`/admin/billing-orders/${o.id}/edit`)}>
                     <Edit2 style={{ width: 13, height: 13 }} /> Edit
                   </button>
                 )}
@@ -693,20 +735,11 @@ export default function AdminBillingOrders() {
           orderId={detailId}
           onClose={(reload) => {
             setDetailId(null);
-            if (reload) loadOrders();
+            if (reload) queryClient.invalidateQueries({ queryKey: ['admin-billing-orders'] });
           }}
         />
       )}
 
-      {editId && (
-        <EditOrderModal
-          orderId={editId}
-          onClose={(reload) => {
-            setEditId(null);
-            if (reload) loadOrders();
-          }}
-        />
-      )}
     </div>
   );
 }

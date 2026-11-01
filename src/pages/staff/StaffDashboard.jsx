@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { Plus, ClipboardList, Package, TrendingUp, Receipt, Clock } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
@@ -7,18 +7,14 @@ import { formatIST, fmtINR, istDayStart, istDayEnd } from '../../utils/billingUt
 
 export default function StaffDashboard() {
   const { user, profile } = useAuth();
-  const [stats, setStats] = useState({ today: 0, todayTotal: 0, allTime: 0 });
-  const [recentOrders, setRecentOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!user) return;
-    const load = async () => {
+  const { data, isLoading } = useQuery({
+    queryKey: ['staff-dashboard', user?.id],
+    queryFn: async () => {
       const todayStart = istDayStart(0);
-      const todayEnd = istDayEnd(0);
+      const todayEnd   = istDayEnd(0);
 
       const [finalizedRes, recentRes] = await Promise.all([
-        // Fetch all finalized orders — used for today stats + all-time count
         supabase
           .from('billing_orders')
           .select('grand_total, finalized_at')
@@ -32,20 +28,22 @@ export default function StaffDashboard() {
           .limit(5),
       ]);
 
-      const finalized = finalizedRes.data || [];
+      const finalized   = finalizedRes.data || [];
       const todayOrders = finalized.filter(o => o.finalized_at >= todayStart && o.finalized_at <= todayEnd);
-      const todayTotal = todayOrders.reduce((s, o) => s + Number(o.grand_total || 0), 0);
+      return {
+        stats: {
+          today:      todayOrders.length,
+          todayTotal: todayOrders.reduce((s, o) => s + Number(o.grand_total || 0), 0),
+          allTime:    finalized.length,
+        },
+        recentOrders: recentRes.data || [],
+      };
+    },
+    enabled: !!user,
+  });
 
-      setStats({
-        today: todayOrders.length,
-        todayTotal,
-        allTime: finalized.length,
-      });
-      setRecentOrders(recentRes.data || []);
-      setLoading(false);
-    };
-    load();
-  }, [user]);
+  const stats        = data?.stats        || { today: 0, todayTotal: 0, allTime: 0 };
+  const recentOrders = data?.recentOrders || [];
 
   const statusColor = (s) => {
     if (s === 'finalized') return '#15803d';
@@ -69,7 +67,7 @@ export default function StaffDashboard() {
         <div className="sf-stat">
           <div className="sf-stat-icon blue"><TrendingUp /></div>
           <div>
-            <div className="sf-stat-val">{loading ? '—' : stats.today}</div>
+            <div className="sf-stat-val">{isLoading ? '—' : stats.today}</div>
             <div className="sf-stat-lbl">Bills Today</div>
           </div>
         </div>
@@ -77,7 +75,7 @@ export default function StaffDashboard() {
           <div className="sf-stat-icon green"><Receipt /></div>
           <div>
             <div className="sf-stat-val" style={{ fontSize: 18 }}>
-              {loading ? '—' : fmtINR(stats.todayTotal)}
+              {isLoading ? '—' : fmtINR(stats.todayTotal)}
             </div>
             <div className="sf-stat-lbl">Today's Sales</div>
           </div>
@@ -85,7 +83,7 @@ export default function StaffDashboard() {
         <div className="sf-stat">
           <div className="sf-stat-icon purple"><ClipboardList /></div>
           <div>
-            <div className="sf-stat-val">{loading ? '—' : stats.allTime}</div>
+            <div className="sf-stat-val">{isLoading ? '—' : stats.allTime}</div>
             <div className="sf-stat-lbl">Total Bills</div>
           </div>
         </div>
@@ -116,7 +114,7 @@ export default function StaffDashboard() {
           </Link>
         </div>
 
-        {loading ? (
+        {isLoading ? (
           <div style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>Loading…</div>
         ) : recentOrders.length === 0 ? (
           <div className="sf-empty">

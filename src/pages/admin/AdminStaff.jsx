@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   UserPlus, Search,
-  Lock, X, Eye, EyeOff, Users, Mail, ChevronRight, TrendingUp, Receipt, BarChart2, Link2,
+  Lock, X, Eye, EyeOff, Users, Mail, ChevronRight, Link2, ChevronDown, ChevronUp, Receipt,
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { supabase } from '../../lib/supabase';
@@ -419,33 +420,99 @@ const S = {
 
 // ── Detail Panel ────────────────────────────────────────────────────────────
 
+// Expandable bill row — fetches items on first expand
+function BillItemsRow({ bill }) {
+  const [open, setOpen] = useState(false);
+
+  const { data: items = [], isLoading } = useQuery({
+    queryKey: ['admin-staff-bill-items', bill.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('billing_order_items')
+        .select('id, product_name, product_code, quantity, unit_price, line_total')
+        .eq('order_id', bill.id)
+        .order('created_at');
+      return data || [];
+    },
+    enabled: open,
+  });
+
+  return (
+    <div style={{ borderBottom: '1px solid #e8e8e8' }}>
+      <div
+        onClick={() => setOpen((v) => !v)}
+        style={{ display: 'flex', alignItems: 'center', padding: '10px 14px', cursor: 'pointer', gap: 8, background: open ? '#fafafa' : '#fff' }}
+      >
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: '#111111' }}>{bill.bill_number}</div>
+          <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 1 }}>
+            {formatIST(bill.finalized_at || bill.created_at)}
+            {bill.customer_name && <span> · {bill.customer_name}</span>}
+          </div>
+        </div>
+        <div style={{ fontSize: 13, fontWeight: 700, color: '#111111', flexShrink: 0 }}>{fmtINR(bill.grand_total)}</div>
+        <span className={`sf-badge ${bill.status}`} style={{ flexShrink: 0 }}>{bill.status.charAt(0).toUpperCase() + bill.status.slice(1)}</span>
+        {open ? <ChevronUp size={14} color="#9ca3af" /> : <ChevronDown size={14} color="#9ca3af" />}
+      </div>
+      {open && (
+        <div style={{ background: '#f9fafb', padding: '8px 14px 12px' }}>
+          {isLoading ? (
+            <div style={{ fontSize: 12, color: '#9ca3af', padding: '8px 0' }}>Loading items…</div>
+          ) : items.length === 0 ? (
+            <div style={{ fontSize: 12, color: '#9ca3af' }}>No items</div>
+          ) : (
+            <div>
+              {/* header */}
+              <div style={{ display: 'flex', fontSize: 10, fontWeight: 700, color: '#9ca3af', letterSpacing: '0.04em', padding: '0 0 6px', borderBottom: '1px solid #e8e8e8', marginBottom: 4 }}>
+                <span style={{ flex: 1 }}>PRODUCT</span>
+                <span style={{ width: 28, textAlign: 'center', flexShrink: 0 }}>QTY</span>
+                <span style={{ width: 54, textAlign: 'right', flexShrink: 0 }}>PRICE</span>
+                <span style={{ width: 60, textAlign: 'right', flexShrink: 0 }}>TOTAL</span>
+              </div>
+              {items.map((it) => (
+                <div key={it.id} style={{ display: 'flex', alignItems: 'center', padding: '5px 0' }}>
+                  <div style={{ flex: 1, minWidth: 0, paddingRight: 6 }}>
+                    <div title={it.product_name} style={{ fontSize: 12, fontWeight: 600, color: '#1e293b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{it.product_name}</div>
+                    <div style={{ fontSize: 10, color: '#9ca3af' }}>#{it.product_code}</div>
+                  </div>
+                  <span style={{ width: 28, textAlign: 'center', flexShrink: 0, fontSize: 12, fontWeight: 700 }}>{it.quantity}</span>
+                  <span style={{ width: 54, textAlign: 'right', flexShrink: 0, fontSize: 11, color: '#64748b' }}>{fmtINR(it.unit_price)}</span>
+                  <span style={{ width: 60, textAlign: 'right', flexShrink: 0, fontSize: 12, fontWeight: 700, color: '#111111' }}>{fmtINR(it.line_total)}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function StaffDetailPanel({ member, onClose }) {
-  const [orders, setOrders]   = useState([]);
-  const [loading, setLoading] = useState(true);
   const [selYear, setSelYear] = useState(String(new Date().getFullYear()));
-  const [maxYear, setMaxYear] = useState(new Date().getFullYear());
 
-  useEffect(() => {
-    setLoading(true);
-    supabase
-      .from('billing_orders')
-      .select('grand_total, finalized_at, status')
-      .eq('staff_id', member.id)
-      .eq('status', 'finalized')
-      .then(({ data }) => {
-        const rows = data || [];
-        setOrders(rows);
-        if (rows.length > 0) {
-          const max = Math.max(...rows.map(o => new Date(o.finalized_at).getFullYear()));
-          setMaxYear(max);
-        }
-        setLoading(false);
-      });
-  }, [member.id]);
+  const { data: orders = [], isLoading } = useQuery({
+    queryKey: ['admin-staff-detail', member.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('billing_orders')
+        .select('id, bill_number, grand_total, subtotal, discount_total, finalized_at, created_at, status, customer_name')
+        .eq('staff_id', member.id)
+        .order('created_at', { ascending: false });
+      return data || [];
+    },
+    staleTime: 30 * 1000,
+  });
 
-  // Year-wise stats
+  const finalizedOrders = orders.filter(o => o.status === 'finalized');
+
+  const maxYear = finalizedOrders.length > 0
+    ? Math.max(...finalizedOrders.map(o => new Date(o.finalized_at).getFullYear()))
+    : new Date().getFullYear();
+
+  // Year-wise stats (finalized only)
   const yearMap = {};
-  for (const o of orders) {
+  for (const o of finalizedOrders) {
     const y = new Date(o.finalized_at).getFullYear();
     if (!yearMap[y]) yearMap[y] = { count: 0, total: 0 };
     yearMap[y].count++;
@@ -455,9 +522,9 @@ function StaffDetailPanel({ member, onClose }) {
     .map(([year, v]) => ({ year: Number(year), ...v }))
     .sort((a, b) => b.year - a.year);
 
-  // Monthly stats for selected year
+  // Monthly stats for selected year (finalized only)
   const monthStats = MONTH_NAMES.map((m, idx) => {
-    const mo = orders.filter(o => {
+    const mo = finalizedOrders.filter(o => {
       const d = new Date(o.finalized_at);
       return d.getFullYear() === Number(selYear) && d.getMonth() === idx;
     });
@@ -465,19 +532,17 @@ function StaffDetailPanel({ member, onClose }) {
   });
   const maxMonthTotal = Math.max(...monthStats.map(m => m.total), 1);
 
-  const totalOrders  = orders.length;
-  const totalRevenue = orders.reduce((s, o) => s + Number(o.grand_total || 0), 0);
+  // Bills for selected year (all statuses)
+  const billsForYear = orders.filter(o => {
+    const d = new Date(o.created_at);
+    return d.getFullYear() === Number(selYear);
+  });
+
+  const totalOrders  = finalizedOrders.length;
+  const totalRevenue = finalizedOrders.reduce((s, o) => s + Number(o.grand_total || 0), 0);
   const avgBill      = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
   const avatarColors = getAvatarColors(member.name);
-
-  // Y-axis labels for bar chart
-  const yLabels = [
-    fmtINR(maxMonthTotal),
-    fmtINR(maxMonthTotal * 0.66),
-    fmtINR(maxMonthTotal * 0.33),
-    '0',
-  ];
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 9998, display: 'flex', fontFamily: 'system-ui, "Inter", -apple-system, sans-serif' }}>
@@ -534,7 +599,7 @@ function StaffDetailPanel({ member, onClose }) {
             Joined {formatJoinDate(member.created_at)}
           </div>
 
-          {loading ? (
+          {isLoading ? (
             <div style={{ textAlign: 'center', padding: 40, color: '#9ca3af', fontSize: 13 }}>Loading stats…</div>
           ) : (
             <>
@@ -596,6 +661,20 @@ function StaffDetailPanel({ member, onClose }) {
                   </table>
                 </div>
               )}
+
+              {/* Bills list for selected year */}
+              <div style={{ background: '#fff', border: '1px solid #e8e8e8', borderRadius: 8, overflow: 'hidden' }}>
+                <div style={{ padding: '12px 14px', borderBottom: '1px solid #e8e8e8', display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Receipt size={14} color="#6b6b6b" />
+                  <span style={{ fontSize: 12, fontWeight: 600, color: '#6b6b6b' }}>Bills in {selYear}</span>
+                  <span style={{ marginLeft: 'auto', fontSize: 11, color: '#9ca3af' }}>{billsForYear.length} bill{billsForYear.length !== 1 ? 's' : ''}</span>
+                </div>
+                {billsForYear.length === 0 ? (
+                  <div style={{ padding: '20px 14px', textAlign: 'center', fontSize: 12, color: '#9ca3af' }}>No bills in {selYear}</div>
+                ) : (
+                  billsForYear.map((bill) => <BillItemsRow key={bill.id} bill={bill} />)
+                )}
+              </div>
 
               {/* Monthly breakdown */}
               <div style={{ background: '#fff', border: '1px solid #e8e8e8', borderRadius: 8, padding: '14px 16px' }}>
@@ -876,58 +955,60 @@ function Toggle({ checked, disabled, onChange }) {
 // ── Main page ───────────────────────────────────────────────────────────────
 
 export default function AdminStaff() {
-  const [staff, setStaff]             = useState([]);
-  const [loading, setLoading]         = useState(true);
   const [search, setSearch]           = useState('');
   const [showCreate, setShowCreate]   = useState(false);
   const [resetTarget, setResetTarget] = useState(null);
-  const [staffStats, setStaffStats]   = useState({});
   const [togglingId, setTogglingId]   = useState(null);
   const [selectedStaff, setSelectedStaff] = useState(null);
+  const queryClient = useQueryClient();
 
-  const loadStaff = useCallback(async () => {
-    setLoading(true);
-    const { data } = await supabase
-      .from('staff_users')
-      .select('*')
-      .order('created_at', { ascending: false });
-    setStaff(data || []);
+  const { data, isLoading } = useQuery({
+    queryKey: ['admin-staff'],
+    queryFn: async () => {
+      const todayStart = istDayStart(0);
+      const todayEnd   = istDayEnd(0);
 
-    const todayStart = istDayStart(0);
-    const todayEnd   = istDayEnd(0);
-    const { data: todayOrders } = await supabase
-      .from('billing_orders')
-      .select('staff_id, grand_total')
-      .eq('status', 'finalized')
-      .gte('finalized_at', todayStart)
-      .lte('finalized_at', todayEnd);
+      const [staffRes, todayOrdersRes] = await Promise.all([
+        supabase
+          .from('staff_users')
+          .select('*')
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('billing_orders')
+          .select('staff_id, grand_total')
+          .eq('status', 'finalized')
+          .gte('finalized_at', todayStart)
+          .lte('finalized_at', todayEnd),
+      ]);
 
-    const statsMap = {};
-    for (const o of (todayOrders || [])) {
-      if (!statsMap[o.staff_id]) statsMap[o.staff_id] = { count: 0, total: 0 };
-      statsMap[o.staff_id].count++;
-      statsMap[o.staff_id].total += Number(o.grand_total || 0);
-    }
-    setStaffStats(statsMap);
-    setLoading(false);
-  }, []);
+      const staff = staffRes.data || [];
+      const statsMap = {};
+      for (const o of (todayOrdersRes.data || [])) {
+        if (!statsMap[o.staff_id]) statsMap[o.staff_id] = { count: 0, total: 0 };
+        statsMap[o.staff_id].count++;
+        statsMap[o.staff_id].total += Number(o.grand_total || 0);
+      }
+      return { staff, staffStats: statsMap };
+    },
+    staleTime: 30 * 1000,
+  });
 
-  useEffect(() => { loadStaff(); }, [loadStaff]);
+  const staff = data?.staff || [];
+  const staffStats = data?.staffStats || {};
 
   const toggleActive = async (member) => {
     if (togglingId) return;
     setTogglingId(member.id);
     const newVal = !member.is_active;
-    setStaff(prev => prev.map(s => s.id === member.id ? { ...s, is_active: newVal } : s));
     const { error } = await supabase
       .from('staff_users')
       .update({ is_active: newVal })
       .eq('id', member.id);
     if (error) {
-      setStaff(prev => prev.map(s => s.id === member.id ? { ...s, is_active: member.is_active } : s));
       toast.error(error.message);
     } else {
       toast.success(`${member.name} ${newVal ? 'activated' : 'deactivated'}`);
+      queryClient.invalidateQueries({ queryKey: ['admin-staff'] });
     }
     setTogglingId(null);
   };
@@ -978,7 +1059,7 @@ export default function AdminStaff() {
       </div>
 
       {/* Card grid */}
-      {loading ? (
+      {isLoading ? (
         <div style={S.grid}>
           {[1,2,3,4].map(i => (
             <div key={i} style={{ ...S.card, cursor: 'default' }}>
@@ -1074,7 +1155,7 @@ export default function AdminStaff() {
       {showCreate && (
         <CreateStaffModal
           onClose={() => setShowCreate(false)}
-          onCreated={loadStaff}
+          onCreated={() => queryClient.invalidateQueries({ queryKey: ['admin-staff'] })}
         />
       )}
 

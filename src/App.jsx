@@ -1,8 +1,20 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, lazy, Suspense } from 'react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ShopProvider } from './context/ShopContext'
 import { AuthProvider } from './context/AuthContext'
 import { Toaster } from 'react-hot-toast'
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 0,               // always stale → every mount triggers a background refetch, cached data shows instantly (no loader)
+      gcTime: 5 * 60 * 1000,      // keep unused cache for 5 min so navigation feels instant
+      retry: 1,
+      refetchOnWindowFocus: true, // silently refetch when tab regains focus
+    },
+  },
+})
 import pricelistImg from './assets/pricelist.png'
 
 // ── Public pages (eager — user always lands here) ─────
@@ -27,6 +39,7 @@ const AdminAnnouncement  = lazy(() => import('./pages/Admin').then(m => ({ defau
 const AdminSettings      = lazy(() => import('./pages/Admin').then(m => ({ default: m.AdminSettings })))
 const AdminStaff         = lazy(() => import('./pages/admin/AdminStaff'))
 const AdminBillingOrders = lazy(() => import('./pages/admin/AdminBillingOrders'))
+const AdminBillEdit      = lazy(() => import('./pages/admin/AdminBillEdit'))
 const AdminBarcodes      = lazy(() => import('./pages/admin/AdminBarcodes'))
 const AdminReports       = lazy(() => import('./pages/admin/AdminReports'))
 
@@ -39,6 +52,15 @@ const StaffOrders     = lazy(() => import('./pages/staff/StaffOrders'))
 const StaffOrderDetail = lazy(() => import('./pages/staff/StaffOrderDetail'))
 const StaffProducts   = lazy(() => import('./pages/staff/StaffProducts'))
 const StaffProfile    = lazy(() => import('./pages/staff/StaffProfile'))
+
+// Minimal page-level loader shown only on first chunk download (subsequent navigations use cache)
+function PageLoader() {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+      <div style={{ width: 32, height: 32, border: '3px solid #e2e8f0', borderTopColor: '#1d4ed8', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+    </div>
+  )
+}
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -72,56 +94,57 @@ function PricelistFAB() {
 
 export default function App() {
   return (
+    <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <AuthProvider>
         <ShopProvider>
           <ScrollToTop />
           <PricelistFAB />
           <Toaster position="top-center" containerStyle={{ zIndex: 1000000 }} />
-          <Suspense fallback={null}>
-            <Routes>
-              {/* ── Public storefront ── */}
-              <Route path="/"             element={<Home />} />
-              <Route path="/cart"         element={<Cart />} />
-              <Route path="/wishlist"     element={<Wishlist />} />
-              <Route path="/about"        element={<About />} />
-              <Route path="/safety"       element={<Safety />} />
-              <Route path="/products"     element={<Products />} />
-              <Route path="/products/:id" element={<ProductDetail />} />
-              <Route path="/contact"      element={<Contact />} />
+          <Routes>
+            {/* ── Public storefront (eager — no Suspense needed) ── */}
+            <Route path="/"             element={<Home />} />
+            <Route path="/cart"         element={<Cart />} />
+            <Route path="/wishlist"     element={<Wishlist />} />
+            <Route path="/about"        element={<About />} />
+            <Route path="/safety"       element={<Safety />} />
+            <Route path="/products"     element={<Products />} />
+            <Route path="/products/:id" element={<ProductDetail />} />
+            <Route path="/contact"      element={<Contact />} />
 
-              {/* ── Admin ── */}
-              <Route path="/admin/login"  element={<AdminLogin />} />
-              <Route path="/admin"        element={<AdminLayout />}>
-                <Route index                   element={<Navigate to="/admin/dashboard" replace />} />
-                <Route path="dashboard"        element={<AdminDashboard />} />
-                <Route path="orders"           element={<AdminOrders />} />
-                <Route path="categories"       element={<AdminCategories />} />
-                <Route path="products"         element={<AdminProducts />} />
-                <Route path="banners"          element={<AdminHeroBanners />} />
-                <Route path="announcement"     element={<AdminAnnouncement />} />
-                <Route path="settings"         element={<AdminSettings />} />
-                <Route path="staff"            element={<AdminStaff />} />
-                <Route path="billing-orders"   element={<AdminBillingOrders />} />
-                <Route path="barcodes"         element={<AdminBarcodes />} />
-                <Route path="reports"          element={<AdminReports />} />
-              </Route>
+            {/* ── Admin (lazy — one chunk download on first visit, cached after) ── */}
+            <Route path="/admin/login"  element={<Suspense fallback={<PageLoader />}><AdminLogin /></Suspense>} />
+            <Route path="/admin"        element={<Suspense fallback={<PageLoader />}><AdminLayout /></Suspense>}>
+              <Route index                   element={<Navigate to="/admin/dashboard" replace />} />
+              <Route path="dashboard"        element={<Suspense fallback={<PageLoader />}><AdminDashboard /></Suspense>} />
+              <Route path="orders"           element={<Suspense fallback={<PageLoader />}><AdminOrders /></Suspense>} />
+              <Route path="categories"       element={<Suspense fallback={<PageLoader />}><AdminCategories /></Suspense>} />
+              <Route path="products"         element={<Suspense fallback={<PageLoader />}><AdminProducts /></Suspense>} />
+              <Route path="banners"          element={<Suspense fallback={<PageLoader />}><AdminHeroBanners /></Suspense>} />
+              <Route path="announcement"     element={<Suspense fallback={<PageLoader />}><AdminAnnouncement /></Suspense>} />
+              <Route path="settings"         element={<Suspense fallback={<PageLoader />}><AdminSettings /></Suspense>} />
+              <Route path="staff"            element={<Suspense fallback={<PageLoader />}><AdminStaff /></Suspense>} />
+              <Route path="billing-orders"         element={<Suspense fallback={<PageLoader />}><AdminBillingOrders /></Suspense>} />
+              <Route path="billing-orders/:id/edit" element={<Suspense fallback={<PageLoader />}><AdminBillEdit /></Suspense>} />
+              <Route path="barcodes"         element={<Suspense fallback={<PageLoader />}><AdminBarcodes /></Suspense>} />
+              <Route path="reports"          element={<Suspense fallback={<PageLoader />}><AdminReports /></Suspense>} />
+            </Route>
 
-              {/* ── Staff portal ── */}
-              <Route path="/staff/login"  element={<StaffLogin />} />
-              <Route path="/staff"        element={<StaffLayout />}>
-                <Route index                   element={<Navigate to="/staff/dashboard" replace />} />
-                <Route path="dashboard"        element={<StaffDashboard />} />
-                <Route path="new-bill"         element={<StaffNewBill />} />
-                <Route path="products"         element={<StaffProducts />} />
-                <Route path="orders"           element={<StaffOrders />} />
-                <Route path="orders/:id"       element={<StaffOrderDetail />} />
-                <Route path="profile"          element={<StaffProfile />} />
-              </Route>
-            </Routes>
-          </Suspense>
+            {/* ── Staff portal (lazy — separate chunk from admin) ── */}
+            <Route path="/staff/login"  element={<Suspense fallback={<PageLoader />}><StaffLogin /></Suspense>} />
+            <Route path="/staff"        element={<Suspense fallback={<PageLoader />}><StaffLayout /></Suspense>}>
+              <Route index                   element={<Navigate to="/staff/dashboard" replace />} />
+              <Route path="dashboard"        element={<Suspense fallback={<PageLoader />}><StaffDashboard /></Suspense>} />
+              <Route path="new-bill"         element={<Suspense fallback={<PageLoader />}><StaffNewBill /></Suspense>} />
+              <Route path="products"         element={<Suspense fallback={<PageLoader />}><StaffProducts /></Suspense>} />
+              <Route path="orders"           element={<Suspense fallback={<PageLoader />}><StaffOrders /></Suspense>} />
+              <Route path="orders/:id"       element={<Suspense fallback={<PageLoader />}><StaffOrderDetail /></Suspense>} />
+              <Route path="profile"          element={<Suspense fallback={<PageLoader />}><StaffProfile /></Suspense>} />
+            </Route>
+          </Routes>
         </ShopProvider>
       </AuthProvider>
     </BrowserRouter>
+    </QueryClientProvider>
   )
 }
