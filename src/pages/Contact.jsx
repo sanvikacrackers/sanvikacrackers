@@ -214,8 +214,10 @@ export default function Contact() {
                       required
                       type="tel"
                       value={form.phone}
-                      onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
-                      placeholder="+91 XXXXX XXXXX"
+                      onChange={e => setForm(f => ({ ...f, phone: e.target.value.replace(/\D/g, '').slice(0, 10) }))}
+                      placeholder="10-digit mobile number"
+                      maxLength={10}
+                      inputMode="numeric"
                       style={{
                         width: '100%', boxSizing: 'border-box', padding: '10px 14px',
                         border: '1px solid #e2e8f0', borderRadius: 10,
