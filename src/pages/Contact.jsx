@@ -14,7 +14,7 @@ import '../App.css'
 export default function Contact() {
   useSEO({
     title: 'Contact Sanvika Crackers | Sivakasi – 90477 78475',
-    description: 'Contact Sanvika Crackers at 90477 78475. Shop at 1/204-6, NH-07, Chatram Road, Vachakkarapatti, Virudhunagar District. WhatsApp order enquiries welcome.',
+    description: 'Contact Sanvika Crackers at 90477 78475. WhatsApp order enquiries welcome.',
     url: '/contact',
   })
   const { siteSettings } = useShop()
@@ -38,7 +38,7 @@ export default function Contact() {
       title: 'Address',
       content: (
         <p style={{ margin: 0, fontSize: '0.93rem', color: '#475569', lineHeight: 1.7 }}>
-          SANVIKA CRACKERS<br />1/204-6, NH-07, Chatram Road,<br />Vachakkarapatti, RR Nagar,<br />Virudhunagar District - 626204
+          SANVIKA CRACKERS<br />Sivakasi, Tamil Nadu
         </p>
       ),
     },
@@ -157,7 +157,7 @@ export default function Contact() {
               <div style={{ flex: 1 }}>
                 <p style={{ margin: '0 0 2px', fontWeight: 700, color: '#0f172a', fontSize: '0.9rem' }}>Sanvika Crackers</p>
                 <p style={{ margin: '0 0 10px', color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5 }}>
-                  1/204-6, NH-07, Chatram Road,<br />Vachakkarapatti, RR Nagar,<br />Virudhunagar District - 626204
+                  Sivakasi, Tamil Nadu
                 </p>
                 <a
                   href="https://www.google.com/maps/dir/?api=1&destination=9.4672358,77.9356098"

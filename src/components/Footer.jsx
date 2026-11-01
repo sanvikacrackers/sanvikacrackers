@@ -19,7 +19,7 @@ export default function Footer() {
                 </li>
                 <li className="flex gap-2">
                   <MapPin size={14} className="mt-0.5 flex-shrink-0 text-[#B4965A]" />
-                  <span>1/204-6, NH-07, Chatram Road, Vachakkarapatti, RR Nagar, Virudhunagar District - 626204</span>
+                  <span>Sivakasi, Tamil Nadu</span>
                 </li>
                 <li className="flex gap-2">
                   <Mail size={14} className="mt-0.5 flex-shrink-0 text-[#B4965A]" />
