@@ -15,6 +15,7 @@ import {
 import '../Admin.css';
 import LOGO from '../assets/sanvikacrackerlogo.png';
 import { supabase } from '../lib/supabase';
+import { uploadImage, deleteImage } from '../lib/r2';
 
 /* ── Supabase ─────────────────────────────────────── */
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://zjjlqewqzhnyfhjqsbwu.supabase.co';
@@ -52,88 +53,6 @@ export const api = async (path, options = {}) => {
 /* ── Helpers ──────────────────────────────────────── */
 export const fmt = (n) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(n);
 export const fmtDate = (d) => new Date(d).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-
-/* ── Cloudinary Image Deletion ────────────────────── */
-export function extractCloudinaryPublicId(url) {
-  if (!url || typeof url !== 'string' || !url.includes('res.cloudinary.com')) return null;
-  try {
-    const parts = url.split('/upload/');
-    if (parts.length < 2) return null;
-    const afterUpload = parts[1];
-    const pathSegments = afterUpload.split('/');
-    if (pathSegments[0].startsWith('v') && !isNaN(pathSegments[0].slice(1))) {
-      pathSegments.shift();
-    }
-    const fullPathWithExt = pathSegments.join('/');
-    const lastDotIdx = fullPathWithExt.lastIndexOf('.');
-    return lastDotIdx !== -1 ? fullPathWithExt.slice(0, lastDotIdx) : fullPathWithExt;
-  } catch (e) {
-    return null;
-  }
-}
-
-export async function generateCloudinarySignature(paramsToSign, apiSecret) {
-  const sortedKeys = Object.keys(paramsToSign).sort();
-  const serialized = sortedKeys.map(k => `${k}=${paramsToSign[k]}`).join('&') + apiSecret;
-  const msgBuffer = new TextEncoder().encode(serialized);
-  const hashBuffer = await crypto.subtle.digest('SHA-1', msgBuffer);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-export async function deleteFromCloudinary(url) {
-  const publicId = extractCloudinaryPublicId(url);
-  if (!publicId) return false;
-
-  const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'lqcqo41j';
-  const apiKey    = import.meta.env.VITE_CLOUDINARY_API_KEY    || '496563915519741';
-  const apiSecret = import.meta.env.VITE_CLOUDINARY_API_SECRET || 'dO7qvEG3EEDLIghEWRXqHoQhHX8';
-
-  if (!cloudName || !apiKey || !apiSecret) return false;
-
-  try {
-    const timestamp = Math.floor(Date.now() / 1000);
-    const signature = await generateCloudinarySignature({ public_id: publicId, timestamp }, apiSecret);
-
-    const formData = new FormData();
-    formData.append('public_id', publicId);
-    formData.append('api_key', apiKey);
-    formData.append('timestamp', timestamp);
-    formData.append('signature', signature);
-
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`, {
-      method: 'POST',
-      body: formData,
-    });
-
-    const data = await res.json();
-    console.log('Cloudinary Destroy Result:', data);
-    return data.result === 'ok';
-  } catch (err) {
-    console.warn('Cloudinary delete notice:', err);
-    return false;
-  }
-}
-
-export async function uploadToCloudinarySigned(file) {
-  const cloudName    = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME  || 'lqcqo41j';
-  const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'ml_default';
-
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('upload_preset', uploadPreset);
-
-  const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-    method: 'POST',
-    body: formData,
-  });
-
-  const data = await res.json();
-  if (data.secure_url) {
-    return data.secure_url;
-  }
-  throw new Error(data.error?.message || 'Cloudinary upload failed');
-}
 
 export const STATUS_CONFIG = {
   'Payment Pending':   { color: '#f59e0b', bg: 'rgba(245,158,11,0.12)',  icon: Clock },
@@ -661,7 +580,7 @@ export function AdminLayout() {
   };
 
   const deleteCategory = async (catObj) => {
-    if (catObj.image_url) deleteFromCloudinary(catObj.image_url);
+    if (catObj.image_url) deleteImage(catObj.image_url);
     try {
       await api(`/categories?id=eq.${catObj.id}`, { method: 'DELETE' });
       await fetchAll();
@@ -769,7 +688,7 @@ export function AdminLayout() {
 }
 
 /* ══════════════════════════════════════════════════
-   CATEGORY MODAL (Add & Edit Category with Cloudinary Image Upload)
+   CATEGORY MODAL (Add & Edit Category with Image Upload)
 ══════════════════════════════════════════════════ */
 function CategoryModal({ category, onClose, onSave }) {
   const isEdit = !!category;
@@ -781,36 +700,12 @@ function CategoryModal({ category, onClose, onSave }) {
 
   const uploadFile = async (file) => {
     if (!file) return;
-
-    if (imageUrl) {
-      deleteFromCloudinary(imageUrl);
-    }
-
+    if (imageUrl) deleteImage(imageUrl);
     setUploading(true);
     setErr('');
-
-    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'lqcqo41j';
-    const preset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'ml_default';
-
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', preset);
-
     try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error?.message || 'Failed to upload image to Cloudinary');
-      }
-
-      const data = await res.json();
-      if (data.secure_url) {
-        setImageUrl(data.secure_url);
-      }
+      const url = await uploadImage(file);
+      setImageUrl(url);
     } catch (err) {
       setErr('Image upload failed: ' + err.message);
     } finally {
@@ -858,7 +753,7 @@ function CategoryModal({ category, onClose, onSave }) {
             />
           </div>
           <div className="adm-form-group">
-            <label className="adm-form-lbl">Category Banner Image (Cloudinary Upload)</label>
+            <label className="adm-form-lbl">Category Banner Image</label>
             {imageUrl ? (
               <div className="adm-img-preview-box">
                 <img src={imageUrl} alt="Category" className="adm-img-preview" style={{width:90,height:65,objectFit:'cover',borderRadius:8}} />
@@ -874,9 +769,7 @@ function CategoryModal({ category, onClose, onSave }) {
                       type="button"
                       className="adm-btn adm-btn-danger adm-btn-sm"
                       onClick={() => {
-                        if (imageUrl) {
-                          deleteFromCloudinary(imageUrl);
-                        }
+                        if (imageUrl) deleteImage(imageUrl);
                         setImageUrl('');
                         if (category?.id) {
                           onSave({
@@ -1229,41 +1122,17 @@ function ProductModal({ product, categories, onClose, onSaved }) {
 
   const uploadSlotFile = async (file, slotIdx) => {
     if (!file) return;
-
     const oldUrl = images[slotIdx];
-    if (oldUrl) {
-      deleteFromCloudinary(oldUrl);
-    }
-
+    if (oldUrl) deleteImage(oldUrl);
     setUploadingIdx(slotIdx);
     setErr('');
-
-    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'lqcqo41j';
-    const preset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'ml_default';
-
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', preset);
-
     try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-        method: 'POST',
-        body: formData,
+      const url = await uploadImage(file);
+      setImages(prev => {
+        const next = [...prev];
+        next[slotIdx] = url;
+        return next;
       });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error?.message || 'Failed to upload image to Cloudinary');
-      }
-
-      const data = await res.json();
-      if (data.secure_url) {
-        setImages(prev => {
-          const next = [...prev];
-          next[slotIdx] = data.secure_url;
-          return next;
-        });
-      }
     } catch (err) {
       setErr('Image upload failed: ' + err.message);
     } finally {
@@ -1278,9 +1147,7 @@ function ProductModal({ product, categories, onClose, onSaved }) {
 
   const removeSlotImage = async (slotIdx) => {
     const oldUrl = images[slotIdx];
-    if (oldUrl) {
-      deleteFromCloudinary(oldUrl);
-    }
+    if (oldUrl) deleteImage(oldUrl);
     const nextImages = [...images];
     nextImages[slotIdx] = '';
     setImages(nextImages);
@@ -1609,7 +1476,7 @@ function ProductModal({ product, categories, onClose, onSaved }) {
                       {uploadingIdx === 0 ? (
                         <div className="adm-dropzone-content">
                           <RefreshCw className="spinning" style={{width:22,height:22,color:'#ff6b35'}} />
-                          <span style={{fontSize:13,fontWeight:600,color:'#ff6b35'}}>Uploading Main Image to Cloudinary...</span>
+                          <span style={{fontSize:13,fontWeight:600,color:'#ff6b35'}}>Uploading Main Image...</span>
                         </div>
                       ) : (
                         <div className="adm-dropzone-content">
@@ -1746,12 +1613,12 @@ export function AdminProducts() {
         try {
           const arr = JSON.parse(imgUrlStr);
           if (Array.isArray(arr)) {
-            arr.forEach(url => deleteFromCloudinary(url));
+            arr.forEach(url => deleteImage(url));
           } else {
-            deleteFromCloudinary(imgUrlStr);
+            deleteImage(imgUrlStr);
           }
         } catch(e) {
-          deleteFromCloudinary(imgUrlStr);
+          deleteImage(imgUrlStr);
         }
       }
 
@@ -2252,12 +2119,10 @@ export function AdminHeroBanners() {
     if (!file) return;
     setUploading(true);
     try {
-      const url = await uploadToCloudinarySigned(file);
-      if (url) {
-        setImageUrl(url);
-      }
+      const url = await uploadImage(file);
+      if (url) setImageUrl(url);
     } catch (err) {
-      console.error('Cloudinary upload error:', err);
+      console.error('R2 upload error:', err);
       alert('Upload failed: ' + (err.message || 'Could not upload image'));
     } finally {
       setUploading(false);
@@ -2294,9 +2159,8 @@ export function AdminHeroBanners() {
 
     try {
       if (editingBanner) {
-        // Delete old image from Cloudinary if it changed
         if (editingBanner.image_url && editingBanner.image_url !== imageUrl.trim()) {
-          deleteFromCloudinary(editingBanner.image_url);
+          deleteImage(editingBanner.image_url);
         }
         try {
           await api(`/hero_banners?id=eq.${editingBanner.id}`, {
@@ -2345,7 +2209,7 @@ export function AdminHeroBanners() {
 
     try {
       if (banner.image_url) {
-        deleteFromCloudinary(banner.image_url);
+        deleteImage(banner.image_url);
       }
       try {
         await api(`/hero_banners?id=eq.${banner.id}`, { method: 'DELETE' });
