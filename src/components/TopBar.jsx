@@ -13,7 +13,7 @@ export default function TopBar() {
       )}
       <span style={{ color: '#ffffff' }}>
         Browse our products and send enquiry via WhatsApp.&nbsp;
-        <strong style={{ color: '#ffffff' }}>Not a direct sale portal.</strong>
+        <strong style={{ color: '#ffffff' }}>This is Not a direct sale portal.</strong>
       </span>
       <span style={{ color: 'rgba(241,233,220,0.4)', margin: '0 20px' }}>·</span>
     </span>
