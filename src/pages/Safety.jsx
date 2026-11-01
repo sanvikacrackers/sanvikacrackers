@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { Check, X } from 'lucide-react'
-import { useShop } from '../context/ShopContext'
 import Footer from '../components/Footer'
 import TopBar from '../components/TopBar'
 import Header from '../components/Header'
@@ -34,8 +33,6 @@ export default function Safety() {
     description: 'Important safety tips for using fireworks and crackers. Follow these guidelines to enjoy a safe and happy Diwali with Sanvika Crackers.',
     url: '/safety',
   })
-
-  const { } = useShop()
 
   return (
     <div className="theme-color4 light ltr" style={{ minHeight: '100vh', background: '#ffffff' }}>

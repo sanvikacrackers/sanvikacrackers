@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   Heart, Clock, ThumbsUp, Tag, Package, ChevronRight, ChevronLeft,
@@ -11,8 +11,6 @@ import Header from '../components/Header'
 import useSEO from '../utils/useSEO'
 import '../App.css'
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 
 
@@ -179,22 +177,10 @@ export default function Home() {
     url: '/',
   })
 
-  const { products, loading, siteSettings } = useShop()
+  const { products, loading, siteSettings, heroBanners: banners, heroBannersLoading: bannerLoading } = useShop()
 
-  // ── Hero banners from Supabase ─────────────────────────────────────────────
-  const [banners, setBanners] = useState([])
-  const [bannerLoading, setBannerLoading] = useState(true)
   const [activeSlide, setActiveSlide] = useState(0)
   const slideTimer = useRef(null)
-
-  useEffect(() => {
-    fetch(`${SUPABASE_URL}/rest/v1/hero_banners?select=*&order=sort_order.asc,created_at.asc`, {
-      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
-    })
-      .then(r => r.json())
-      .then(data => { if (Array.isArray(data) && data.length) setBanners(data) })
-      .finally(() => setBannerLoading(false))
-  }, [])
 
   useEffect(() => {
     if (banners.length < 2) return
@@ -204,10 +190,10 @@ export default function Home() {
     return () => clearInterval(slideTimer.current)
   }, [banners.length])
 
-  function goSlide(n) {
+  const goSlide = useCallback((n) => {
     clearInterval(slideTimer.current)
-    setActiveSlide((activeSlide + n + banners.length) % banners.length)
-  }
+    setActiveSlide(s => (s + n + banners.length) % banners.length)
+  }, [banners.length])
 
   // Group products by category, preserving PDF order (first product_code seen per category)
   const categoryOrder = []

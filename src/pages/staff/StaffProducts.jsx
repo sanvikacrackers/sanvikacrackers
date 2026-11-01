@@ -1,23 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Plus, Package } from 'lucide-react';
-import { supabase } from '../../lib/supabase';
+import { useShop } from '../../context/ShopContext';
 import { fmtINR } from '../../utils/billingUtils';
 
 export default function StaffProducts() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { products: allProducts, loading } = useShop();
+  const products = allProducts.filter(p => p.is_active === true);
+
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
-
-  useEffect(() => {
-    supabase
-      .from('products')
-      .select('id, product_code, name, category, price, mrp, discount_percentage, barcode, image_url, is_active')
-      .eq('is_active', true)
-      .order('product_code')
-      .then(({ data }) => { setProducts(data || []); setLoading(false); });
-  }, []);
 
   const categories = [...new Set(products.map((p) => p.category))].sort();
 

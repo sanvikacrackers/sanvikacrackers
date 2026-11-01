@@ -17,17 +17,11 @@ export default function StaffDashboard() {
       const todayStart = istDayStart(0);
       const todayEnd = istDayEnd(0);
 
-      const [todayRes, allRes, recentRes] = await Promise.all([
+      const [finalizedRes, recentRes] = await Promise.all([
+        // Fetch all finalized orders — used for today stats + all-time count
         supabase
           .from('billing_orders')
-          .select('grand_total')
-          .eq('staff_id', user.id)
-          .eq('status', 'finalized')
-          .gte('finalized_at', todayStart)
-          .lte('finalized_at', todayEnd),
-        supabase
-          .from('billing_orders')
-          .select('id', { count: 'exact', head: true })
+          .select('grand_total, finalized_at')
           .eq('staff_id', user.id)
           .eq('status', 'finalized'),
         supabase
@@ -38,13 +32,14 @@ export default function StaffDashboard() {
           .limit(5),
       ]);
 
-      const todayOrders = todayRes.data || [];
+      const finalized = finalizedRes.data || [];
+      const todayOrders = finalized.filter(o => o.finalized_at >= todayStart && o.finalized_at <= todayEnd);
       const todayTotal = todayOrders.reduce((s, o) => s + Number(o.grand_total || 0), 0);
 
       setStats({
         today: todayOrders.length,
         todayTotal,
-        allTime: allRes.count || 0,
+        allTime: finalized.length,
       });
       setRecentOrders(recentRes.data || []);
       setLoading(false);

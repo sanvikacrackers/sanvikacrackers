@@ -6,6 +6,7 @@ import {
 import { toast } from 'react-hot-toast';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
+import { useShop } from '../../context/ShopContext';
 import { calcBillTotals, calcLineTotal, fmtINR, formatIST } from '../../utils/billingUtils';
 
 const DRAFT_KEY = (uid) => `sanvika_staff_draft_${uid}`;
@@ -412,8 +413,9 @@ ${order.customer_name || order.customer_phone ? `<div class="cust">Customer: <b>
 // ── Main Component ─────────────────────────────────────
 export default function StaffNewBill() {
   const { user } = useAuth();
+  const { products: allProducts } = useShop();
+  const products = allProducts.filter(p => p.is_active === true);
 
-  const [products, setProducts] = useState([]);
   const [billItems, setBillItems] = useState([]);
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
@@ -421,16 +423,6 @@ export default function StaffNewBill() {
   const [showFinalize, setShowFinalize] = useState(false);
   const [finalizing, setFinalizing] = useState(false);
   const [lastBill, setLastBill] = useState(null);
-
-  // Load products once
-  useEffect(() => {
-    supabase
-      .from('products')
-      .select('id, product_code, name, category, price, mrp, discount_percentage, barcode, image_url, is_active')
-      .eq('is_active', true)
-      .order('product_code')
-      .then(({ data }) => setProducts(data || []));
-  }, []);
 
   // Restore draft from localStorage
   useEffect(() => {

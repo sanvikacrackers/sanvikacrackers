@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { Phone, MapPin, Mail } from 'lucide-react'
-import { useShop } from '../context/ShopContext'
 import Footer from '../components/Footer'
 import TopBar from '../components/TopBar'
 import Header from '../components/Header'
@@ -16,8 +15,6 @@ export default function About() {
     description: 'Learn about Sanvika Crackers, a trusted crackers brand from Sivakasi, Tamil Nadu. Quality fireworks, 100% legal & licensed, safe packaging and delivery.',
     url: '/about',
   })
-
-  const { } = useShop()
 
   return (
     <div className="theme-color4 light ltr" style={{ minHeight: '100vh', background: '#ffffff' }}>
