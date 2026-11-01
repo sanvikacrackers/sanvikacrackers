@@ -114,7 +114,7 @@ export default function Cart() {
     // Generate and download PDF with the order ID
     await generateOrderPDF({ form, cartItems, cartTotal, estimateNo: orderNo })
 
-    const wa = siteSettings.whatsapp || '918300057711'
+    const wa = siteSettings.whatsapp || '919047778475'
     setTimeout(() => {
       window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, '_blank')
     }, 600)

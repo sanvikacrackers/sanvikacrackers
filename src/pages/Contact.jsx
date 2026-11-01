@@ -13,8 +13,8 @@ import '../App.css'
 
 export default function Contact() {
   useSEO({
-    title: 'Contact Sanvika Crackers | Sivakasi – 83000 57711',
-    description: 'Contact Sanvika Crackers at 83000 57711. Shop at 1/204-6, NH-07, Chatram Road, Vachakkarapatti, Virudhunagar District. WhatsApp order enquiries welcome.',
+    title: 'Contact Sanvika Crackers | Sivakasi – 90477 78475',
+    description: 'Contact Sanvika Crackers at 90477 78475. Shop at 1/204-6, NH-07, Chatram Road, Vachakkarapatti, Virudhunagar District. WhatsApp order enquiries welcome.',
     url: '/contact',
   })
   const { siteSettings } = useShop()
@@ -24,13 +24,13 @@ export default function Contact() {
   function handleSubmit(e) {
     e.preventDefault()
     const text = `Hello Sanvika Crackers!%0A%0AName: ${form.name}%0APhone: ${form.phone}%0AEmail: ${form.email}%0A%0AMessage: ${form.message}`
-    const wa   = siteSettings?.whatsapp || '918300057711'
+    const wa   = siteSettings?.whatsapp || '919047778475'
     window.open(`https://api.whatsapp.com/send?phone=${wa}&text=${text}`, '_blank')
     setSent(true)
     setTimeout(() => setSent(false), 4000)
   }
 
-  const wa = siteSettings?.whatsapp || '918300057711'
+  const wa = siteSettings?.whatsapp || '919047778475'
 
   const infoBoxes = [
     {
@@ -47,7 +47,7 @@ export default function Contact() {
       title: 'Mobile',
       content: (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          {['83000 57711'].map(n => (
+          {['90477 78475'].map(n => (
             <a key={n} href={`tel:+91${n.replace(/\s/g,'')}`}
               style={{ fontSize: '0.93rem', color: '#475569', textDecoration: 'none', whiteSpace: 'nowrap' }}
               onMouseEnter={e => e.currentTarget.style.color = '#843F43'}
