@@ -4,6 +4,7 @@ import {
   Heart, Clock, ThumbsUp, Tag, Package, ChevronRight, ChevronLeft,
 } from 'lucide-react'
 import { useShop } from '../context/ShopContext'
+import { supabase } from '../lib/supabase'
 import Footer from '../components/Footer'
 import AddToCartButton from '../components/AddToCartButton'
 import TopBar from '../components/TopBar'
@@ -190,7 +191,53 @@ export default function Home() {
     url: '/',
   })
 
-  const { products, loading, siteSettings, heroBanners: banners, heroBannersLoading: bannerLoading } = useShop()
+  const { loading: shopLoading, siteSettings, heroBanners: banners, heroBannersLoading: bannerLoading } = useShop()
+
+  const PAGE_SIZE = 20
+  const [displayProducts, setDisplayProducts] = useState([])
+  const [offset, setOffset] = useState(0)
+  const [hasMore, setHasMore] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [initialLoading, setInitialLoading] = useState(true)
+
+  // Initial load
+  useEffect(() => {
+    async function fetchFirst() {
+      setInitialLoading(true)
+      const { data, error } = await supabase
+        .from('products')
+        .select('id, name, description, price, mrp, image_url, category, order_unit, product_code, barcode, discount_percentage, is_active')
+        .eq('is_active', true)
+        .order('product_code')
+        .range(0, PAGE_SIZE - 1)
+      if (!error && data) {
+        setDisplayProducts(data)
+        setOffset(PAGE_SIZE)
+        setHasMore(data.length === PAGE_SIZE)
+      }
+      setInitialLoading(false)
+    }
+    fetchFirst()
+  }, [])
+
+  async function loadMore() {
+    if (loadingMore || !hasMore) return
+    setLoadingMore(true)
+    const { data, error } = await supabase
+      .from('products')
+      .select('id, name, description, price, mrp, image_url, category, order_unit, product_code, barcode, discount_percentage, is_active')
+      .eq('is_active', true)
+      .order('product_code')
+      .range(offset, offset + PAGE_SIZE - 1)
+    if (!error && data) {
+      setDisplayProducts(prev => [...prev, ...data])
+      setOffset(prev => prev + PAGE_SIZE)
+      setHasMore(data.length === PAGE_SIZE)
+    }
+    setLoadingMore(false)
+  }
+
+  const loading = initialLoading || shopLoading
 
   const [activeSlide, setActiveSlide] = useState(0)
   const slideTimer = useRef(null)
@@ -208,23 +255,16 @@ export default function Home() {
     setActiveSlide(s => (s + n + banners.length) % banners.length)
   }, [banners.length])
 
-  // Group products by category, preserving PDF order (first product_code seen per category)
+  // Group displayProducts by category
   const categoryOrder = []
   const categoryMap   = {}
-  products.forEach(p => {
+  displayProducts.forEach(p => {
     if (!categoryMap[p.category]) {
       categoryMap[p.category] = []
       categoryOrder.push(p.category)
     }
     categoryMap[p.category].push(p)
   })
-
-  // ── Showcase categories (top 6) ───────────────────────────────────────────
-  const showcaseCategories = categoryOrder.slice(0, 6)
-
-  // ── Circular product images for Welcome section ───────────────────────────
-  const welcomeImg1 = products.length > 0 ? parseImages(products[0]?.image_url)[0] : null
-  const welcomeImg2 = products.length > 1 ? parseImages(products[1]?.image_url)[0] : null
 
   return (
     <div className="theme-color4 light ltr" id="home">
@@ -276,10 +316,68 @@ export default function Home() {
         </section>
       )}
 
+      {/* ── Skeleton Loader ──────────────────────────────────────────── */}
+      {loading && [0, 1, 2].map(s => (
+        <section key={s} className="py-10 overflow-hidden" style={{ background: '#ffffff' }}>
+          <div className="skeleton-section">
+            <div className="skeleton-heading">
+              <div className="skeleton skeleton-heading-sub" />
+              <div className="skeleton skeleton-heading-main" />
+            </div>
+            <div className="skeleton-grid">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <div key={i} style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', border: '1px solid #ece8e1' }}>
+                  <div className="skeleton" style={{ height: 170 }} />
+                  <div style={{ padding: '12px 12px 12px' }}>
+                    <div className="skeleton" style={{ height: 13, marginBottom: 8, borderRadius: 4 }} />
+                    <div className="skeleton" style={{ height: 18, width: '55%', marginBottom: 10, borderRadius: 4 }} />
+                    <div className="skeleton" style={{ height: 36, borderRadius: 10 }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      ))}
+
+      {/* ── Products by Category ─────────────────────────────────────── */}
+      {categoryOrder.map((cat, idx) => (
+        <section
+          key={cat}
+          id={idx === 0 ? 'products' : undefined}
+          className={`py-10 overflow-hidden`} style={{ background: '#ffffff' }}
+        >
+          <div className="max-w-[1400px] mx-auto px-4">
+            <div className="text-center mb-8">
+              <p className="subtitle-two">Sanvika Crackers</p>
+              <h2 className="text-3xl font-extrabold text-gray-900">{cat}</h2>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 items-stretch">
+              {categoryMap[cat].map(p => <ProductCard key={p.id} product={p} />)}
+            </div>
+          </div>
+        </section>
+      ))}
+
+      {/* ── View More ────────────────────────────────────────────────── */}
+      {!initialLoading && hasMore && (
+        <section style={{ background: '#ffffff', padding: '0 16px 48px', textAlign: 'center' }}>
+          <button
+            onClick={loadMore}
+            disabled={loadingMore}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#843F43', color: '#fff', border: 'none', borderRadius: 8, padding: '14px 36px', fontSize: '1rem', fontWeight: 700, cursor: loadingMore ? 'default' : 'pointer', opacity: loadingMore ? 0.7 : 1, transition: 'background 0.2s' }}
+            onMouseEnter={e => { if (!loadingMore) e.currentTarget.style.background = '#70363A' }}
+            onMouseLeave={e => e.currentTarget.style.background = '#843F43'}
+          >
+            {loadingMore ? 'Loading…' : 'View More'}
+          </button>
+        </section>
+      )}
+
+
       {/* ── Category Showcase Section ────────────────────────────────── */}
       <section style={{ background: '#ffffff', padding: '72px 16px' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          {/* Heading */}
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <h2 style={{ fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 900, color: '#843F43', margin: '0 0 8px' }}>
               Our Products
@@ -287,7 +385,6 @@ export default function Home() {
             <div style={{ width: 40, height: 3, background: '#843F43', margin: '8px auto 0', borderRadius: 2 }} />
           </div>
 
-          {/* 3×2 grid — fixed 6 template category images */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {[
               { label: 'Wala Crackers', img: '/category-images/wala-crackers.jpg' },
@@ -373,50 +470,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* ── Skeleton Loader ──────────────────────────────────────────── */}
-      {loading && [0, 1, 2].map(s => (
-        <section key={s} className="py-10 overflow-hidden" style={{ background: '#ffffff' }}>
-          <div className="skeleton-section">
-            <div className="skeleton-heading">
-              <div className="skeleton skeleton-heading-sub" />
-              <div className="skeleton skeleton-heading-main" />
-            </div>
-            <div className="skeleton-grid">
-              {Array.from({ length: 10 }).map((_, i) => (
-                <div key={i} style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', border: '1px solid #ece8e1' }}>
-                  <div className="skeleton" style={{ height: 170 }} />
-                  <div style={{ padding: '12px 12px 12px' }}>
-                    <div className="skeleton" style={{ height: 13, marginBottom: 8, borderRadius: 4 }} />
-                    <div className="skeleton" style={{ height: 18, width: '55%', marginBottom: 10, borderRadius: 4 }} />
-                    <div className="skeleton" style={{ height: 36, borderRadius: 10 }} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      ))}
-
-      {/* ── Products by Category ─────────────────────────────────────── */}
-      {categoryOrder.map((cat, idx) => (
-        <section
-          key={cat}
-          id={idx === 0 ? 'products' : undefined}
-          className={`py-10 overflow-hidden`} style={{ background: '#ffffff' }}
-        >
-          <div className="max-w-[1400px] mx-auto px-4">
-            <div className="text-center mb-8">
-              <p className="subtitle-two">Sanvika Crackers</p>
-              <h2 className="text-3xl font-extrabold text-gray-900">{cat}</h2>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 items-stretch">
-              {categoryMap[cat].map(p => <ProductCard key={p.id} product={p} />)}
-            </div>
-          </div>
-        </section>
-      ))}
-
 
       {/* ── Services ────────────────────────────────────────────────── */}
       <section className="py-10" style={{ background: '#ffffff' }}>
