@@ -86,7 +86,7 @@ function ProductCard({ product }) {
           )}
           {/* Wishlist — top right */}
           <button
-            onClick={e => { e.stopPropagation(); toggleWishlist(product.id) }}
+            onClick={e => { e.preventDefault(); e.stopPropagation(); toggleWishlist(product.id) }}
             title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
             style={{
               position: 'absolute', top: 10, right: 10, zIndex: 10,
@@ -107,7 +107,7 @@ function ProductCard({ product }) {
             {imgs.slice(0, 4).map((src, i) => (
               <button
                 key={i}
-                onClick={e => { e.stopPropagation(); setActiveImg(i) }}
+                onClick={e => { e.preventDefault(); e.stopPropagation(); setActiveImg(i) }}
                 style={{
                   width: 24, height: 24, borderRadius: 5, overflow: 'hidden', padding: 0, flexShrink: 0,
                   border: i === activeImg ? '2px solid #843F43' : '1px solid #ddd',
@@ -155,7 +155,7 @@ function ProductCard({ product }) {
       {/* Price + Cart / Qty row */}
       <div
         style={{ padding: '0 14px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}
-        onClick={e => e.stopPropagation()}
+        onClick={e => { e.preventDefault(); e.stopPropagation() }}
       >
         <div>
           <p style={{ fontSize: 17, fontWeight: 900, color: '#843F43', margin: 0, lineHeight: 1 }}>
@@ -169,17 +169,17 @@ function ProductCard({ product }) {
         </div>
         {qty > 0 ? (
           <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid #d1d5db', borderRadius: 20, overflow: 'hidden', flexShrink: 0 }}>
-            <button type="button" onClick={() => setQty(product.id, qty - 1)}
+            <button type="button" onClick={e => { e.preventDefault(); setQty(product.id, qty - 1) }}
               style={{ width: 32, height: 36, border: 'none', background: 'transparent', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', color: '#1a1a1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
             <span style={{ minWidth: 28, textAlign: 'center', fontSize: 13, fontWeight: 800, color: '#1a1a1a' }}>{qty}</span>
-            <button type="button" onClick={() => setQty(product.id, qty + 1)}
+            <button type="button" onClick={e => { e.preventDefault(); setQty(product.id, qty + 1) }}
               style={{ width: 32, height: 36, border: 'none', background: 'transparent', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', color: '#1a1a1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
           </div>
         ) : (
           <AddToCartButton
             disabled={!product.is_active}
             label="Cart"
-            onClick={() => addToCart(product.id)}
+            onClick={e => { e.preventDefault(); addToCart(product.id) }}
           />
         )}
       </div>
