@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom'
-import { Heart, ShoppingCart, X, ShoppingBag } from 'lucide-react'
+import { Heart, ShoppingCart, X } from 'lucide-react'
 import { useShop } from '../context/ShopContext'
+import TopBar from '../components/TopBar'
+import Header from '../components/Header'
 import Footer from '../components/Footer'
 import '../App.css'
-import LOGO from '../assets/sanvikacrackerlogo.png'
 
 function parseImages(imgUrl) {
   if (!imgUrl) return []
@@ -16,39 +17,12 @@ function fmtPrice(v) {
 }
 
 export default function Wishlist() {
-  const { wishlistItems, toggleWishlist, addToCart, setQty, cartQtys, cartCount, wishlistCount } = useShop()
+  const { wishlistItems, toggleWishlist, addToCart, setQty, cartQtys } = useShop()
 
   return (
     <div className="theme-color4 light ltr" style={{ minHeight: '100vh', background: '#ffffff' }}>
-
-      {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-[1400px] mx-auto px-4">
-          <div className="flex items-center justify-between h-16 gap-4">
-            <Link to="/" className="flex-shrink-0">
-              <img src={LOGO} alt="Sanvika Crackers" className="h-10 w-auto object-contain" />
-            </Link>
-            <nav className="hidden lg:flex items-center gap-1">
-              <Link to="/"          className="nav-link">Home</Link>
-              <Link to="/about"     className="nav-link">About</Link>
-              <Link to="/#products" className="nav-link">Products</Link>
-              <Link to="/safety"    className="nav-link">Safety Tips</Link>
-              <Link to="/#contact"  className="nav-link">Contact</Link>
-            </nav>
-            <div className="flex items-center gap-2">
-              <Link to="/wishlist" className="relative flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold no-underline" style={{ background: "#ffffff", border: "1px solid #E6DED3", color: "#843F43" }}>
-                <Heart size={18} fill="#843F43" />
-                <span className="hidden sm:inline">Wishlist</span>
-                {wishlistCount > 0 && <span className="bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center font-bold">{wishlistCount}</span>}
-              </Link>
-              <Link to="/cart" className="flex items-center gap-1.5 bg-[#843F43] text-white border-none rounded-md px-3 py-2 text-sm font-semibold hover:bg-[#70363A] transition-colors no-underline">
-                <ShoppingCart size={18} />
-                Cart {cartCount > 0 && <span className="bg-white text-[#843F43] rounded-full w-5 h-5 text-xs flex items-center justify-center font-bold">{cartCount}</span>}
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      <TopBar />
+      <Header />
 
 
       <div className="max-w-[1100px] mx-auto px-4 py-10">
