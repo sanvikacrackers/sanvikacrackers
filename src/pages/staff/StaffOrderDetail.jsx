@@ -2,13 +2,14 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { useParams, useSearchParams, useNavigate, Link } from 'react-router-dom';
 import {
   ArrowLeft, Printer, Package, Pencil, X, Plus, Minus,
-  Trash2, CheckCircle, Search, User, Phone, AlertCircle, Camera,
+  Trash2, CheckCircle, Search, User, Phone, AlertCircle, Camera, Loader,
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
 import { formatIST, fmtINR, calcBillTotals, calcLineTotal } from '../../utils/billingUtils';
+import { useBluetoothPrinter } from '../../context/BluetoothPrinterContext';
 
 function printBill(order, items) {
   const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/>
@@ -243,6 +244,7 @@ export default function StaffOrderDetail() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const bt = useBluetoothPrinter();
 
   const editMode = searchParams.get('edit') === 'true';
 
@@ -633,8 +635,21 @@ export default function StaffOrderDetail() {
           </button>
         )}
         {order.status === 'finalized' && (
-          <button className="sf-btn sf-btn-secondary sf-btn-sm" onClick={() => printBill(order, items)}>
-            <Printer style={{ width: 13, height: 13 }} /> Print
+          <button
+            className="sf-btn sf-btn-secondary sf-btn-sm"
+            onClick={() => {
+              if (bt.status === 'connected' || bt.status === 'printing') {
+                bt.print(order, items);
+              } else {
+                printBill(order, items);
+              }
+            }}
+            disabled={bt.status === 'printing'}
+          >
+            {bt.status === 'printing'
+              ? <><Loader style={{ width: 13, height: 13 }} /> Printing…</>
+              : <><Printer style={{ width: 13, height: 13 }} /> Print</>
+            }
           </button>
         )}
       </div>

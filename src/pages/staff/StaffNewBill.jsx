@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Search, Plus, Minus, Trash2, CheckCircle,
-  X, Camera, Package, AlertCircle, Printer, User, Phone,
+  X, Camera, Package, AlertCircle, Printer, User, Phone, Loader,
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
@@ -9,6 +9,7 @@ import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
 import { useShop } from '../../context/ShopContext';
 import { calcBillTotals, calcLineTotal, fmtINR, formatIST } from '../../utils/billingUtils';
+import { useBluetoothPrinter } from '../../context/BluetoothPrinterContext';
 
 const DRAFT_KEY = (uid) => `sanvika_staff_draft_${uid}`;
 
@@ -426,6 +427,7 @@ export default function StaffNewBill() {
   const queryClient = useQueryClient();
   const { products: allProducts } = useShop();
   const products = allProducts.filter(p => p.is_active === true);
+  const bt = useBluetoothPrinter();
 
   const [billItems, setBillItems] = useState([]);
   const [customerName, setCustomerName] = useState('');
@@ -796,10 +798,20 @@ export default function StaffNewBill() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <button
-              onClick={() => printBill(lastBill.order, lastBill.items)}
-              style={{ background: '#fff', color: '#15803d', fontWeight: 700, fontSize: 14, padding: '10px 24px', borderRadius: 8, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
+              onClick={() => {
+                if (bt.status === 'connected' || bt.status === 'printing') {
+                  bt.print(lastBill.order, lastBill.items);
+                } else {
+                  printBill(lastBill.order, lastBill.items);
+                }
+              }}
+              disabled={bt.status === 'printing'}
+              style={{ background: '#fff', color: '#15803d', fontWeight: 700, fontSize: 14, padding: '10px 24px', borderRadius: 8, border: 'none', cursor: bt.status === 'printing' ? 'default' : 'pointer', display: 'flex', alignItems: 'center', gap: 8, opacity: bt.status === 'printing' ? 0.7 : 1 }}
             >
-              <Printer style={{ width: 16, height: 16 }} /> Print
+              {bt.status === 'printing'
+                ? <><Loader style={{ width: 16, height: 16 }} /> Printing…</>
+                : <><Printer style={{ width: 16, height: 16 }} /> Print</>
+              }
             </button>
             <button
               onClick={() => setLastBill(null)}

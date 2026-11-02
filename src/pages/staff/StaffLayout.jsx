@@ -2,12 +2,46 @@ import { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Plus, Package, ClipboardList,
-  LogOut, Menu, X, User,
+  LogOut, Menu, X, User, Bluetooth, BluetoothConnected, BluetoothSearching,
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
+import { BluetoothPrinterProvider, useBluetoothPrinter } from '../../context/BluetoothPrinterContext';
 import '../../Staff.css';
 import LOGO from '../../assets/sanvikacrackerlogo.png';
+
+// ── Bluetooth status button shown in the header ─────────────────────────────
+function BluetoothHeaderBtn() {
+  const { status, deviceName, connect, disconnect } = useBluetoothPrinter();
+
+  const isConnected  = status === 'connected' || status === 'printing';
+  const isConnecting = status === 'connecting';
+
+  const Icon = isConnected ? BluetoothConnected : isConnecting ? BluetoothSearching : Bluetooth;
+  const color = isConnected ? '#15803d' : isConnecting ? '#d97706' : '#94a3b8';
+  const label = isConnected ? deviceName || 'Printer' : isConnecting ? 'Connecting…' : 'Connect Printer';
+
+  return (
+    <button
+      onClick={isConnected ? disconnect : connect}
+      disabled={isConnecting}
+      title={isConnected ? `Disconnect ${deviceName}` : 'Connect Bluetooth Printer'}
+      style={{
+        display: 'flex', alignItems: 'center', gap: 5,
+        background: isConnected ? '#dcfce7' : '#f1f5f9',
+        border: `1px solid ${isConnected ? '#86efac' : '#e2e8f0'}`,
+        borderRadius: 8, padding: '5px 10px', cursor: isConnecting ? 'default' : 'pointer',
+        fontSize: 12, fontWeight: 600, color,
+        transition: 'all 0.2s',
+      }}
+    >
+      <Icon style={{ width: 14, height: 14 }} />
+      <span style={{ maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        {label}
+      </span>
+    </button>
+  );
+}
 
 export default function StaffLayout() {
   const navigate = useNavigate();
@@ -46,6 +80,7 @@ export default function StaffLayout() {
   const initials = (profile?.name || 'S').slice(0, 1).toUpperCase();
 
   return (
+    <BluetoothPrinterProvider>
     <div className="staff-root">
       <div className="sf-layout">
         {sidebarOpen && (
@@ -100,6 +135,7 @@ export default function StaffLayout() {
               </button>
             </div>
             <div className="sf-header-right">
+              <BluetoothHeaderBtn />
               <span style={{ fontSize: 13, color: '#64748b' }}>{profile?.name || 'Staff'}</span>
               <div className="sf-header-avatar">{initials}</div>
             </div>
@@ -126,5 +162,6 @@ export default function StaffLayout() {
         </nav>
       </div>
     </div>
+    </BluetoothPrinterProvider>
   );
 }

@@ -11,12 +11,13 @@ import {
   Eye, EyeOff, Zap, Sun, Star, Flame,
   Sparkles, Box, Gift, Layers, Shield, TrendingUp, Users,
   CheckCircle, Clock, XCircle, ArrowUpRight, RefreshCw, Save, Lock, Mail, ChevronDown, Check, Megaphone, Bell, Image, Upload, Settings, ShoppingCart, Download, GripVertical,
-  Barcode, ClipboardList, BarChart2,
+  Barcode, ClipboardList, BarChart2, Bluetooth, BluetoothConnected, BluetoothSearching,
 } from 'lucide-react';
 import '../Admin.css';
 import LOGO from '../assets/sanvikacrackerlogo.png';
 import { supabase } from '../lib/supabase';
 import { uploadImage, deleteImage } from '../lib/r2';
+import { BluetoothPrinterProvider, useBluetoothPrinter } from '../context/BluetoothPrinterContext';
 
 /* ── Supabase ─────────────────────────────────────── */
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://zjjlqewqzhnyfhjqsbwu.supabase.co';
@@ -525,6 +526,34 @@ function GlobalTooltip() {
   );
 }
 
+function BluetoothHeaderBtn() {
+  const { status, deviceName, connect, disconnect } = useBluetoothPrinter();
+  const isConnected  = status === 'connected' || status === 'printing';
+  const isConnecting = status === 'connecting';
+  const Icon  = isConnected ? BluetoothConnected : isConnecting ? BluetoothSearching : Bluetooth;
+  const color = isConnected ? '#15803d' : isConnecting ? '#d97706' : '#94a3b8';
+  const label = isConnected ? (deviceName || 'Printer') : isConnecting ? 'Connecting…' : 'Connect Printer';
+  return (
+    <button
+      onClick={isConnected ? disconnect : connect}
+      disabled={isConnecting}
+      title={isConnected ? `Disconnect ${deviceName}` : 'Connect Bluetooth Printer'}
+      style={{
+        display: 'flex', alignItems: 'center', gap: 5,
+        background: isConnected ? '#dcfce7' : '#f5f5f4',
+        border: `1px solid ${isConnected ? '#86efac' : '#e2e8f0'}`,
+        borderRadius: 8, padding: '5px 10px', cursor: isConnecting ? 'default' : 'pointer',
+        fontSize: 12, fontWeight: 600, color, transition: 'all 0.2s',
+      }}
+    >
+      <Icon style={{ width: 14, height: 14 }} />
+      <span style={{ maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        {label}
+      </span>
+    </button>
+  );
+}
+
 export function AdminLayout() {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -627,6 +656,7 @@ export function AdminLayout() {
   ];
 
   return (
+    <BluetoothPrinterProvider>
     <AdminCtx.Provider value={{ products, setProducts, categories, categoryData, saveCategory, deleteCategory, loading, fetchAll }}>
       <div className="adm">
         <GlobalTooltip />
@@ -678,6 +708,7 @@ export function AdminLayout() {
                 <img src={LOGO} alt="Sanvika Crackers" className="hdr-title" style={{height:36,width:'auto',objectFit:'contain'}} />
               </div>
               <div className="hdr-right">
+                <BluetoothHeaderBtn />
                 <button className="adm-btn adm-btn-secondary adm-btn-sm" onClick={fetchAll} disabled={loading}>
                   <RefreshCw style={{width:14,height:14}} className={loading?'spinning':''} />
                   {loading?'Loading...':'Refresh'}
@@ -698,6 +729,7 @@ export function AdminLayout() {
         </div>
       </div>
     </AdminCtx.Provider>
+    </BluetoothPrinterProvider>
   );
 }
 

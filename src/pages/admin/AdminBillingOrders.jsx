@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { Search, X, Printer, Eye, ClipboardList, Edit2, Trash2, Plus, Minus, Package, AlertCircle, Save } from 'lucide-react';
+import { Search, X, Printer, Eye, ClipboardList, Edit2, Trash2, Plus, Minus, Package, AlertCircle, Save, Loader } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { supabase } from '../../lib/supabase';
 import { formatIST, fmtINR, istDayStart, istDayEnd, calcBillTotals, calcLineTotal } from '../../utils/billingUtils';
 import { CustomSelect } from '../Admin';
+import { useBluetoothPrinter } from '../../context/BluetoothPrinterContext';
 import '../../Staff.css';
 
 const BILLING_START_YEAR = 2025;
@@ -91,6 +92,7 @@ function OrderDetailModal({ orderId, onClose }) {
   const [cancelling, setCancelling] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
   const queryClient = useQueryClient();
+  const bt = useBluetoothPrinter();
 
   const { data, isLoading } = useQuery({
     queryKey: ['billing-order-detail', orderId],
@@ -218,8 +220,21 @@ function OrderDetailModal({ orderId, onClose }) {
             <div className="sf-modal-footer">
               <button className="sf-btn sf-btn-secondary" onClick={() => onClose(false)}>Close</button>
               {order.status === 'finalized' && (
-                <button className="sf-btn sf-btn-primary" onClick={() => printBill(order, items)}>
-                  <Printer style={{ width: 14, height: 14 }} /> Print Bill
+                <button
+                  className="sf-btn sf-btn-primary"
+                  onClick={() => {
+                    if (bt.status === 'connected' || bt.status === 'printing') {
+                      bt.print(order, items);
+                    } else {
+                      printBill(order, items);
+                    }
+                  }}
+                  disabled={bt.status === 'printing'}
+                >
+                  {bt.status === 'printing'
+                    ? <><Loader style={{ width: 14, height: 14 }} /> Printing…</>
+                    : <><Printer style={{ width: 14, height: 14 }} /> Print Bill</>
+                  }
                 </button>
               )}
             </div>
@@ -522,6 +537,7 @@ function EditOrderModal({ orderId, onClose }) {
 }
 
 export default function AdminBillingOrders() {
+  const bt = useBluetoothPrinter();
   const [search, setSearch] = useState('');
   const [staffFilter, setStaffFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
@@ -590,7 +606,12 @@ export default function AdminBillingOrders() {
       .eq('order_id', o.id)
       .order('created_at');
     if (error) { toast.error('Failed to load items'); return; }
-    printBill({ ...o, staff_name: o.staff_users?.name }, items);
+    const order = { ...o, staff_name: o.staff_users?.name };
+    if (bt.status === 'connected' || bt.status === 'printing') {
+      bt.print(order, items);
+    } else {
+      printBill(order, items);
+    }
   };
 
   const handleDelete = async (order) => {
