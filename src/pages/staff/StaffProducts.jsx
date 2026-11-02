@@ -6,13 +6,13 @@ import { fmtINR } from '../../utils/billingUtils';
 
 export default function StaffProducts() {
   const { products: allProducts, loading } = useShop();
-  const products = allProducts.filter(p => p.is_active === true);
+  const products = allProducts.filter(p => p.is_active !== false);
 
   const [search, setSearch] = useState('');
   const [codeOnly, setCodeOnly] = useState(true);
   const [category, setCategory] = useState('');
 
-  const categories = [...new Set(products.map((p) => p.category))].sort();
+  const categories = [...new Set(products.map((p) => p.category).filter(Boolean))].sort();
 
   const filtered = products.filter((p) => {
     const q = search.toLowerCase();

@@ -44,7 +44,7 @@ export function ShopProvider({ children }) {
       if (productsRes.ok) {
         const data = await productsRes.json()
         products = data
-          .filter(p => p.category && p.is_active !== undefined)
+          .filter(p => p.is_active !== undefined)
           .sort((a, b) => (parseInt(a.product_code) || 0) - (parseInt(b.product_code) || 0))
       }
       if (settingsRes.ok) {
