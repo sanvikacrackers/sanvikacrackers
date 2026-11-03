@@ -126,7 +126,7 @@ export default function Cart() {
     // Generate and download PDF with sequential estimate number
     await generateOrderPDF({ form, cartItems, cartTotal, estimateNo })
 
-    const wa = siteSettings.whatsapp || '919047778475'
+    const wa = siteSettings.whatsapp || '919047709090'
     setTimeout(() => {
       window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, '_blank')
     }, 600)

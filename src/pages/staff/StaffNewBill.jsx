@@ -391,7 +391,7 @@ function printBill(order, items) {
   @media print{body{padding:0;}}
 </style></head><body>
 <h1>Sanvika Crackers</h1>
-<div class="sub">Quality Fireworks Since 2020 · +91 90477 78475</div>
+<div class="sub">Quality Fireworks Since 2020 · +91 90477 09090</div>
 <div class="meta">
   <span>Bill: <b>${order.bill_number}</b></span>
   <span>${fdt(order.finalized_at || order.created_at)}</span>

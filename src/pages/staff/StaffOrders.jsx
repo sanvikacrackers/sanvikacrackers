@@ -44,7 +44,7 @@ function printBill(order, items) {
   .footer{text-align:center;font-size:10px;color:#555;border-top:1px dashed #ccc;padding-top:8px;margin-top:12px;}
 </style></head><body>
 <h1>Sanvika Crackers</h1>
-<div class="sub">Quality Fireworks · +91 90477 78475 · sanvikacrackers.com</div>
+<div class="sub">Quality Fireworks · +91 90477 09090 · sanvikacrackers.com</div>
 <div class="meta">
   <div><div>Bill: <b>${order.bill_number}</b></div></div>
   <div style="text-align:right"><div>${formatIST(order.finalized_at || order.created_at)}</div></div>

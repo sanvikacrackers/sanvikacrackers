@@ -63,7 +63,7 @@ export function buildReceiptBytes(order, items) {
   push(...CMD.FONT_NORMAL);
   push(...CMD.BOLD_OFF);
   write('Quality Fireworks Since 2020\n');
-  write('+91 90477 78475\n');
+  write('+91 90477 09090\n');
   write('sanvikacrackers.com\n');
   write(divider('='));
 
