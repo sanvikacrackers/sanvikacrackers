@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, lazy, Suspense } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ShopProvider } from './context/ShopContext'
+import { ShopProvider, useShop } from './context/ShopContext'
 import { AuthProvider } from './context/AuthContext'
 import { Toaster } from 'react-hot-toast'
 
@@ -68,16 +68,33 @@ function ScrollToTop() {
   return null
 }
 
+async function downloadPricelist(url) {
+  try {
+    const res = await fetch(url)
+    const blob = await res.blob()
+    const blobUrl = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = blobUrl
+    a.download = 'Sanvika-Crackers-Pricelist.pdf'
+    a.click()
+    URL.revokeObjectURL(blobUrl)
+  } catch {
+    window.open(url, '_blank')
+  }
+}
+
 function PricelistFAB() {
   const { pathname } = useLocation()
-  const navigate = useNavigate()
-  if (pathname.startsWith('/admin') || pathname.startsWith('/staff') || pathname === '/products' || pathname.startsWith('/products/')) return null
+  const { siteSettings } = useShop()
+  const pricelistUrl = siteSettings?.pricelist_url
+  if (pathname.startsWith('/admin') || pathname.startsWith('/staff')) return null
+  if (!pricelistUrl) return null
   return (
     <img
       src={pricelistImg}
-      alt="View Products"
-      title="View Products"
-      onClick={() => navigate('/products')}
+      alt="Download Price List"
+      title="Download Price List"
+      onClick={() => downloadPricelist(pricelistUrl)}
       style={{
         position: 'fixed', bottom: 20, left: 16, zIndex: 9990,
         width: 110, height: 'auto',

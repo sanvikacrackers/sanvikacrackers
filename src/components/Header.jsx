@@ -15,6 +15,21 @@ const NAV = [
 ]
 
 
+async function downloadPricelist(url) {
+  try {
+    const res = await fetch(url)
+    const blob = await res.blob()
+    const blobUrl = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = blobUrl
+    a.download = 'Sanvika-Crackers-Pricelist.pdf'
+    a.click()
+    URL.revokeObjectURL(blobUrl)
+  } catch {
+    window.open(url, '_blank')
+  }
+}
+
 export default function Header() {
   const { cartCount, wishlistCount, siteSettings } = useShop()
   const pricelistUrl = siteSettings?.pricelist_url
@@ -84,15 +99,14 @@ export default function Header() {
             {/* Right side — price list + hamburger only */}
             <div className="flex items-center gap-2">
               {pricelistUrl && (
-                <a
-                  href={pricelistUrl}
-                  download="Sanvika-Crackers-Pricelist.pdf"
+                <button
+                  onClick={() => downloadPricelist(pricelistUrl)}
                   className="flex pricelist-btn"
                   title="Download Price List"
                 >
                   <Download size={16} />
                   <span className="hidden lg:inline">Price List</span>
-                </a>
+                </button>
               )}
 
               {/* Hamburger — mobile only */}
@@ -169,20 +183,18 @@ export default function Header() {
           {/* Download Price List — below Contact */}
           {pricelistUrl && (
             <div style={{ padding: '10px 16px 4px' }}>
-              <a
-                href={pricelistUrl}
-                download="Sanvika-Crackers-Pricelist.pdf"
-                onClick={() => setOpen(false)}
+              <button
+                onClick={() => { setOpen(false); downloadPricelist(pricelistUrl) }}
                 className="pricelist-btn"
                 style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   gap: 8, padding: '12px 16px', borderRadius: 10,
-                  fontSize: 14, fontWeight: 700, textDecoration: 'none',
-                  width: '100%', boxSizing: 'border-box',
+                  fontSize: 14, fontWeight: 700,
+                  width: '100%', boxSizing: 'border-box', cursor: 'pointer',
                 }}
               >
                 <Download size={17} /> Download Price List
-              </a>
+              </button>
             </div>
           )}
         </nav>
