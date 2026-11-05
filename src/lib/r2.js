@@ -120,6 +120,32 @@ export function extractKey(url) {
   try { return new URL(url).pathname.replace(/^\//, '') } catch { return null }
 }
 
+export async function uploadPdf(file) {
+  const key         = `pdfs/pricelist.pdf`
+  const contentType = 'application/pdf'
+  const fileBuffer  = await file.arrayBuffer()
+
+  const { authorization, amzDate, payloadHash } = await buildPutAuth(key, contentType, fileBuffer)
+
+  const res = await fetch(`${R2_ENDPOINT}/${BUCKET}/${key}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': contentType,
+      'x-amz-date': amzDate,
+      'x-amz-content-sha256': payloadHash,
+      'Authorization': authorization,
+    },
+    body: fileBuffer,
+  })
+
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(`R2 upload failed (${res.status}): ${text}`)
+  }
+
+  return `${PUBLIC_URL}/${key}`
+}
+
 export async function uploadImage(file) {
   const ext         = file.name.split('.').pop().toLowerCase() || 'jpg'
   const key         = `images/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`

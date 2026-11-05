@@ -16,7 +16,7 @@ import {
 import '../Admin.css';
 import LOGO from '../assets/sanvikacrackerlogo.png';
 import { supabase } from '../lib/supabase';
-import { uploadImage, deleteImage } from '../lib/r2';
+import { uploadImage, deleteImage, uploadPdf } from '../lib/r2';
 import { BluetoothPrinterProvider, useBluetoothPrinter } from '../context/BluetoothPrinterContext';
 
 /* ── Supabase ─────────────────────────────────────── */
@@ -2677,25 +2677,7 @@ export function AdminSettings() {
     }
     setUploadingPdf(true);
     try {
-      const fileName = `pricelist.pdf`;
-      const uploadRes = await fetch(
-        `${SUPABASE_URL}/storage/v1/object/pricelists/${fileName}`,
-        {
-          method: 'POST',
-          headers: {
-            apikey: SUPABASE_KEY,
-            Authorization: `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/pdf',
-            'x-upsert': 'true',
-          },
-          body: file,
-        }
-      );
-      if (!uploadRes.ok) {
-        const err = await uploadRes.text();
-        throw new Error(err);
-      }
-      const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/pricelists/${fileName}`;
+      const publicUrl = await uploadPdf(file);
       setPricelistUrlState(publicUrl);
 
       // Auto-save URL to DB immediately
