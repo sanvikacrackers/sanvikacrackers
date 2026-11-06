@@ -1226,18 +1226,14 @@ function ProductModal({ product, categories, onClose, onSaved }) {
 
   const save = async () => {
     const errs = {
-      category: !form.category,
+      category: false,
       name: !form.name || !form.name.trim(),
       price: !form.price || isNaN(parseFloat(form.price)),
     };
 
-    if (errs.category || errs.name || errs.price) {
+    if (errs.name || errs.price) {
       setFieldErrors(errs);
-      if (errs.category) {
-        const msg = 'Please select a Category';
-        setErr(msg);
-        toast.error(msg);
-      } else if (errs.name) {
+      if (errs.name) {
         const msg = 'Please fill out Product Name';
         setErr(msg);
         toast.error(msg);
@@ -1282,7 +1278,7 @@ function ProductModal({ product, categories, onClose, onSaved }) {
         product_code: assignedCode,
         name: form.name,
         name_tamil: form.name_tamil || null,
-        category: form.category,
+        category: form.category || null,
         mrp: form.mrp ? parseFloat(form.mrp) : null,
         price: form.price ? parseFloat(form.price) : null,
         discount_percentage: disc,
