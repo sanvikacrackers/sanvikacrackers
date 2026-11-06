@@ -1278,7 +1278,7 @@ function ProductModal({ product, categories, onClose, onSaved }) {
         product_code: assignedCode,
         name: form.name,
         name_tamil: form.name_tamil || null,
-        category: form.category || null,
+        category: form.category || '',
         mrp: form.mrp ? parseFloat(form.mrp) : null,
         price: form.price ? parseFloat(form.price) : null,
         discount_percentage: disc,
