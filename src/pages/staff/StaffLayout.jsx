@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Plus, Package, ClipboardList,
-  LogOut, Menu, X, User, Bluetooth, BluetoothConnected, BluetoothSearching,
+  LogOut, Menu, X, User, Bluetooth, BluetoothConnected, BluetoothSearching, BarChart2,
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
@@ -75,6 +75,7 @@ export default function StaffLayout() {
     { to: '/staff/products', label: 'Products', icon: Package },
     { to: '/staff/orders', label: 'My Orders', icon: ClipboardList },
     { to: '/staff/profile', label: 'Profile', icon: User },
+    { to: '/staff/billing-dashboard', label: 'Billing Stats', icon: BarChart2 },
   ];
 
   const initials = (profile?.name || 'S').slice(0, 1).toUpperCase();

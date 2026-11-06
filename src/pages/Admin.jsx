@@ -647,6 +647,7 @@ export function AdminLayout() {
     { to: '/admin/banners',          label: 'Hero Banners',         icon: Image },
     { to: '/admin/announcement',     label: 'Important Message',    icon: Megaphone },
     { section: 'Staff Billing' },
+    { to: '/admin/billing-dashboard', label: 'Dashboard',           icon: BarChart2 },
     { to: '/admin/staff',            label: 'Staff Management',     icon: Users },
     { to: '/admin/billing-orders',   label: 'Staff Billing Orders', icon: ClipboardList },
     { to: '/admin/barcodes',         label: 'Barcode Printing',     icon: Barcode },

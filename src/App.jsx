@@ -41,7 +41,8 @@ const AdminStaff         = lazy(() => import('./pages/admin/AdminStaff'))
 const AdminBillingOrders = lazy(() => import('./pages/admin/AdminBillingOrders'))
 const AdminBillEdit      = lazy(() => import('./pages/admin/AdminBillEdit'))
 const AdminBarcodes      = lazy(() => import('./pages/admin/AdminBarcodes'))
-const AdminReports       = lazy(() => import('./pages/admin/AdminReports'))
+const AdminReports           = lazy(() => import('./pages/admin/AdminReports'))
+const AdminBillingDashboard  = lazy(() => import('./pages/admin/AdminBillingDashboard'))
 
 // ── Staff pages (lazy) ────────────────────────────────
 const StaffLogin      = lazy(() => import('./pages/StaffLogin'))
@@ -52,6 +53,7 @@ const StaffOrders     = lazy(() => import('./pages/staff/StaffOrders'))
 const StaffOrderDetail = lazy(() => import('./pages/staff/StaffOrderDetail'))
 const StaffProducts   = lazy(() => import('./pages/staff/StaffProducts'))
 const StaffProfile    = lazy(() => import('./pages/staff/StaffProfile'))
+const StaffBillingDashboard = lazy(() => import('./pages/staff/StaffBillingDashboard'))
 
 // Minimal page-level loader shown only on first chunk download (subsequent navigations use cache)
 function PageLoader() {
@@ -141,6 +143,7 @@ export default function App() {
               <Route path="announcement"     element={<Suspense fallback={<PageLoader />}><AdminAnnouncement /></Suspense>} />
               <Route path="settings"         element={<Suspense fallback={<PageLoader />}><AdminSettings /></Suspense>} />
               <Route path="staff"            element={<Suspense fallback={<PageLoader />}><AdminStaff /></Suspense>} />
+              <Route path="billing-dashboard"       element={<Suspense fallback={<PageLoader />}><AdminBillingDashboard /></Suspense>} />
               <Route path="billing-orders"         element={<Suspense fallback={<PageLoader />}><AdminBillingOrders /></Suspense>} />
               <Route path="billing-orders/:id/edit" element={<Suspense fallback={<PageLoader />}><AdminBillEdit /></Suspense>} />
               <Route path="barcodes"         element={<Suspense fallback={<PageLoader />}><AdminBarcodes /></Suspense>} />
@@ -157,6 +160,7 @@ export default function App() {
               <Route path="orders"           element={<Suspense fallback={<PageLoader />}><StaffOrders /></Suspense>} />
               <Route path="orders/:id"       element={<Suspense fallback={<PageLoader />}><StaffOrderDetail /></Suspense>} />
               <Route path="profile"          element={<Suspense fallback={<PageLoader />}><StaffProfile /></Suspense>} />
+              <Route path="billing-dashboard" element={<Suspense fallback={<PageLoader />}><StaffBillingDashboard /></Suspense>} />
             </Route>
           </Routes>
         </ShopProvider>
